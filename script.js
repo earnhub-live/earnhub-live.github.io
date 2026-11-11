@@ -273,6 +273,7 @@ async function loadDashboard(user) {
         el("dashboard")?.classList.remove("hidden");
 
         updateAuthButtons(user);
+        await loadNotifications();
 
         await checkAdmin();
 await Promise.all([
@@ -1657,3 +1658,89 @@ document.addEventListener("DOMContentLoaded", () => {
     setupAuthListener();
     initializeEarnHub();
 });
+
+// =================================================
+// 31. NOTIFICATIONS SYSTEM
+// =================================================
+
+async function loadNotifications() {
+    if (!db || !currentUser) return;
+
+    const container = el("notificationList");
+    const count = el("notificationCount");
+
+    if (!container) return;
+
+    container.textContent = "Loading notifications...";
+
+    try {
+        const { data, error } = await db
+            .from("notifications")
+            .select("*")
+            .eq("user_id", currentUser.id)
+            .order("created_at", { ascending: false })
+            .limit(30);
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            container.textContent = "No notifications yet.";
+            if (count) count.textContent = "0";
+            return;
+        }
+
+        const unread = data.filter(item => !item.is_read).length;
+
+        if (count) count.textContent = unread + " New";
+
+        container.innerHTML = data.map(item => `
+            <article class="card notification-item">
+                <h3>${escapeHTML(item.title)}</h3>
+                <p>${escapeHTML(item.message)}</p>
+                <small>
+                    ${new Date(item.created_at).toLocaleString()}
+                </small>
+                ${
+                    item.is_read
+                    ? '<span>Read</span>'
+                    : `
+                        <button onclick="markNotificationRead(${Number(item.id)})">
+                            Mark as Read
+                        </button>
+                    `
+                }
+            </article>
+        `).join("");
+
+    } catch (error) {
+        console.error("Notifications error:", error);
+        container.textContent =
+            "Could not load notifications: " + error.message;
+    }
+}
+
+
+// =================================================
+// 32. MARK NOTIFICATION AS READ
+// =================================================
+
+async function markNotificationRead(notificationId) {
+    if (!db || !currentUser) return;
+
+    try {
+        const { error } = await db
+            .from("notifications")
+            .update({ is_read: true })
+            .eq("id", notificationId)
+            .eq("user_id", currentUser.id);
+
+        if (error) throw error;
+
+        await loadNotifications();
+
+    } catch (error) {
+        console.error("Mark notification read error:", error);
+        notify("Could not update notification: " + error.message);
+    }
+}
+
