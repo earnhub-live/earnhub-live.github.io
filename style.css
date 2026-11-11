@@ -1924,3 +1924,23 @@ footer p + p {
         height: auto;
     }
 }
+
+.whatsapp-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: #25D366;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.2s ease;
+}
+
+.whatsapp-nav-btn:hover {
+    background: #1ebe5d;
+    transform: translateY(-2px);
+}
