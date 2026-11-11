@@ -1997,4 +1997,21 @@ footer p + p {
     .analytics-card h3 {
         font-size: 21px;
     }
+}/* ANALYTICS REFRESH BUTTON */
+
+.analytics-refresh-btn {
+    background: rgba(0, 220, 150, 0.12);
+    color: #00dc96;
+    border: 1px solid rgba(0, 220, 150, 0.35);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.2s ease;
+}
+
+.analytics-refresh-btn:hover {
+    background: rgba(0, 220, 150, 0.22);
 }
