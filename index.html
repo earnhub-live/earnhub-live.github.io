@@ -587,7 +587,47 @@
             <span class="admin-label">ADMIN</span>
 
         </div>
+<!-- ADMIN ANALYTICS -->
+<div class="admin-analytics">
 
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">BUSINESS OVERVIEW</span>
+            <h2>Admin Analytics</h2>
+            <p class="muted">Live overview of EarnHub activity.</p>
+        </div>
+    </div>
+
+    <div class="analytics-grid">
+
+        <div class="analytics-card">
+            <span>Total Users</span>
+            <h3 id="analyticsUsers">Loading...</h3>
+        </div>
+
+        <div class="analytics-card">
+            <span>Approved Deposits</span>
+            <h3 id="analyticsDeposits">Loading...</h3>
+        </div>
+
+        <div class="analytics-card">
+            <span>Paid Withdrawals</span>
+            <h3 id="analyticsWithdrawals">Loading...</h3>
+        </div>
+
+        <div class="analytics-card">
+            <span>Pending Requests</span>
+            <h3 id="analyticsPending">Loading...</h3>
+        </div>
+
+        <div class="analytics-card">
+            <span>Task Rewards Paid</span>
+            <h3 id="analyticsRewards">Loading...</h3>
+        </div>
+
+    </div>
+
+</div>
 
         <!-- CREATE TASK FORM -->
         <div class="admin-form">
@@ -795,13 +835,7 @@
 
     </div>
 
-</div>
-
-<p>
-    <a href="privacy.html" style="color:#38bdf8;">
-        Privacy Policy
-    </a>
-</p>
+</div><a href="privacy.html">Privacy Policy</a>
 <!-- FOOTER -->
 <footer>
 
@@ -813,9 +847,13 @@
         Complete Tasks • Earn Rewards
     </p>
 
+    <p>
+        <a href="privacy.html" style="color:#38bdf8;">
+            Privacy Policy
+        </a>
+    </p>
+
 </footer>
-
-
 <!-- NAVIGATION HELPER -->
 <script>
     function goTo(sectionId) {
