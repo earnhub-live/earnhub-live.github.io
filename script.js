@@ -358,10 +358,12 @@ async function checkAdmin() {
         isAdmin = data === true;
 
         panel?.classList.toggle("hidden", !isAdmin);
-
-        if (isAdmin) {
-            await loadAdminSubmissions();
-        }
+if (isAdmin) {
+    await Promise.all([
+        loadAdminSubmissions(),
+        loadAdminAnalytics()
+    ]);
+}
 
     } catch (error) {
         console.error("Admin check:", error);
@@ -1069,7 +1071,79 @@ async function loadAdminSubmissions() {
     }
 }
 
+async function loadAdminAnalytics() {
+    if (!db || !currentUser || !isAdmin) return;
 
+    try {
+        const [
+            usersResult,
+            depositsResult,
+            withdrawalsResult,
+            pendingDepositsResult,
+            pendingWithdrawalsResult,
+            rewardsResult
+        ] = await Promise.all([
+
+            db.from("profiles")
+                .select("*", { count: "exact", head: true }),
+
+            db.from("deposit_requests")
+                .select("amount")
+                .eq("status", "approved"),
+
+            db.from("withdrawal_requests")
+                .select("amount")
+                .eq("status", "paid"),
+
+            db.from("deposit_requests")
+                .select("*", { count: "exact", head: true })
+                .eq("status", "pending"),
+
+            db.from("withdrawal_requests")
+                .select("*", { count: "exact", head: true })
+                .eq("status", "pending"),
+
+            db.from("wallet_transactions")
+                .select("amount")
+                .eq("transaction_type", "task_reward")
+        ]);
+
+        const results = [
+            usersResult,
+            depositsResult,
+            withdrawalsResult,
+            pendingDepositsResult,
+            pendingWithdrawalsResult,
+            rewardsResult
+        ];
+
+        const failed = results.find(result => result.error);
+        if (failed) throw failed.error;
+
+        const totalDeposits = depositsResult.data
+            .reduce((sum, item) => sum + Number(item.amount), 0);
+
+        const totalWithdrawals = withdrawalsResult.data
+            .reduce((sum, item) => sum + Number(item.amount), 0);
+
+        const totalRewards = rewardsResult.data
+            .reduce((sum, item) => sum + Number(item.amount), 0);
+
+        const pendingRequests =
+            pendingDepositsResult.count +
+            pendingWithdrawalsResult.count;
+
+        setText("analyticsUsers", usersResult.count ?? 0);
+        setText("analyticsDeposits", money(totalDeposits));
+        setText("analyticsWithdrawals", money(totalWithdrawals));
+        setText("analyticsPending", pendingRequests);
+        setText("analyticsRewards", money(totalRewards));
+
+    } catch (error) {
+        console.error("Analytics error:", error);
+        notify("Analytics error: " + error.message);
+    }
+}
 // =================================================
 // 17. ADMIN - WITHDRAWAL REQUESTS
 // =================================================
