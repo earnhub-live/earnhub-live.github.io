@@ -1944,3 +1944,57 @@ footer p + p {
     background: #1ebe5d;
     transform: translateY(-2px);
 }
+/* ADMIN ANALYTICS */
+
+.admin-analytics {
+    margin-bottom: 30px;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.analytics-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 14px;
+    padding: 22px;
+    transition: 0.2s ease;
+}
+
+.analytics-card span {
+    display: block;
+    color: #a5a5b5;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.analytics-card h3 {
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: 700;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.analytics-card:hover {
+    border-color: rgba(0, 220, 150, 0.4);
+}
+
+@media (max-width: 600px) {
+    .analytics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .analytics-card {
+        padding: 15px;
+    }
+
+    .analytics-card h3 {
+        font-size: 21px;
+    }
+}
