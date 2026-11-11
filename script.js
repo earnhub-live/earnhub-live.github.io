@@ -190,6 +190,15 @@ function updateAuthButtons(user) {
     const nav = el("navButtons");
     if (!nav) return;
 
+    const whatsappButton = `
+        <a href="https://whatsapp.com/channel/0029Vb97phE3WHTRktFWCb41"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="whatsapp-nav-btn">
+            <span>☘</span> WhatsApp
+        </a>
+    `;
+
     if (user) {
         const name =
             user.user_metadata?.full_name ||
@@ -197,17 +206,26 @@ function updateAuthButtons(user) {
             "User";
 
         nav.innerHTML = `
+            <button onclick="showHome()">Home</button>
+            <button onclick="goTo('about')">About</button>
+            <button onclick="goTo('publicTasks')">Tasks</button>
+            ${whatsappButton}
             <span>Hi, ${escapeHTML(name)}</span>
             <button onclick="openDashboard()">Dashboard</button>
             <button onclick="logout()">Logout</button>
         `;
     } else {
         nav.innerHTML = `
+            <button onclick="showHome()">Home</button>
+            <button onclick="goTo('about')">About</button>
+            <button onclick="goTo('publicTasks')">Tasks</button>
+            ${whatsappButton}
             <button onclick="showLogin()">Login</button>
             <button class="primary" onclick="showSignup()">Sign Up</button>
         `;
     }
 }
+
 
 function showHome() {
     el("dashboard")?.classList.add("hidden");
