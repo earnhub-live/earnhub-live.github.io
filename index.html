@@ -867,7 +867,11 @@
         </p>
 
         <form id="authForm">
-
+<input
+    type="hidden"
+    id="referralCode"
+    name="referralCode"
+>
             <label for="authName">Full Name</label>
 
             <input
@@ -953,8 +957,19 @@
             });
         }
     }
-</script>
+document.addEventListener("DOMContentLoaded", function () {
 
+    const params = new URLSearchParams(window.location.search);
+    const referral = params.get("ref");
+
+    const referralInput = document.getElementById("referralCode");
+
+    if (referral && referralInput) {
+        referralInput.value = referral;
+    }
+
+});
+</script>
 
 <!-- SUPABASE + APPLICATION SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
