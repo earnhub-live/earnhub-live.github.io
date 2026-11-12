@@ -10,7 +10,6 @@
 
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 
@@ -507,11 +506,13 @@
                     step="0.01"
                 >
 
-                <select id="withdrawMethod">
-                    <option value="JazzCash">JazzCash</option>
-                    <option value="Easypaisa">Easypaisa</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
-                </select>
+                
+<select id="withdrawMethod">
+    <option value="JazzCash Merchant">JazzCash Merchant</option>
+    <option value="UPaisa">UPaisa</option>
+    <option value="Bank Transfer">Bank Transfer</option>
+</select>
+
 
                 <input
                     type="text"
@@ -583,9 +584,8 @@
                 <select id="depositMethod"
                         onchange="updateDepositPaymentDetails()">
 
-                    <option value="JazzCash">JazzCash</option>
-                    <option value="Easypaisa">Easypaisa</option>
-
+                  <option value="JazzCash Merchant">JazzCash Merchant</option>
+<option value="UPaisa">UPaisa</option>
                 </select>
 
                 <div id="depositPaymentDetails"
