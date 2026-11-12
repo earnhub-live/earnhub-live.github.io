@@ -1,8 +1,4 @@
 
-/* =================================================
-   EARNHUB - COMPLETE FIXED JAVASCRIPT
-   Requires existing supabase.js
-================================================= */
 
 const db = window.supabaseClient;
 
