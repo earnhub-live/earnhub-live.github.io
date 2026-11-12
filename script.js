@@ -292,7 +292,7 @@ async function loadDashboard(user) {
 
         updateAuthButtons(user);
         await loadNotifications();
-
+await loadEarningsProgress();
         await checkAdmin();
 await Promise.all([
     loadAdminWithdrawals(),
@@ -1500,6 +1500,55 @@ async function rejectSubmission(id) {
     }
 }
 
+
+// EARNINGS PROGRESS
+async function loadEarningsProgress() {
+    if (!db || !currentUser) return;
+
+    try {
+        const now = new Date();
+
+        const monthStart = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+        ).toISOString();
+
+        const [rewardsResult, pendingResult] = await Promise.all([
+
+            db.from("wallet_transactions")
+                .select("amount, created_at")
+                .eq("user_id", currentUser.id)
+                .eq("transaction_type", "task_reward")
+                .gte("created_at", monthStart),
+
+            db.from("task_submissions")
+                .select("*", { count: "exact", head: true })
+                .eq("user_id", currentUser.id)
+                .eq("status", "pending")
+
+        ]);
+
+        if (rewardsResult.error) throw rewardsResult.error;
+        if (pendingResult.error) throw pendingResult.error;
+
+        const monthlyEarnings = rewardsResult.data.reduce(
+            (sum, item) => sum + Number(item.amount || 0),
+            0
+        );
+
+        const monthlyTasks = rewardsResult.data.length;
+        const pendingTasks = pendingResult.count ?? 0;
+
+        setText("monthlyEarnings", money(monthlyEarnings));
+        setText("monthlyTasks", monthlyTasks);
+        setText("pendingTasks", pendingTasks);
+
+    } catch (error) {
+        console.error("Earnings Progress Error:", error);
+        notify("Earnings Progress error: " + error.message);
+    }
+}
 
 // =================================================
 // 24. WALLET TRANSACTIONS
