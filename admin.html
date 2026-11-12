@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EarnHub | Admin Dashboard</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div id="adminLoader" class="loader">
+    <div class="loader-card">
+        <h2>EarnHub</h2>
+        <p>Verifying administrator access...</p>
+    </div>
+</div>
+
+<div id="accessDenied" class="hidden">
+    <h1>Access Denied</h1>
+    <p>Administrator permission is required.</p>
+    <a href="index.html">Return to EarnHub</a>
+</div>
+
+<div id="adminApp" class="hidden">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">E</div>
+            <div>
+                <h2>EarnHub</h2>
+                <small>ADMIN PANEL</small>
+            </div>
+        </div>
+
+        <nav>
+            <a href="#overview" class="active">▦ Overview</a>
+            <a href="#users">♙ Users</a>
+            <a href="#tasks">▣ Task Management</a>
+            <a href="#submissions">☑ Submissions</a>
+            <a href="#deposits">＋ Deposits</a>
+            <a href="#withdrawals">↗ Withdrawals</a>
+            <a href="#activity">◷ Activity</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="online-dot"></span>
+            System Online
+            <button id="logoutButton">Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <small>ADMINISTRATION / DASHBOARD</small>
+                <h1>Dashboard Overview</h1>
+            </div>
+            <div class="admin-profile">
+                <span class="online-dot"></span>
+                <span id="adminEmail">Administrator</span>
+            </div>
+        </header>
+
+        <section id="overview" class="welcome-section">
+            <div>
+                <span class="eyebrow">EARNHUB CONTROL CENTER</span>
+                <h2>Welcome back, Admin 👋</h2>
+                <p>Manage your platform from one place.</p>
+            </div>
+            <button id="refreshAll">↻ Refresh Dashboard</button>
+        </section>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span>Total Users</span>
+                <h2 id="analyticsUsers">—</h2>
+                <small>Registered accounts</small>
+            </article>
+
+            <article class="stat-card">
+                <span>Approved Deposits</span>
+                <h2 id="analyticsDeposits">—</h2>
+                <small>Successful deposits</small>
+            </article>
+
+            <article class="stat-card">
+                <span>Paid Withdrawals</span>
+                <h2 id="analyticsWithdrawals">—</h2>
+                <small>Completed payments</small>
+            </article>
+
+            <article class="stat-card">
+                <span>Pending Requests</span>
+                <h2 id="analyticsPending">—</h2>
+                <small>Awaiting review</small>
+            </article>
+
+            <article class="stat-card">
+                <span>Task Rewards Paid</span>
+                <h2 id="analyticsRewards">—</h2>
+                <small>Total task rewards</small>
+            </article>
+        </section>
+
+        <section id="tasks" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">MANAGEMENT</span>
+                    <h2>Create New Task</h2>
+                </div>
+            </div>
+
+            <form id="createTaskForm" class="task-form">
+                <label for="taskTitle">Task Title</label>
+                <input id="taskTitle" type="text" required
+                       placeholder="Enter task title">
+
+                <label for="taskDescription">Description</label>
+                <textarea id="taskDescription" rows="3"
+                          placeholder="Enter task description"></textarea>
+
+                <label for="taskUrl">Task URL</label>
+                <input id="taskUrl" type="url"
+                       placeholder="https://example.com">
+
+                <label for="taskReward">Reward Amount ($)</label>
+                <input id="taskReward" type="number" min="0.01"
+                       step="0.01" required placeholder="0.50">
+
+                <button id="createTaskButton" type="submit">
+                    + Create Task
+                </button>
+            </form>
+        </section>
+
+        <section id="submissions" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">REVIEW TASKS</span>
+                    <h2>Pending Submissions</h2>
+                </div>
+            </div>
+            <div id="adminSubmissions">Loading submissions...</div>
+        </section>
+
+        <section id="deposits" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">PAYMENT MANAGEMENT</span>
+                    <h2>Deposit Requests</h2>
+                </div>
+            </div>
+            <div id="adminDeposits">Loading deposits...</div>
+        </section>
+
+        <section id="withdrawals" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">PAYMENT MANAGEMENT</span>
+                    <h2>Withdrawal Requests</h2>
+                </div>
+            </div>
+            <div id="adminWithdrawals">Loading withdrawals...</div>
+        </section>
+
+        <section id="users" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">PLATFORM</span>
+                    <h2>Users</h2>
+                </div>
+            </div>
+            <p>User management will be added in the next stage.</p>
+        </section>
+
+        <section id="activity" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">MONITORING</span>
+                    <h2>Recent Activity</h2>
+                </div>
+            </div>
+            <p>Activity monitoring will be added in the next stage.</p>
+        </section>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>
