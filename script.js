@@ -1567,7 +1567,7 @@ async function loadReferralData() {
     if (!db || !currentUser) return;
 
     try {
-        let { data: profile, error } = await db
+        const { data: profile, error } = await db
             .from("profiles")
             .select("referral_code")
             .eq("id", currentUser.id)
@@ -1575,17 +1575,8 @@ async function loadReferralData() {
 
         if (error) throw error;
 
-        // Generate a code if one is missing
         if (!profile.referral_code) {
-            const { data: updatedProfile, error: updateError } = await db
-                .from("profiles")
-                .update({})
-                .eq("id", currentUser.id)
-                .select("referral_code")
-                .single();
-
-            if (updateError) throw updateError;
-            profile = updatedProfile;
+            throw new Error("Referral code not found in your profile.");
         }
 
         const referralLink =
@@ -1607,38 +1598,19 @@ async function loadReferralData() {
 
         if (commissionError) throw commissionError;
 
-        const totalReferrals = commissions.length;
+        const total = commissions.length;
 
-        const referralEarnings = commissions.reduce(
+        const earnings = commissions.reduce(
             (sum, item) => sum + Number(item.amount || 0),
             0
         );
 
-        setText("totalReferrals", totalReferrals);
-        setText("referralEarnings", money(referralEarnings));
+        setText("totalReferrals", total);
+        setText("referralEarnings", money(earnings));
 
     } catch (error) {
         console.error("Referral Error:", error);
-        notify("Referral error: " + error.message);
-    }
-}
-
-// COPY REFERRAL LINK
-async function copyReferralLink() {
-    const linkInput = el("referralLink");
-
-    if (!linkInput || !linkInput.value) {
-        notify("Referral link is not ready yet.");
-        return;
-    }
-
-    try {
-        await navigator.clipboard.writeText(linkInput.value);
-        notify("Referral link copied successfully!");
-    } catch (error) {
-        linkInput.select();
-        document.execCommand("copy");
-        notify("Referral link copied!");
+        notify("Referral Error: " + error.message);
     }
 }
 
