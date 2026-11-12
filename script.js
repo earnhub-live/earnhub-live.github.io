@@ -137,11 +137,13 @@ async function handleAuthSubmit(event) {
             const { data, error } = await db.auth.signUp({
                 email,
                 password,
+               
                 options: {
-                    data: {
-                        full_name: name
-                    }
-                }
+    data: {
+        full_name: name,
+        referral_code: el("referralCode")?.value.trim() || null
+    }
+}
             });
 
             if (error) throw error;
@@ -151,10 +153,10 @@ async function handleAuthSubmit(event) {
                 notify("Account created successfully!");
                 await loadDashboard(data.user);
             } else {
-                if (message) {
-                    message.textContent =
-                        "Account created. Please login to continue.";
-                }
+              if (message) {
+    message.textContent =
+        "Verification email sent! Please check your inbox and verify your email before logging in.";
+}
             }
 
         } else {
@@ -164,7 +166,15 @@ async function handleAuthSubmit(event) {
             });
 
             if (error) throw error;
+if (error) throw error;
 
+if (!data.user.email_confirmed_at) {
+    if (message) {
+        message.textContent =
+            "Please verify your email before logging in.";
+    }
+    return;
+}
             closeModal();
             await loadDashboard(data.user);
         }
