@@ -3,6 +3,7 @@ const db = window.supabaseClient;
 
 let adminUser = null;
 let adminVerified = false;
+let platformChart = null;
 
 const $ = id => document.getElementById(id);
 
@@ -146,6 +147,127 @@ async function loadAdminAnalytics() {
     } catch (error) {
         console.error("Analytics error:", error);
         alert("Analytics error: " + error.message);
+    }
+}
+
+async function loadPlatformChart() {
+    if (!adminVerified || typeof Chart === "undefined") return;
+
+    const canvas = $("platformChart");
+    if (!canvas) return;
+
+    try {
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+        sevenDaysAgo.setHours(0, 0, 0, 0);
+
+        const startDate = sevenDaysAgo.toISOString();
+
+        const [users, deposits, withdrawals] = await Promise.all([
+            db.from("profiles")
+                .select("created_at")
+                .gte("created_at", startDate),
+
+            db.from("deposit_requests")
+                .select("amount, created_at")
+                .eq("status", "approved")
+                .gte("created_at", startDate),
+
+            db.from("withdrawal_requests")
+                .select("amount, created_at")
+                .eq("status", "paid")
+                .gte("created_at", startDate)
+        ]);
+
+        const results = [users, deposits, withdrawals];
+        const failed = results.find(result => result.error);
+        if (failed) throw failed.error;
+
+        const dates = [];
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(sevenDaysAgo);
+            date.setDate(date.getDate() + i);
+            dates.push(date);
+        }
+
+        const getDailyData = (rows, field) => dates.map(date => {
+            const total = (rows || [])
+                .filter(row => {
+                    const itemDate = new Date(row.created_at);
+
+                    return itemDate.getFullYear() === date.getFullYear() &&
+                        itemDate.getMonth() === date.getMonth() &&
+                        itemDate.getDate() === date.getDate();
+                })
+                .reduce((sum, row) => sum + Number(row[field] ?? 1), 0);
+
+            return total;
+        });
+
+        const labels = dates.map(date =>
+            date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric"
+            })
+        );
+
+        if (platformChart) {
+            platformChart.destroy();
+        }
+
+        platformChart = new Chart(canvas, {
+            type: "line",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "Users",
+                        data: getDailyData(users.data, "count"),
+                        borderColor: "#8b5cf6",
+                        backgroundColor: "#8b5cf6",
+                        tension: 0.4
+                    },
+                    {
+                        label: "Deposits",
+                        data: getDailyData(deposits.data, "amount"),
+                        borderColor: "#10b981",
+                        backgroundColor: "#10b981",
+                        tension: 0.4
+                    },
+                    {
+                        label: "Withdrawals",
+                        data: getDailyData(withdrawals.data, "amount"),
+                        borderColor: "#f59e0b",
+                        backgroundColor: "#f59e0b",
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: "#ffffff" }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: "#c4b5fd" },
+                        grid: { color: "#292743" }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: "#c4b5fd" },
+                        grid: { color: "#292743" }
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Platform chart error:", error);
     }
 }
 
@@ -548,11 +670,12 @@ async function refreshAdminDashboard() {
     if (!adminVerified) return;
 
     await Promise.all([
-        loadAdminAnalytics(),
-        loadAdminSubmissions(),
-        loadAdminWithdrawals(),
-        loadAdminDeposits()
-    ]);
+    loadAdminAnalytics(),
+    loadAdminSubmissions(),
+    loadAdminWithdrawals(),
+    loadAdminDeposits(),
+    loadPlatformChart()
+]);
 }
 
 $("refreshAll")?.addEventListener("click", refreshAdminDashboard);
