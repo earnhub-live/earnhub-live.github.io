@@ -47,57 +47,68 @@ function notify(message) {
 // 2. MODALS
 // =================================================
 
-function showSignup() {
-    authMode = "signup";
 
-    el("authModal")?.classList.remove("hidden");
+try {
+    if (authMode === "signup") {
 
-    setText("modalTitle", "Create Account");
-    setText("authSubmit", "Sign Up");
-    setText("authMessage", "");
+        // Get referral code from URL
+        const referralCode = new URLSearchParams(
+            window.location.search
+        ).get("ref");
 
-    const name = el("authName");
+        const { data, error } = await db.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    full_name: name,
+                    referral_code: referralCode
+                        ? referralCode.toUpperCase()
+                        : null
+                }
+            }
+        });
 
-    if (name) {
-        name.classList.remove("hidden");
-        name.required = true;
+        if (error) throw error;
+
+        if (data.session && data.user) {
+            closeModal();
+            notify("Account created successfully!");
+            await loadDashboard(data.user);
+        } else {
+            if (message) {
+                message.textContent =
+                    "Account created. Please login to continue.";
+            }
+        }
+
+    } else {
+
+        const { data, error } = await db.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) throw error;
+
+        closeModal();
+        await loadDashboard(data.user);
     }
 
-    const switchElement = el("authSwitch");
+} catch (error) {
 
-    if (switchElement) {
-        switchElement.innerHTML =
-            'Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a>';
+    console.error("Authentication error:", error);
+
+    if (message) {
+        message.textContent = error.message;
     }
+
+} finally {
+
+    if (button) button.disabled = false;
+
 }
 
-function showLogin() {
-    authMode = "login";
-
-    el("authModal")?.classList.remove("hidden");
-
-    setText("modalTitle", "Welcome Back");
-    setText("authSubmit", "Login");
-    setText("authMessage", "");
-
-    const name = el("authName");
-
-    if (name) {
-        name.classList.add("hidden");
-        name.required = false;
-    }
-
-    const switchElement = el("authSwitch");
-
-    if (switchElement) {
-        switchElement.innerHTML =
-            'New to EarnHub? <a href="#" onclick="showSignup(); return false;">Create Account</a>';
-    }
-}
-
-function closeModal() {
-    el("authModal")?.classList.add("hidden");
-}
 
 
 // =================================================
@@ -293,6 +304,7 @@ async function loadDashboard(user) {
         updateAuthButtons(user);
         await loadNotifications();
 await loadEarningsProgress();
+await loadReferralData();
         await checkAdmin();
 await Promise.all([
     loadAdminWithdrawals(),
@@ -1549,6 +1561,87 @@ async function loadEarningsProgress() {
         notify("Earnings Progress error: " + error.message);
     }
 }
+
+// REFERRAL PROGRAM
+async function loadReferralData() {
+    if (!db || !currentUser) return;
+
+    try {
+        let { data: profile, error } = await db
+            .from("profiles")
+            .select("referral_code")
+            .eq("id", currentUser.id)
+            .single();
+
+        if (error) throw error;
+
+        // Generate a code if one is missing
+        if (!profile.referral_code) {
+            const { data: updatedProfile, error: updateError } = await db
+                .from("profiles")
+                .update({})
+                .eq("id", currentUser.id)
+                .select("referral_code")
+                .single();
+
+            if (updateError) throw updateError;
+            profile = updatedProfile;
+        }
+
+        const referralLink =
+            window.location.origin +
+            window.location.pathname +
+            "?ref=" +
+            profile.referral_code;
+
+        const linkInput = el("referralLink");
+
+        if (linkInput) {
+            linkInput.value = referralLink;
+        }
+
+        const { data: commissions, error: commissionError } = await db
+            .from("referral_commissions")
+            .select("amount")
+            .eq("referrer_id", currentUser.id);
+
+        if (commissionError) throw commissionError;
+
+        const totalReferrals = commissions.length;
+
+        const referralEarnings = commissions.reduce(
+            (sum, item) => sum + Number(item.amount || 0),
+            0
+        );
+
+        setText("totalReferrals", totalReferrals);
+        setText("referralEarnings", money(referralEarnings));
+
+    } catch (error) {
+        console.error("Referral Error:", error);
+        notify("Referral error: " + error.message);
+    }
+}
+
+// COPY REFERRAL LINK
+async function copyReferralLink() {
+    const linkInput = el("referralLink");
+
+    if (!linkInput || !linkInput.value) {
+        notify("Referral link is not ready yet.");
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(linkInput.value);
+        notify("Referral link copied successfully!");
+    } catch (error) {
+        linkInput.select();
+        document.execCommand("copy");
+        notify("Referral link copied!");
+    }
+}
+
 
 // =================================================
 // 24. WALLET TRANSACTIONS
