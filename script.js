@@ -528,7 +528,7 @@ async function submitWithdrawal() {
         return;
     }
 
-    if (!["JazzCash", "EasyPaisa", "Bank Transfer"].includes(method)) {
+   if (!["JazzCash Merchant", "UPaisa", "Bank Transfer"].includes(method)) {
         notify("Please select a valid withdrawal method.");
         return;
     }
@@ -668,12 +668,12 @@ function updateDepositPaymentDetails() {
 
     if (!name || !number) return;
 
-    if (method === "JazzCash") {
-        name.textContent = "JazzCash Account";
-        number.textContent = "03438880689";
-    } else {
-        name.textContent = "Easypaisa Account";
-        number.textContent = "03184833441";
+    if (method === "JazzCash Merchant") {
+        name.textContent = "JazzCash Merchant";
+        number.textContent = "PK03JCMA1211921438880689";
+    } else if (method === "UPaisa") {
+        name.textContent = "MUDASAR SHAHZAD";
+        number.textContent = "03359190994";
     }
 }
 
@@ -696,7 +696,7 @@ async function submitDeposit() {
         return;
     }
 
-    if (!["JazzCash", "Easypaisa"].includes(method)) {
+    if (!["JazzCash Merchant", "UPaisa"].includes(method)) {
         notify("Please select a valid payment method.");
         return;
     }
@@ -1367,7 +1367,7 @@ async function markWithdrawalPaid(requestId) {
     }
 
     const transactionId = prompt(
-        "Enter the JazzCash/Easypaisa transaction ID:"
+       "Enter the JazzCash Merchant/UPaisa transaction ID:"
     );
 
     if (!transactionId || !transactionId.trim()) {
