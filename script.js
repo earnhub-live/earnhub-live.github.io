@@ -47,68 +47,57 @@ function notify(message) {
 // 2. MODALS
 // =================================================
 
+function showSignup() {
+    authMode = "signup";
 
-try {
-    if (authMode === "signup") {
+    el("authModal")?.classList.remove("hidden");
 
-        // Get referral code from URL
-        const referralCode = new URLSearchParams(
-            window.location.search
-        ).get("ref");
+    setText("modalTitle", "Create Account");
+    setText("authSubmit", "Sign Up");
+    setText("authMessage", "");
 
-        const { data, error } = await db.auth.signUp({
-            email,
-            password,
-            options: {
-                data: {
-                    full_name: name,
-                    referral_code: referralCode
-                        ? referralCode.toUpperCase()
-                        : null
-                }
-            }
-        });
+    const name = el("authName");
 
-        if (error) throw error;
-
-        if (data.session && data.user) {
-            closeModal();
-            notify("Account created successfully!");
-            await loadDashboard(data.user);
-        } else {
-            if (message) {
-                message.textContent =
-                    "Account created. Please login to continue.";
-            }
-        }
-
-    } else {
-
-        const { data, error } = await db.auth.signInWithPassword({
-            email,
-            password
-        });
-
-        if (error) throw error;
-
-        closeModal();
-        await loadDashboard(data.user);
+    if (name) {
+        name.classList.remove("hidden");
+        name.required = true;
     }
 
-} catch (error) {
+    const switchElement = el("authSwitch");
 
-    console.error("Authentication error:", error);
-
-    if (message) {
-        message.textContent = error.message;
+    if (switchElement) {
+        switchElement.innerHTML =
+            'Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a>';
     }
-
-} finally {
-
-    if (button) button.disabled = false;
-
 }
 
+function showLogin() {
+    authMode = "login";
+
+    el("authModal")?.classList.remove("hidden");
+
+    setText("modalTitle", "Welcome Back");
+    setText("authSubmit", "Login");
+    setText("authMessage", "");
+
+    const name = el("authName");
+
+    if (name) {
+        name.classList.add("hidden");
+        name.required = false;
+    }
+
+    const switchElement = el("authSwitch");
+
+    if (switchElement) {
+        switchElement.innerHTML =
+            'New to EarnHub? <a href="#" onclick="showSignup(); return false;">Create Account</a>';
+    }
+}
+
+function closeModal() {
+    el("authModal")?.classList.add("hidden");
+}
 
 
 // =================================================
@@ -1193,15 +1182,15 @@ async function loadAdminWithdrawals() {
                 ${
                     item.status === "pending"
                     ? `
-                        <button onclick="processWithdrawal(${Number(item.id)}, true)">
+                        <button onclick="processWithdrawal(${JSON.stringify(item.id)}, true)">
                             Approve
                         </button>
-                        <button onclick="processWithdrawal(${Number(item.id)}, false)">
+                        <button onclick="processWithdrawal(${JSON.stringify(item.id)}, false)">
                             Reject
                         </button>
                     `
                     : `
-                        <button onclick="markWithdrawalPaid(${Number(item.id)})">
+                        <button onclick="markWithdrawalPaid(${JSON.stringify(item.id)})">
                             Mark as Paid
                         </button>
                     `
@@ -1274,10 +1263,10 @@ async function loadAdminDeposits() {
                     ${
                         item.status === "pending"
                         ? `
-                            <button onclick="processDeposit(${Number(item.id)}, true)">
+                            <button onclick="processDeposit(${JSON.stringify(item.id)}, true)">
                                 Approve
                             </button>
-                            <button onclick="processDeposit(${Number(item.id)}, false)">
+                            <button onclick="processDeposit(${JSON.stringify(item.id)}, false)">
                                 Reject
                             </button>
                         `
@@ -1910,7 +1899,7 @@ async function loadNotifications() {
                     item.is_read
                     ? '<span>Read</span>'
                     : `
-                        <button onclick="markNotificationRead(${Number(item.id)})">
+                        <button onclick="markNotificationRead(${JSON.stringify(item.id)})">
                             Mark as Read
                         </button>
                     `
@@ -1949,4 +1938,3 @@ async function markNotificationRead(notificationId) {
         notify("Could not update notification: " + error.message);
     }
 }
-
