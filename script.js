@@ -1,4 +1,8 @@
 
+/* =================================================
+   EARNHUB - COMPLETE FIXED JAVASCRIPT
+   Requires existing supabase.js
+================================================= */
 
 const db = window.supabaseClient;
 
@@ -1934,23 +1938,38 @@ async function markNotificationRead(notificationId) {
         notify("Could not update notification: " + error.message);
     }
 }
-function copyReferralLink() {
+// ========================================
+// COPY REFERRAL LINK
+// ========================================
+async function copyReferralLink() {
+
     const referralInput = document.getElementById("referralLink");
 
-    if (!referralInput || !referralInput.value) {
-        alert("Referral link not found!");
+    const referralUrl = referralInput.value;
+
+    if (!referralUrl) {
+        alert("Referral link is not loaded yet!");
         return;
     }
 
-    referralInput.select();
-    referralInput.setSelectionRange(0, 99999);
+    try {
 
-    navigator.clipboard.writeText(referralInput.value)
-        .then(() => {
+        await navigator.clipboard.writeText(referralUrl);
+
+        alert("Referral link copied successfully!");
+
+    } catch (error) {
+
+        referralInput.focus();
+        referralInput.select();
+
+        const copied = document.execCommand("copy");
+
+        if (copied) {
             alert("Referral link copied successfully!");
-        })
-        .catch(() => {
-            document.execCommand("copy");
-            alert("Referral link copied!");
-        });
+        } else {
+            alert("Please copy the link manually.");
+        }
+
+    }
 }
