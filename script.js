@@ -510,19 +510,6 @@ async function startTask(taskId) {
 // 10. WITHDRAWAL SYSTEM
 // =================================================
 
-function showWithdrawForm() {
-    if (!currentUser) {
-        showLogin();
-        return;
-    }
-
-    const form = el("withdrawForm");
-
-    if (form) {
-        form.style.display = "block";
-    }
-}
-
 async function submitWithdrawal() {
     if (!currentUser) {
         showLogin();
@@ -560,8 +547,34 @@ async function submitWithdrawal() {
 
         if (profileError) throw profileError;
 
-        if (amount > Number(profile.available_balance || 0)) {
+        const balance = Number(profile.available_balance || 0);
+
+        if (balance < 3) {
+            notify("You need at least $3 earned balance to withdraw.");
+            return;
+        }
+
+        if (amount > balance) {
             notify("Insufficient wallet balance.");
+            return;
+        }
+
+        // CHECK LIFETIME APPROVED DEPOSITS
+        const { data: deposits, error: depositError } = await db
+            .from("deposit_requests")
+            .select("amount")
+            .eq("user_id", currentUser.id)
+            .eq("status", "approved");
+
+        if (depositError) throw depositError;
+
+        const totalDeposits = (deposits || []).reduce(
+            (sum, item) => sum + Number(item.amount || 0),
+            0
+        );
+
+        if (totalDeposits < 3) {
+            notify("Please deposit at least $3 before withdrawing your balance.");
             return;
         }
 
@@ -628,7 +641,6 @@ async function submitWithdrawal() {
         notify("Withdrawal failed: " + error.message);
     }
 }
-
 
 // =================================================
 // 11. DEPOSIT SYSTEM
