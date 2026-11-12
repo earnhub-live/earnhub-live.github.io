@@ -1934,3 +1934,23 @@ async function markNotificationRead(notificationId) {
         notify("Could not update notification: " + error.message);
     }
 }
+function copyReferralLink() {
+    const referralInput = document.getElementById("referralLink");
+
+    if (!referralInput || !referralInput.value) {
+        alert("Referral link not found!");
+        return;
+    }
+
+    referralInput.select();
+    referralInput.setSelectionRange(0, 99999);
+
+    navigator.clipboard.writeText(referralInput.value)
+        .then(() => {
+            alert("Referral link copied successfully!");
+        })
+        .catch(() => {
+            document.execCommand("copy");
+            alert("Referral link copied!");
+        });
+}
