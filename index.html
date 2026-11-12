@@ -311,6 +311,53 @@
     </div>
 
 <!-- EARNINGS PROGRESS -->
+
+<!-- REFERRAL PROGRAM -->
+<div class="referral-panel panel">
+
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">INVITE & EARN</span>
+            <h2>Referral Program</h2>
+            <p class="muted">Invite friends and earn $0.20 for each successful referral.</p>
+        </div>
+        <span class="progress-icon">🎁</span>
+    </div>
+
+    <div class="referral-link-box">
+        <label>Your Referral Link</label>
+
+        <div class="referral-copy-row">
+            <input
+                type="text"
+                id="referralLink"
+                readonly
+                placeholder="Loading your referral link..."
+            >
+
+            <button
+                type="button"
+                onclick="copyReferralLink()"
+            >
+                Copy Link
+            </button>
+        </div>
+    </div>
+
+    <div class="referral-stats">
+        <div class="progress-item">
+            <span>Total Referrals</span>
+            <h3 id="totalReferrals">0</h3>
+        </div>
+
+        <div class="progress-item">
+            <span>Referral Earnings</span>
+            <h3 id="referralEarnings">$0.00</h3>
+        </div>
+    </div>
+
+</div>
+
 <div class="earnings-progress panel">
 
     <div class="panel-heading">
