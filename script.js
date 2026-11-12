@@ -677,6 +677,19 @@ function updateDepositPaymentDetails() {
     }
 }
 
+function showWithdrawForm() {
+    if (!currentUser) {
+        showLogin();
+        return;
+    }
+
+    const form = el("withdrawForm");
+
+    if (form) {
+        form.style.display = "block";
+    }
+}
+
 async function submitDeposit() {
     if (!currentUser) {
         showLogin();
