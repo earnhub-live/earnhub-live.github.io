@@ -2015,3 +2015,47 @@ footer p + p {
 .analytics-refresh-btn:hover {
     background: rgba(0, 220, 150, 0.22);
 }
+
+/* EARNINGS PROGRESS */
+
+.earnings-progress {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.progress-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.progress-item span {
+    display: block;
+    color: #a5a5b5;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.progress-item h3 {
+    color: #00dc96;
+    font-size: 24px;
+    margin: 0;
+}
+
+.progress-icon {
+    font-size: 28px;
+}
+
+@media (max-width: 600px) {
+    .progress-stats {
+        grid-template-columns: 1fr;
+    }
+}
