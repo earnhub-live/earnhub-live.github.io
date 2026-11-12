@@ -528,7 +528,7 @@ async function submitWithdrawal() {
         return;
     }
 
-   if (!["JazzCash Merchant", "UPaisa", "Bank Transfer"].includes(method)) {
+   if (!["JazzCash", "Easypaisa", "Bank Transfer", "UPaisa", "NayaPay", "SadaPay"].includes(method)) {
         notify("Please select a valid withdrawal method.");
         return;
     }
@@ -1378,10 +1378,9 @@ async function markWithdrawalPaid(requestId) {
         notify("Admin access required.");
         return;
     }
-
-    const transactionId = prompt(
-       "Enter the JazzCash Merchant/UPaisa transaction ID:"
-    );
+const transactionId = prompt(
+    "Enter the payment transaction/reference ID:"
+);
 
     if (!transactionId || !transactionId.trim()) {
         notify("Transaction ID is required.");
