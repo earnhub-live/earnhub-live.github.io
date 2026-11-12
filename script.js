@@ -367,7 +367,9 @@ async function checkAdmin() {
         if (error) throw error;
 
         isAdmin = data === true;
+const adminLink = document.getElementById("adminPanelLink");
 
+adminLink?.classList.toggle("hidden", !isAdmin);
         panel?.classList.toggle("hidden", !isAdmin);
 if (isAdmin) {
     await Promise.all([
