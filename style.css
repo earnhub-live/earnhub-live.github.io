@@ -142,7 +142,6 @@ a {
         transform: translateY(0);
     }
 }
-
 /* LOGO */
 
 .logo,
@@ -156,33 +155,22 @@ a {
 .logo {
     position: relative;
     z-index: 1;
-    font-size: 34px;
-    font-weight: 900;
-    letter-spacing: -2px;
-    background: linear-gradient(
-        90deg,
-        #ffffff,
-        #a58bff,
-        #21d4b4,
-        #ffffff
-    );
-    background-size: 300% auto;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: logoGradient 5s linear infinite;
-    filter: drop-shadow(0 0 12px rgba(118, 87, 255, 0.35));
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    text-decoration: none;
 }
 
-.logo span,
+.site-logo {
+    display: block;
+    width: 190px;
+    height: 60px;
+    object-fit: contain;
+}
+
 .modal-logo span {
     color: var(--primary-light);
 }
-
-@keyframes logoGradient {
-    to { background-position: 300% center; }
-}
-
 /* NAVIGATION BUTTONS */
 
 #navButtons {
