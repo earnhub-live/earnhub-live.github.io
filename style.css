@@ -34,8 +34,8 @@ body {
         radial-gradient(circle at 15% 15%, rgba(118, 87, 255, 0.22), transparent 35%),
         radial-gradient(circle at 85% 65%, rgba(33, 212, 180, 0.12), transparent 35%),
         #090d1e;
-    background-size: 200% 200%;
-    animation: backgroundMove 12s ease-in-out infinite alternate;
+   background-size: 100% 100%;
+animation: none;
     color: var(--text);
     min-height: 100vh;
     line-height: 1.6;
