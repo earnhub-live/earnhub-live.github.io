@@ -2112,3 +2112,485 @@ footer p + p {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================
+   EARNHUB - PREMIUM PURPLE DARK THEME
+   Safe visual override - existing functionality preserved
+========================================= */
+
+:root {
+    --background: #080511;
+    --surface: #10091d;
+    --surface-light: #1a102b;
+    --primary: #861bff;
+    --primary-light: #b66aff;
+    --accent: #b66aff;
+    --text: #f8f4ff;
+    --muted: #b6a9c9;
+    --border: rgba(168, 85, 247, 0.20);
+    --danger: #ff647c;
+    --radius: 18px;
+}
+
+/* PAGE BACKGROUND */
+
+body {
+    background:
+        radial-gradient(ellipse at 10% 5%, rgba(112, 25, 230, 0.20), transparent 38%),
+        radial-gradient(ellipse at 90% 60%, rgba(91, 25, 160, 0.13), transparent 40%),
+        #080511 !important;
+    color: var(--text);
+}
+
+/* NAVBAR */
+
+.navbar {
+    background: rgba(10, 5, 20, 0.96);
+    border-bottom: 1px solid rgba(155, 70, 255, 0.28);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.navbar::before {
+    background: linear-gradient(90deg, transparent, #a020f0, #d580ff, transparent);
+}
+
+#navButtons button {
+    background: #170e27;
+    border-color: rgba(168, 85, 247, 0.22);
+    color: white;
+}
+
+#navButtons button:hover {
+    border-color: #b66aff;
+    box-shadow: 0 6px 22px rgba(147, 51, 234, 0.28);
+}
+
+#navButtons .primary,
+.btn-primary {
+    background: linear-gradient(120deg, #7017e8, #a020f0, #c026d3);
+    color: white;
+    box-shadow: 0 6px 22px rgba(147, 51, 234, 0.30);
+}
+
+#navButtons .primary:hover,
+.btn-primary:hover {
+    box-shadow: 0 8px 28px rgba(168, 85, 247, 0.42);
+}
+
+.btn-secondary {
+    background: #191025;
+    color: white;
+    border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.btn-secondary:hover {
+    background: #28143e;
+}
+
+/* LINKS AND HIGHLIGHTS */
+
+a,
+.auth-switch a {
+    color: #bd83ff;
+}
+
+.eyebrow,
+.sidebar-label {
+    color: #c084fc;
+}
+
+.hero-content h1 span {
+    background: linear-gradient(90deg, #a855f7, #e879f9, #8b5cf6);
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+/* HERO */
+
+.hero-card {
+    background: linear-gradient(145deg, #1c1030, #10091d);
+    border-color: rgba(168, 85, 247, 0.28);
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.32);
+}
+
+.hero-stat strong {
+    color: #c084fc;
+}
+
+/* CARDS AND PANELS */
+
+.card,
+.panel,
+.stat-card {
+    background: linear-gradient(145deg, #1a1029, #10091b);
+    border: 1px solid rgba(168, 85, 247, 0.20);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
+}
+
+.card:hover,
+.stat-card:hover,
+.panel:hover {
+    border-color: rgba(192, 132, 252, 0.55);
+    box-shadow: 0 12px 32px rgba(126, 34, 206, 0.16);
+}
+
+.card h3,
+.panel-heading h2,
+.panel-heading h3 {
+    color: #f8f4ff;
+}
+
+/* DASHBOARD */
+
+.dashboard-heading {
+    background: linear-gradient(120deg, #170b29, #28113f, #160b28);
+    border-color: rgba(168, 85, 247, 0.32);
+}
+
+.dashboard-welcome h1 {
+    background: linear-gradient(90deg, #ffffff, #c084fc, #e879f9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dashboard-status {
+    background: rgba(168, 85, 247, 0.12);
+    color: #d8b4fe;
+}
+
+.status-dot {
+    background: #c084fc;
+    box-shadow: 0 0 10px #a855f7;
+}
+
+/* STAT CARDS */
+
+.stat-card::before {
+    background: rgba(168, 85, 247, 0.15);
+}
+
+.stat-card h2 {
+    text-shadow: 0 0 15px rgba(168, 85, 247, 0.18);
+}
+
+.earnings-card,
+.balance-card,
+.tasks-card {
+    background: linear-gradient(135deg, #211032, #160b25);
+    border-color: rgba(168, 85, 247, 0.30);
+}
+
+.earnings-card h2,
+.balance-card h2,
+.tasks-card h2 {
+    color: #d8b4fe;
+}
+
+.earnings-card span,
+.balance-card span,
+.tasks-card span,
+.earnings-card small,
+.balance-card small,
+.tasks-card small {
+    color: #c6b3dc;
+}
+
+/* WALLET */
+
+.wallet-balance {
+    color: #d8b4fe;
+    text-shadow: 0 0 16px rgba(168, 85, 247, 0.25);
+}
+
+.wallet-balance-card {
+    background: linear-gradient(125deg, #301052, #1b1030, #251044);
+    border-color: rgba(192, 132, 252, 0.38);
+}
+
+.wallet-card-top {
+    color: #d8b4fe;
+}
+
+.wallet-chip {
+    background: rgba(168, 85, 247, 0.16);
+    color: #e9d5ff;
+}
+
+.wallet-balance-card small {
+    color: #d8b4fe;
+}
+
+.wallet-earnings-summary {
+    background: linear-gradient(110deg, rgba(147, 51, 234, 0.16), rgba(192, 132, 252, 0.07));
+    border-color: rgba(168, 85, 247, 0.28);
+}
+
+.summary-icon {
+    background: rgba(168, 85, 247, 0.16);
+}
+
+.summary-content span {
+    color: #c084fc;
+}
+
+/* DEPOSIT AND WITHDRAWAL */
+
+.deposit-premium,
+.withdrawal-premium,
+.withdrawal-history-panel,
+.withdrawal-panel,
+.transaction-panel,
+.submissions-panel,
+.admin-deposits-panel {
+    background: linear-gradient(135deg, #1c102d, #11091e);
+    border-color: rgba(168, 85, 247, 0.28);
+}
+
+.deposit-premium {
+    border-color: rgba(168, 85, 247, 0.32);
+}
+
+.deposit-premium:hover,
+.wallet-earnings-summary:hover {
+    border-color: #b66aff;
+}
+
+.deposit-premium #depositPaymentDetails {
+    background: rgba(168, 85, 247, 0.08);
+    border-color: rgba(168, 85, 247, 0.25);
+}
+
+.deposit-premium #depositReceiverNumber {
+    color: #d8b4fe;
+}
+
+/* TASK BUTTONS */
+
+.task-grid .card button,
+#adminSubmissions .card button {
+    background: linear-gradient(120deg, #7818e8, #a020f0);
+    color: white;
+}
+
+.task-grid .card button:hover,
+#adminSubmissions .card button:hover {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+}
+
+/* ADMIN PANEL */
+
+.admin-panel {
+    border-color: rgba(168, 85, 247, 0.42);
+}
+
+.admin-label {
+    background: rgba(168, 85, 247, 0.16);
+    color: #d8b4fe;
+}
+
+.admin-form {
+    background: #1a1029;
+}
+
+.admin-deposits-panel {
+    border-color: rgba(168, 85, 247, 0.30);
+}
+
+/* FORMS */
+
+input,
+textarea,
+select {
+    background-color: #10091d;
+    color: #ffffff;
+    border-color: rgba(168, 85, 247, 0.22);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #b66aff;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+    border-color: rgba(192, 132, 252, 0.48);
+}
+
+select option {
+    background: #160d25;
+    color: white;
+}
+
+input[type="file"]::file-selector-button {
+    background: #861bff;
+}
+
+label {
+    color: #c6b3dc;
+}
+
+/* AUTH MODAL */
+
+.modal-content {
+    background: linear-gradient(145deg, #20112f, #10091d);
+    border-color: rgba(168, 85, 247, 0.30);
+}
+
+.auth-message {
+    color: #d8b4fe;
+}
+
+/* SIDEBAR */
+
+.main-sidebar {
+    background: #10091d;
+    border-right-color: rgba(168, 85, 247, 0.30);
+}
+
+.menu-toggle {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(192, 132, 252, 0.35);
+}
+
+.menu-toggle:hover {
+    background: #861bff;
+}
+
+.main-sidebar a:hover {
+    background: rgba(147, 51, 234, 0.20);
+    border-color: #b66aff;
+}
+
+.sidebar-link.active {
+    background: linear-gradient(90deg, rgba(147, 51, 234, 0.30), rgba(147, 51, 234, 0.07));
+    border-color: #b66aff;
+}
+
+.sidebar-link.active::before {
+    background: #c084fc;
+}
+
+.profile-avatar {
+    background: linear-gradient(135deg, #7017e8, #c026d3);
+}
+
+/* WHATSAPP */
+
+.whatsapp-nav-btn {
+    background: #861bff;
+    color: white;
+}
+
+.whatsapp-nav-btn:hover {
+    background: #a020f0;
+}
+
+/* ADMIN ANALYTICS */
+
+.analytics-card,
+.progress-item {
+    background: rgba(168, 85, 247, 0.07);
+    border-color: rgba(168, 85, 247, 0.20);
+}
+
+.analytics-card span,
+.progress-item span {
+    color: #c6b3dc;
+}
+
+.analytics-card:hover {
+    border-color: rgba(192, 132, 252, 0.5);
+}
+
+.analytics-refresh-btn {
+    background: rgba(168, 85, 247, 0.12);
+    color: #d8b4fe;
+    border-color: rgba(168, 85, 247, 0.35);
+}
+
+.analytics-refresh-btn:hover {
+    background: rgba(168, 85, 247, 0.22);
+}
+
+.progress-item h3 {
+    color: #d8b4fe;
+}
+
+/* REFERRAL */
+
+.referral-link-box label {
+    color: #c6b3dc;
+}
+
+.referral-copy-row input {
+    background: #10091d;
+    border-color: rgba(168, 85, 247, 0.25);
+}
+
+.referral-copy-row button {
+    background: linear-gradient(120deg, #7818e8, #a020f0);
+    color: white;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar-track {
+    background: #080511;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(#7017e8, #c026d3);
+}
+
+/* FOOTER */
+
+footer {
+    border-top-color: rgba(168, 85, 247, 0.20);
+}
+
+/* MOBILE REFINEMENTS */
+
+@media (max-width: 800px) {
+    body {
+        background:
+            radial-gradient(ellipse at 15% 5%, rgba(112, 25, 230, 0.15), transparent 40%),
+            #080511 !important;
+        animation: none !important;
+    }
+
+    .card,
+    .panel,
+    .stat-card,
+    .hero-card,
+    .navbar,
+    .main-sidebar {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        background: #0d0718;
+    }
+
+    #navButtons button {
+        border-radius: 10px;
+    }
+}
+
+/* ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
