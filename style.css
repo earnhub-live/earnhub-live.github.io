@@ -2756,3 +2756,33 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+/* EARNHUB PREMIUM WALLET DESIGN */
+
+.wallet-card,
+.wallet-panel,
+.wallet-section,
+.balance-card {
+    background: linear-gradient(
+        145deg,
+        rgba(45, 22, 78, 0.96),
+        rgba(19, 12, 36, 0.98)
+    ) !important;
+    border: 1px solid rgba(168, 85, 247, 0.3) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.panel-heading h2 {
+    color: #f3e8ff;
+    font-weight: 750;
+}
+
+.panel-heading h3 {
+    color: #d8b4fe;
+    font-weight: 650;
+}
+
+.wallet-icon {
+    color: #c084fc;
+    filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.3));
+}
