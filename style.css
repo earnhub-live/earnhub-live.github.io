@@ -2658,3 +2658,30 @@ footer {
         transition: none;
     }
 }
+/* EARNHUB PREMIUM DASHBOARD BUTTONS */
+
+.dashboard button,
+#dashboard button,
+.dashboard-container button {
+    background: linear-gradient(135deg, #9333ea, #6d28d9);
+    color: #ffffff;
+    border: 1px solid rgba(216, 180, 254, 0.2);
+    border-radius: 12px;
+    font-weight: 600;
+    transition: box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.dashboard button:hover,
+#dashboard button:hover,
+.dashboard-container button:hover {
+    filter: brightness(1.12);
+    box-shadow: 0 5px 18px rgba(147, 51, 234, 0.3);
+}
+
+@media (max-width: 600px) {
+    .dashboard button,
+    #dashboard button,
+    .dashboard-container button {
+        transition: none;
+    }
+}
