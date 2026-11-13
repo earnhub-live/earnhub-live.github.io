@@ -336,8 +336,9 @@ a {
 }
 
 .hero-content {
-    animation: fadeLeft 1s ease both;
+    animation: none;
 }
+
 
 .hero-content h1 {
     font-size: clamp(42px, 6vw, 72px);
