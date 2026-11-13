@@ -1257,7 +1257,7 @@ async function loadAdminDeposits() {
     try {
         const { data, error } = await db
             .from("deposit_requests")
-            .select("*")
+           .select("id, amount, user_id, payment_method, transaction_id, status, screenshot_url, created_at")
             .in("status", ["pending", "approved"])
             .order("created_at", { ascending: true });
 
@@ -1997,6 +1997,7 @@ async function copyReferralLink() {
         alert("Referral link copied successfully!");
 
     } catch (error) {
+       
 
         referralInput.focus();
         referralInput.select();
