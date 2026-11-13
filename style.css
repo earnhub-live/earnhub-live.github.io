@@ -2594,3 +2594,67 @@ footer {
         scroll-behavior: auto !important;
     }
 }
+/* EARNHUB PREMIUM DASHBOARD CARDS */
+
+.dashboard,
+#dashboard,
+.dashboard-container {
+    color: #f5f0ff;
+}
+
+.stat-card,
+.stats-card,
+.earning-card,
+.wallet-card,
+.balance-card,
+.dashboard-card {
+    background: linear-gradient(
+        145deg,
+        rgba(39, 20, 68, 0.95),
+        rgba(20, 12, 38, 0.95)
+    ) !important;
+    border: 1px solid rgba(168, 85, 247, 0.25) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.stat-card:hover,
+.stats-card:hover,
+.earning-card:hover,
+.wallet-card:hover,
+.balance-card:hover,
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(192, 132, 252, 0.65) !important;
+}
+
+.stat-card h3,
+.stats-card h3,
+.earning-card h3,
+.wallet-card h3,
+.balance-card h3,
+.dashboard-card h3 {
+    color: #d8b4fe;
+}
+
+.stat-card p,
+.stats-card p,
+.earning-card p,
+.wallet-card p,
+.balance-card p,
+.dashboard-card p {
+    color: #c4b5d8;
+}
+
+@media (max-width: 600px) {
+    .stat-card,
+    .stats-card,
+    .earning-card,
+    .wallet-card,
+    .balance-card,
+    .dashboard-card {
+        border-radius: 14px !important;
+        transition: none;
+    }
+}
