@@ -2786,3 +2786,54 @@ footer {
     color: #c084fc;
     filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.3));
 }
+/* EARNHUB DEPOSIT & WITHDRAW PREMIUM STYLE */
+
+.deposit-panel,
+.withdraw-panel,
+.deposit-card,
+.withdraw-card {
+    background: linear-gradient(
+        145deg,
+        rgba(39, 20, 68, 0.96),
+        rgba(19, 12, 36, 0.98)
+    ) !important;
+    border: 1px solid rgba(168, 85, 247, 0.28) !important;
+    border-radius: 18px !important;
+    padding: 22px;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.2);
+}
+
+.deposit-panel h2,
+.withdraw-panel h2,
+.deposit-card h2,
+.withdraw-card h2 {
+    color: #e9d5ff;
+}
+
+.deposit-panel input,
+.withdraw-panel input,
+.deposit-card input,
+.withdraw-card input {
+    background: #160d27 !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(168, 85, 247, 0.35) !important;
+    border-radius: 10px !important;
+}
+
+.deposit-panel input:focus,
+.withdraw-panel input:focus,
+.deposit-card input:focus,
+.withdraw-card input:focus {
+    border-color: #c084fc !important;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+}
+
+@media (max-width: 600px) {
+    .deposit-panel,
+    .withdraw-panel,
+    .deposit-card,
+    .withdraw-card {
+        padding: 16px;
+    }
+}
