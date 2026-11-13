@@ -2837,3 +2837,36 @@ footer {
         padding: 16px;
     }
 }
+/* EARNHUB PERFORMANCE OPTIMIZATION */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Reduce expensive background animation on mobile */
+@media (max-width: 768px) {
+    body {
+        animation: none !important;
+        background-attachment: scroll !important;
+    }
+
+    * {
+        scroll-behavior: auto;
+    }
+}
+
+/* Keep interactions responsive */
+button,
+a,
+input,
+select,
+textarea {
+    -webkit-tap-highlight-color: transparent;
+}
