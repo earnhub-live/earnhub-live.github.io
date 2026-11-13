@@ -1281,8 +1281,10 @@ async function loadAdminDeposits() {
                     screenshot = `
                         <p><strong>Payment Screenshot:</strong></p>
                         <img src="${escapeHTML(signed.signedUrl)}"
-                             alt="Deposit payment screenshot"
-                             style="max-width:250px;width:100%;border-radius:8px;">
+     alt="Deposit payment screenshot"
+     loading="lazy"
+     decoding="async"
+     style="max-width:250px;width:100%;height:auto;border-radius:8px;">
                     `;
                 }
             }
