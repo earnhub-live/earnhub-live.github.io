@@ -902,6 +902,35 @@
         <a href="index.html" class="home-button">Back to EarnHub</a>
     </div>
 
+<div class="support-box" id="contactAdmin">
+    <h2>Still need help?</h2>
+    <p>Send a message directly to the EarnHub Admin Team.</p>
+
+    <div id="supportLoginNotice" style="display:none;">
+        <p>Please log in to contact the admin.</p>
+        <a href="index.html" class="home-button">Login to EarnHub</a>
+    </div>
+
+    <form id="userSupportForm" style="display:none; margin-top:20px;">
+        <textarea
+            id="userSupportMessage"
+            rows="5"
+            maxlength="2000"
+            required
+            placeholder="Describe your issue here..."
+            style="width:100%;padding:14px;border-radius:10px;background:#090d1e;color:white;border:1px solid rgba(167,139,250,.4);font:inherit;resize:vertical;"
+        ></textarea>
+
+        <button type="submit" class="home-button" id="sendSupportButton">
+            Send Message
+        </button>
+    </form>
+
+    <p id="supportStatus" style="margin-top:12px;"></p>
+
+    <div id="userSupportHistory" style="text-align:left;margin-top:25px;"></div>
+</div>
+
 </main>
 
 <footer>
@@ -966,7 +995,13 @@
         helpContent.style.display =
             totalMatches === 0 ? "none" : "block";
     });
+    
 </script>
-
+<script>
+console.log("EarnHub Support JS Loaded");
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase.js"></script>
 </body>
 </html>
+
