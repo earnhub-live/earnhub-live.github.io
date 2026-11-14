@@ -44,6 +44,7 @@
             <a href="#deposits">＋ Deposits</a>
             <a href="#withdrawals">↗ Withdrawals</a>
             <a href="#activity">◷ Activity</a>
+            <a href="#support">✉ Support Messages</a>
         </nav>
 
         <div class="sidebar-bottom">
@@ -138,9 +139,7 @@
                 <label for="taskUrl">Task URL</label>
                 <input id="taskUrl" type="url"
                        placeholder="https://example.com">
-<label for="taskReward">Reward Amount (₨)</label>
-<input id="taskReward" type="number"
-       value="50" readonly>
+
 
                 <button id="createTaskButton" type="submit">
                     + Create Task
@@ -197,7 +196,19 @@
             </div>
             <p>Activity monitoring will be added in the next stage.</p>
         </section>
+<section id="support" class="content-card">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">USER SUPPORT</span>
+            <h2>✉ Support Messages</h2>
+        </div>
+        <button id="refreshSupport">↻ Refresh</button>
+    </div>
 
+    <div id="adminSupportMessages">
+        Loading support messages...
+    </div>
+</section>
     </main>
 </div>
 
