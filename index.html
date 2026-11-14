@@ -308,14 +308,14 @@
         <div class="stat-card earnings-card">
             <div class="stat-icon">💰</div>
             <span>Total Earnings</span>
-            <h2 id="totalEarnings">$0.00</h2>
+            <h2 id="totalEarnings">₨0.00</h2>
             <small>✦ Your lifetime earnings</small>
         </div>
 
         <div class="stat-card balance-card">
             <div class="stat-icon">💳</div>
             <span>Available Balance</span>
-            <h2 id="availableBalance">$0.00</h2>
+            <h2 id="availableBalance">₨0.00</h2>
             <small>✦ Ready to withdraw</small>
         </div>
 
@@ -337,7 +337,7 @@
         <div>
             <span class="eyebrow">INVITE & EARN</span>
             <h2>Referral Program</h2>
-            <p class="muted">Invite friends and earn $0.20 for each successful referral.</p>
+            <p class="muted">Invite friends and earn ₨35 for each successful referral.</p>
         </div>
         <span class="progress-icon">🎁</span>
     </div>
@@ -370,7 +370,7 @@
 
         <div class="progress-item">
             <span>Referral Earnings</span>
-            <h3 id="referralEarnings">$0.00</h3>
+            <h3 id="referralEarnings">₨0.00</h3>
         </div>
     </div>
 
@@ -480,12 +480,12 @@
             <p class="muted">Available Balance</p>
 
             <h2 class="wallet-balance" id="walletBalance">
-                $0.00
+                ₨0.00
             </h2>
 
             <p class="muted">Total Earnings</p>
 
-            <h3 id="walletEarnings">$0.00</h3>
+            <h3 id="walletEarnings">₨0.00</h3>
 
             <small>✦ Your available funds</small>
 
@@ -517,13 +517,13 @@
             <div id="withdrawForm"
                  style="display:none; margin-top:20px;">
 
-                <input
-                    type="number"
-                    id="withdrawAmount"
-                    placeholder="Enter amount"
-                    min="1"
-                    step="0.01"
-                >
+              <input
+    type="number"
+    id="withdrawAmount"
+    placeholder="Minimum withdrawal ₨600"
+    min="600"
+    step="1"
+>
 
   
 <select id="withdrawMethod">
@@ -595,14 +595,13 @@
 
             <div id="depositForm"
                  style="display:none; margin-top:20px;">
-
-                <input
-                    type="number"
-                    id="depositAmount"
-                    placeholder="Enter deposit amount"
-                    min="3"
-                    step="0.01"
-                >
+<input
+    type="number"
+    id="depositAmount"
+    placeholder="Minimum deposit ₨300"
+    min="300"
+    step="1"
+>
 
                 <select id="depositMethod"
                         onchange="updateDepositPaymentDetails()">
@@ -770,16 +769,18 @@
                     placeholder="https://example.com"
                 >
 
-                <label for="taskReward">Reward Amount ($)</label>
-
-                <input
-                    type="number"
-                    id="taskReward"
-                    min="0.01"
-                    step="0.01"
-                    placeholder="0.50"
-                    required
-                >
+               
+               <label for="taskReward">Task Reward (PKR)</label>
+<input
+    type="number"
+    id="taskReward"
+    value="50"
+    min="50"
+    max="50"
+    step="1"
+    readonly
+    required
+>
 
                 <button
                     type="submit"
