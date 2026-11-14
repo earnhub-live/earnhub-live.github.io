@@ -893,14 +893,6 @@
         <p>Try another keyword.</p>
     </div>
 
-    <div class="support-box">
-        <h2>Still need help?</h2>
-        <p>
-            Couldn't find the answer you were looking for?
-            Return to EarnHub and use the available support option.
-        </p>
-        <a href="index.html" class="home-button">Back to EarnHub</a>
-    </div>
 
 <div class="support-box" id="contactAdmin">
     <h2>Still need help?</h2>
@@ -1002,6 +994,97 @@ console.log("EarnHub Support JS Loaded");
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase.js"></script>
+<script>
+(async function () {
+    const db = window.supabaseClient;
+    const form = document.getElementById("userSupportForm");
+    const notice = document.getElementById("supportLoginNotice");
+    const status = document.getElementById("supportStatus");
+
+    if (!db) {
+        status.textContent = "Support connection unavailable.";
+        return;
+    }
+
+    const { data, error } = await db.auth.getSession();
+
+    if (error) {
+        status.textContent = error.message;
+        return;
+    }
+
+    if (data.session) {
+        form.style.display = "block";
+    } else {
+        notice.style.display = "block";
+
+    }
+    async function loadSupportHistory() {
+    const history = document.getElementById("userSupportHistory");
+
+    const { data: messages, error } = await db
+        .from("support_messages")
+        .select("*")
+        .eq("user_id", data.session.user.id)
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        history.textContent = "Could not load support messages.";
+        return;
+    }
+
+    history.innerHTML = messages.map(item => `
+        <div style="padding:15px;margin-bottom:15px;border:1px solid #444;border-radius:10px;">
+            <p><strong>Your Message:</strong></p>
+            <p>${escapeSupportHTML(item.message)}</p>
+
+            <p><strong>Status:</strong> ${escapeSupportHTML(item.status)}</p>
+
+            ${item.admin_reply ? `
+                <hr>
+                <p><strong>Admin Reply:</strong></p>
+                <p>${escapeSupportHTML(item.admin_reply)}</p>
+            ` : "<p>Waiting for admin reply...</p>"}
+        </div>
+    `).join("");
+}
+
+function escapeSupportHTML(value) {
+    const div = document.createElement("div");
+    div.textContent = value || "";
+    return div.innerHTML;
+}
+
+loadSupportHistory();
+    form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const message = document.getElementById("userSupportMessage").value.trim();
+    const button = document.getElementById("sendSupportButton");
+
+    if (!message) return;
+
+    button.disabled = true;
+    status.textContent = "Sending...";
+
+    const { error } = await db
+        .from("support_messages")
+        .insert({
+            user_id: data.session.user.id,
+            message: message
+        });
+
+    button.disabled = false;
+
+    if (error) {
+        status.textContent = "Error: " + error.message;
+        return;
+    }
+
+    document.getElementById("userSupportMessage").value = "";
+    status.textContent = "Message sent successfully!";
+});
+})();
+</script>
 </body>
 </html>
-
