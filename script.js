@@ -33,11 +33,12 @@ function escapeHTML(value) {
         "'": "&#039;"
     })[char]);
 }
-
 function money(value) {
-    return "$" + Number(value || 0).toFixed(2);
+    return "₨" + Number(value || 0).toLocaleString("en-PK", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 }
-
 function notify(message) {
     alert(message);
 }
@@ -531,11 +532,10 @@ async function submitWithdrawal() {
         el("withdrawAccountName")?.value.trim() || "";
     const accountNumber =
         el("withdrawAccountNumber")?.value.trim() || "";
-
-    if (!Number.isFinite(amount) || amount < 5) {
-        notify("Minimum withdrawal amount is $5.");
-        return;
-    }
+if (!Number.isFinite(amount) || amount < 600) {
+    notify("Minimum withdrawal amount is ₨600.");
+    return;
+}
 
    if (!["JazzCash", "Easypaisa", "Bank Transfer", "UPaisa", "NayaPay", "SadaPay"].includes(method)) {
         notify("Please select a valid withdrawal method.");
@@ -558,10 +558,10 @@ async function submitWithdrawal() {
 
         const balance = Number(profile.available_balance || 0);
 
-        if (balance < 3) {
-            notify("You need at least $3 earned balance to withdraw.");
-            return;
-        }
+      if (balance < 600) {
+    notify("You need at least ₨600 earned balance to withdraw.");
+    return;
+}
 
         if (amount > balance) {
             notify("Insufficient wallet balance.");
@@ -581,11 +581,10 @@ async function submitWithdrawal() {
             (sum, item) => sum + Number(item.amount || 0),
             0
         );
-
-        if (totalDeposits < 3) {
-            notify("Please deposit at least $3 before withdrawing your balance.");
-            return;
-        }
+if (totalDeposits < 600) {
+    notify("Please deposit at least ₨600 before withdrawing your balance.");
+    return;
+}
 
         const { data: pendingRequest, error: pendingError } = await db
             .from("withdrawal_requests")
@@ -712,11 +711,10 @@ async function submitDeposit() {
         el("depositTransactionId")?.value.trim() || "";
 
     const file = el("depositScreenshot")?.files?.[0];
-
-    if (!Number.isFinite(amount) || amount < 3) {
-        notify("Minimum deposit amount is $3 USD.");
-        return;
-    }
+if (!Number.isFinite(amount) || amount < 300) {
+    notify("Minimum deposit amount is ₨300.");
+    return;
+}
 
     if (!["JazzCash Merchant", "UPaisa"].includes(method)) {
         notify("Please select a valid payment method.");
@@ -1011,14 +1009,14 @@ async function handleCreateTask(event) {
     const description =
         el("taskDescription")?.value.trim() || "";
     const taskUrl = el("taskUrl")?.value.trim() || "";
-    const reward = Number(el("taskReward")?.value);
+    const reward = 50;
 
     const button = el("createTaskButton");
 
-    if (!title || !Number.isFinite(reward) || reward <= 0) {
-        notify("Enter a valid task title and reward.");
-        return;
-    }
+   if (!title) {
+    notify("Enter a valid task title.");
+    return;
+}
 
     if (taskUrl) {
         try {
