@@ -487,7 +487,14 @@ async function startTask(taskId) {
                 status: "pending"
             });
 
-        if (submitError) throw submitError;
+        if (submitError) {
+    if (submitError.message?.includes("You can submit this task again after 24 hours.")) {
+        notify("You can submit this task again after 24 hours.");
+        return;
+    }
+
+    throw submitError;
+}
 
         window.earnHubOpenedTasks.delete(taskId);
 
@@ -1997,7 +2004,6 @@ async function copyReferralLink() {
         alert("Referral link copied successfully!");
 
     } catch (error) {
-       
 
         referralInput.focus();
         referralInput.select();
