@@ -4,7 +4,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EarnHub | Admin Dashboard</title>
+
+<title>EarnHub - Earn Rewards Online Through Tasks</title>
+<meta name="description" content="EarnHub helps you discover online tasks, complete activities, and earn rewards. Join EarnHub to explore earning opportunities online.">
+
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
@@ -135,10 +138,9 @@
                 <label for="taskUrl">Task URL</label>
                 <input id="taskUrl" type="url"
                        placeholder="https://example.com">
-
-                <label for="taskReward">Reward Amount ($)</label>
-                <input id="taskReward" type="number" min="0.01"
-                       step="0.01" required placeholder="0.50">
+<label for="taskReward">Reward Amount (₨)</label>
+<input id="taskReward" type="number"
+       value="50" readonly>
 
                 <button id="createTaskButton" type="submit">
                     + Create Task
