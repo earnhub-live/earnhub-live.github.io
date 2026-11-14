@@ -1,0 +1,972 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090d1e">
+    <title>Help Center - EarnHub</title>
+    <style>
+        :root {
+            --bg: #090d1e;
+            --panel: #11182d;
+            --panel2: #171f38;
+            --border: rgba(255,255,255,.09);
+            --text: #f4f5ff;
+            --muted: #a5aec8;
+            --purple: #8b5cf6;
+            --cyan: #22d3ee;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background:
+                radial-gradient(ellipse at top, #211447 0%, transparent 48%),
+                var(--bg);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            line-height: 1.65;
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 7%;
+            border-bottom: 1px solid var(--border);
+            background: rgba(9,13,30,.85);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(14px);
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        .logo span {
+            color: var(--purple);
+        }
+
+        .back-link {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            padding: 9px 15px;
+            border-radius: 10px;
+            color: #ddd6fe;
+            font-size: 13px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 65px 20px 35px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            color: #c4b5fd;
+            background: rgba(139,92,246,.13);
+            border: 1px solid rgba(139,92,246,.3);
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 12px;
+            margin-bottom: 17px;
+        }
+
+        .hero h1 {
+            font-size: clamp(30px, 5vw, 46px);
+            line-height: 1.2;
+            margin-bottom: 13px;
+        }
+
+        .hero h1 span {
+            color: #a78bfa;
+        }
+
+        .hero p {
+            color: var(--muted);
+            max-width: 600px;
+            margin: auto;
+            font-size: 15px;
+        }
+
+        .search-wrap {
+            max-width: 620px;
+            margin: 27px auto 0;
+            padding: 0 15px;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            padding: 17px 20px;
+            border: 1px solid rgba(167,139,250,.35);
+            background: rgba(17,24,45,.95);
+            color: white;
+            border-radius: 14px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .search-wrap input:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px rgba(139,92,246,.12);
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 35px auto 80px;
+            padding: 0 18px;
+        }
+
+        .section-heading {
+            font-size: 21px;
+            margin: 38px 0 17px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .category {
+            display: block;
+            padding: 19px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            transition: .2s;
+        }
+
+        .category:hover {
+            transform: translateY(-3px);
+            border-color: rgba(139,92,246,.5);
+            background: var(--panel2);
+        }
+
+        .category .emoji {
+            font-size: 25px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .category strong {
+            display: block;
+            font-size: 15px;
+        }
+
+        .category small {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .help-section {
+            margin-top: 36px;
+            scroll-margin-top: 90px;
+        }
+
+        .help-section h2 {
+            font-size: 21px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .faq summary {
+            padding: 16px 18px;
+            cursor: pointer;
+            list-style: none;
+            font-weight: 600;
+            font-size: 14px;
+            position: relative;
+            padding-right: 45px;
+        }
+
+        .faq summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq summary::after {
+            content: "+";
+            position: absolute;
+            right: 18px;
+            top: 12px;
+            color: #a78bfa;
+            font-size: 23px;
+        }
+
+        .faq[open] summary::after {
+            content: "−";
+        }
+
+        .faq summary:hover {
+            color: #c4b5fd;
+        }
+
+        .answer {
+            padding: 0 18px 17px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .answer ul,
+        .answer ol {
+            padding-left: 21px;
+            margin: 9px 0;
+        }
+
+        .answer li {
+            margin: 5px 0;
+        }
+
+        .answer strong {
+            color: #e9e7ff;
+        }
+
+        .note {
+            padding: 12px 14px;
+            margin-top: 10px;
+            background: rgba(139,92,246,.10);
+            border-left: 3px solid var(--purple);
+            border-radius: 7px;
+            color: #d8ccff;
+        }
+
+        .no-results {
+            display: none;
+            text-align: center;
+            color: var(--muted);
+            padding: 35px 10px;
+        }
+
+        .support-box {
+            margin-top: 45px;
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #211447, #11182d);
+            border: 1px solid rgba(167,139,250,.25);
+            border-radius: 18px;
+        }
+
+        .support-box h2 {
+            margin-bottom: 8px;
+        }
+
+        .support-box p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .home-button {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 11px 21px;
+            border-radius: 10px;
+            background: var(--purple);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 22px;
+            border-top: 1px solid var(--border);
+            color: #77819e;
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .topbar {
+                padding: 14px 18px;
+            }
+
+            .hero {
+                padding-top: 48px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <a href="index.html" class="logo">Earn<span>Hub</span></a>
+    <a href="index.html" class="back-link">← Back to Home</a>
+</header>
+
+<section class="hero">
+    <span class="hero-tag">EARNHUB SUPPORT</span>
+    <h1>How can we <span>help you?</span></h1>
+    <p>
+        Find answers, learn how EarnHub works, and get help
+        with your account, tasks, deposits, withdrawals and rewards.
+    </p>
+
+    <div class="search-wrap">
+        <input
+            type="search"
+            id="helpSearch"
+            placeholder="Search for help... e.g. withdrawal, task, deposit"
+            autocomplete="off"
+        >
+    </div>
+</section>
+
+<main class="container">
+
+    <h2 class="section-heading">Explore Help Topics</h2>
+
+    <div class="category-grid">
+        <a class="category" href="#account">
+            <span class="emoji">👤</span>
+            <strong>Account & Login</strong>
+            <small>Registration, login and account</small>
+        </a>
+
+        <a class="category" href="#tasks">
+            <span class="emoji">📋</span>
+            <strong>Tasks & Rewards</strong>
+            <small>Complete tasks and submit proof</small>
+        </a>
+
+        <a class="category" href="#deposits">
+            <span class="emoji">💳</span>
+            <strong>Deposits</strong>
+            <small>Add funds to your account</small>
+        </a>
+
+        <a class="category" href="#withdrawals">
+            <span class="emoji">💸</span>
+            <strong>Withdrawals</strong>
+            <small>Request your earnings</small>
+        </a>
+
+        <a class="category" href="#wallet">
+            <span class="emoji">👛</span>
+            <strong>Wallet & History</strong>
+            <small>Balance and transactions</small>
+        </a>
+
+        <a class="category" href="#referrals">
+            <span class="emoji">🤝</span>
+            <strong>Referral Program</strong>
+            <small>Invite friends and earn rewards</small>
+        </a>
+
+        <a class="category" href="#notifications">
+            <span class="emoji">🔔</span>
+            <strong>Notifications</strong>
+            <small>Stay updated</small>
+        </a>
+
+        <a class="category" href="#security">
+            <span class="emoji">🔐</span>
+            <strong>Safety & Security</strong>
+            <small>Protect your account</small>
+        </a>
+
+        <a class="category" href="#troubleshooting">
+            <span class="emoji">🛠️</span>
+            <strong>Troubleshooting</strong>
+            <small>Common problems and solutions</small>
+        </a>
+    </div>
+
+    <div id="helpContent">
+
+        <!-- ACCOUNT -->
+
+        <section class="help-section" id="account">
+            <h2>👤 Account & Login</h2>
+
+            <details class="faq">
+                <summary>How do I create an EarnHub account?</summary>
+                <div class="answer">
+                    <ol>
+                        <li>Open the EarnHub home page.</li>
+                        <li>Choose the Sign Up or Register option.</li>
+                        <li>Enter your name, email address and password.</li>
+                        <li>Complete the registration process.</li>
+                        <li>Log in to access your dashboard.</li>
+                    </ol>
+                    <p>Your account details should be kept private.</p>
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>How do I log in?</summary>
+                <div class="answer">
+                    Open EarnHub, select Login, enter your registered
+                    email address and password, then submit the form.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Where can I find my dashboard?</summary>
+                <div class="answer">
+                    After logging in, open your dashboard from the
+                    EarnHub website. Your available account information,
+                    tasks, earnings and other account features are
+                    displayed there.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Can I use EarnHub without logging in?</summary>
+                <div class="answer">
+                    You may browse the public website, but you need
+                    to log in to use account features such as submitting
+                    tasks and managing your wallet.
+                </div>
+            </details>
+        </section>
+
+        <!-- TASKS -->
+
+        <section class="help-section" id="tasks">
+            <h2>📋 Tasks & Rewards</h2>
+
+            <details class="faq">
+                <summary>How do I complete a task?</summary>
+                <div class="answer">
+                    <ol>
+                        <li>Log in to your EarnHub account.</li>
+                        <li>Open the available Tasks section.</li>
+                        <li>Choose an active task and read its instructions.</li>
+                        <li>Click Start Task. The task link will open in a new tab.</li>
+                        <li>Complete the task according to its instructions.</li>
+                        <li>Return to EarnHub and click Start Task again.</li>
+                        <li>Enter your completion proof and submit it.</li>
+                    </ol>
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>What is task proof?</summary>
+                <div class="answer">
+                    Task proof is the information requested to show
+                    that you completed a task. Enter valid and genuine
+                    proof in the submission prompt.
+                    <div class="note">
+                        Always follow the specific proof instructions
+                        shown for the task.
+                    </div>
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Why is my task submission pending?</summary>
+                <div class="answer">
+                    After you submit proof, your submission is saved
+                    with a pending status. It must be reviewed by an
+                    EarnHub administrator before it can be approved
+                    or rejected.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>When will I receive my task reward?</summary>
+                <div class="answer">
+                    A task reward is credited after the task submission
+                    is successfully approved. Check your wallet and
+                    transaction history for account updates.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Why was my task rejected?</summary>
+                <div class="answer">
+                    A submission may be rejected if the proof is
+                    missing, incorrect, incomplete or does not follow
+                    the task instructions. Review the task requirements
+                    before submitting again.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Can I submit the same task again?</summary>
+                <div class="answer">
+                    The current task system may restrict another
+                    submission for the same task for 24 hours.
+                    If you see a 24-hour message, wait until the
+                    restriction has passed.
+                </div>
+            </details>
+        </section>
+
+        <!-- DEPOSITS -->
+
+        <section class="help-section" id="deposits">
+            <h2>💳 Deposits</h2>
+
+            <details class="faq">
+                <summary>How do I deposit funds?</summary>
+                <div class="answer">
+                    <ol>
+                        <li>Log in to your EarnHub account.</li>
+                        <li>Open the Deposit section.</li>
+                        <li>Enter the deposit amount.</li>
+                        <li>Select an available payment method.</li>
+                        <li>Make the payment using the displayed instructions.</li>
+                        <li>Enter your payment Transaction ID.</li>
+                        <li>Upload your payment screenshot.</li>
+                        <li>Submit your deposit request.</li>
+                    </ol>
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Which payment methods are supported for deposits?</summary>
+                <div class="answer">
+                    The current website code accepts JazzCash and
+                    Easypaisa for deposit requests. Use the payment
+                    instructions displayed on the Deposit page.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>What is the minimum deposit amount?</summary>
+                <div class="answer">
+                    The current deposit form has a minimum of
+                    <strong>$3 USD</strong>. Check the live Deposit
+                    page before making a payment in case the rules
+                    have been updated.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Why do I need to upload a payment screenshot?</summary>
+                <div class="answer">
+                    The screenshot helps the administrator verify
+                    your payment. The current form accepts JPG,
+                    PNG and WEBP images up to 5 MB.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Why can't I submit another deposit request?</summary>
+                <div class="answer">
+                    The current system does not allow a new deposit
+                    request while you already have a pending deposit
+                    request. Wait for the existing request to be
+                    processed.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>How can I check my deposit status?</summary>
+                <div class="answer">
+                    Open the Deposit History section in your account
+                    to review your submitted deposit requests and
+                    their available status information.
+                </div>
+            </details>
+        </section>
+
+        <!-- WITHDRAWALS -->
+
+        <section class="help-section" id="withdrawals">
+            <h2>💸 Withdrawals</h2>
+
+            <details class="faq">
+                <summary>How do I withdraw my earnings?</summary>
+                <div class="answer">
+                    <ol>
+                        <li>Log in to your EarnHub account.</li>
+                        <li>Open the Withdraw section.</li>
+                        <li>Enter the withdrawal amount.</li>
+                        <li>Select an available withdrawal method.</li>
+                        <li>Enter your account holder name.</li>
+                        <li>Enter your payment account number or details.</li>
+                        <li>Review your information and submit the request.</li>
+                    </ol>
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>What is the minimum withdrawal amount?</summary>
+                <div class="answer">
+                    The current withdrawal form has a minimum
+                    withdrawal amount of <strong>$5 USD</strong>.
+                    Your available balance must also be sufficient
+                    for the requested amount.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Which withdrawal methods are supported?</summary>
+                <div class="answer">
+                    The current website code accepts:
+                    <ul>
+                        <li>JazzCash</li>
+                        <li>Easypaisa</li>
+                        <li>Bank Transfer</li>
+                        <li>UPaisa</li>
+                        <li>NayaPay</li>
+                        <li>SadaPay</li>
+                    </ul>
+                    Only select a method that is available on your
+                    live Withdraw page.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Why is my withdrawal request not accepted?</summary>
+                <div class="answer">
+                    Check the following:
+                    <ul>
+                        <li>Your requested amount meets the minimum.</li>
+                        <li>You have enough available balance.</li>
+                        <li>Your withdrawal method is valid.</li>
+                        <li>Your account holder name is entered.</li>
+                        <li>Your account number or payment details are correct.</li>
+                    </ul>
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Why is my withdrawal still pending?</summary>
+                <div class="answer">
+                    Withdrawal requests require processing by the
+                    administrator. Check your withdrawal history
+                    for the latest status.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>What happens if I enter incorrect payment details?</summary>
+                <div class="answer">
+                    Incorrect account details can cause payment
+                    problems. Always double-check your account
+                    holder name and payment number before submitting
+                    a withdrawal request.
+                </div>
+            </details>
+        </section>
+
+        <!-- WALLET -->
+
+        <section class="help-section" id="wallet">
+            <h2>👛 Wallet & Transaction History</h2>
+
+            <details class="faq">
+                <summary>Where can I check my wallet balance?</summary>
+                <div class="answer">
+                    Log in and open your dashboard. Your wallet
+                    information and available balance are shown
+                    in your account.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>How do I view my transactions?</summary>
+                <div class="answer">
+                    Open Transaction History or the corresponding
+                    wallet section. Your transactions are displayed
+                    with their type, amount and date, with the newest
+                    transactions shown first.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Why has my balance not updated?</summary>
+                <div class="answer">
+                    Some account changes depend on request processing
+                    or administrator approval. Refresh your dashboard
+                    and check your transaction history. If the issue
+                    remains, contact support.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>What if I see an unfamiliar transaction?</summary>
+                <div class="answer">
+                    Review the transaction type, amount and date.
+                    If you do not recognize it, avoid sharing your
+                    account credentials and contact support for
+                    assistance.
+                </div>
+            </details>
+        </section>
+
+        <!-- REFERRALS -->
+
+        <section class="help-section" id="referrals">
+            <h2>🤝 Referral Program</h2>
+
+            <details class="faq">
+                <summary>What is the EarnHub Referral Program?</summary>
+                <div class="answer">
+                    The referral program lets you invite other people
+                    to EarnHub using your personal referral link.
+                    Referral information and recorded referral
+                    earnings are available in your account.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Where can I find my referral link?</summary>
+                <div class="answer">
+                    Log in and open the Referral section. Your personal
+                    referral link is generated using your account's
+                    referral code. Copy and share that link.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>How can I check my referral earnings?</summary>
+                <div class="answer">
+                    Open your Referral section to view your recorded
+                    referral count and referral earnings.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>How much can I earn from referrals?</summary>
+                <div class="answer">
+                    Referral amounts are determined by the active
+                    EarnHub referral settings. Check the current
+                    amount displayed in your account rather than
+                    relying on an old promotion or message.
+                </div>
+            </details>
+        </section>
+
+        <!-- NOTIFICATIONS -->
+
+        <section class="help-section" id="notifications">
+            <h2>🔔 Notifications</h2>
+
+            <details class="faq">
+                <summary>Where can I see my notifications?</summary>
+                <div class="answer">
+                    Log in and open the Notifications section
+                    from your account dashboard.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>How do I mark a notification as read?</summary>
+                <div class="answer">
+                    Open your Notifications section and use the
+                    available mark-as-read option for the notification.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Why am I not seeing a notification?</summary>
+                <div class="answer">
+                    Refresh your account and check the Notifications
+                    section again. Make sure you are logged in to
+                    the correct account.
+                </div>
+            </details>
+        </section>
+
+        <!-- SECURITY -->
+
+        <section class="help-section" id="security">
+            <h2>🔐 Safety & Security</h2>
+
+            <details class="faq">
+                <summary>How can I keep my account safe?</summary>
+                <div class="answer">
+                    <ul>
+                        <li>Use a strong, unique password.</li>
+                        <li>Never share your password with anyone.</li>
+                        <li>Only use the official EarnHub website.</li>
+                        <li>Check payment details before submitting requests.</li>
+                        <li>Log out when using a shared computer.</li>
+                    </ul>
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Should I share my password or login details with support?</summary>
+                <div class="answer">
+                    No. Never share your password or private login
+                    credentials with anyone.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>Can I submit fake task proof?</summary>
+                <div class="answer">
+                    No. Always submit genuine proof that follows
+                    the task instructions. Incorrect or misleading
+                    proof may result in rejection.
+                </div>
+            </details>
+        </section>
+
+        <!-- TROUBLESHOOTING -->
+
+        <section class="help-section" id="troubleshooting">
+            <h2>🛠️ Troubleshooting</h2>
+
+            <details class="faq">
+                <summary>The website is not loading. What should I do?</summary>
+                <div class="answer">
+                    Check your internet connection, refresh the page
+                    and try opening EarnHub again. You can also try
+                    another browser.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>My task link is not opening.</summary>
+                <div class="answer">
+                    Check your browser's pop-up settings. The task
+                    opens in a new tab, so make sure pop-ups are
+                    not blocked.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>My deposit screenshot is not uploading.</summary>
+                <div class="answer">
+                    Make sure your image is JPG, PNG or WEBP and
+                    smaller than 5 MB. Check your internet connection
+                    and try again.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>I cannot log in to my account.</summary>
+                <div class="answer">
+                    Check that your email address and password are
+                    correct. Make sure there are no extra spaces
+                    in the email field.
+                </div>
+            </details>
+
+            <details class="faq">
+                <summary>What should I do if a feature is not working?</summary>
+                <div class="answer">
+                    Refresh the page, check your internet connection
+                    and try again. If the problem continues, contact
+                    EarnHub support with a clear description of the
+                    issue. Do not share your password.
+                </div>
+            </details>
+        </section>
+
+    </div>
+
+    <div class="no-results" id="noResults">
+        <h3>No matching help articles found</h3>
+        <p>Try another keyword.</p>
+    </div>
+
+    <div class="support-box">
+        <h2>Still need help?</h2>
+        <p>
+            Couldn't find the answer you were looking for?
+            Return to EarnHub and use the available support option.
+        </p>
+        <a href="index.html" class="home-button">Back to EarnHub</a>
+    </div>
+
+</main>
+
+<footer>
+    © <span id="year"></span> EarnHub. All rights reserved.
+</footer>
+
+<script>
+    document.getElementById("year").textContent =
+        new Date().getFullYear();
+
+    const searchInput = document.getElementById("helpSearch");
+    const sections = document.querySelectorAll(".help-section");
+    const faqs = document.querySelectorAll(".faq");
+    const categories = document.querySelectorAll(".category");
+    const noResults = document.getElementById("noResults");
+    const helpContent = document.getElementById("helpContent");
+
+    searchInput.addEventListener("input", function () {
+        const query = this.value.toLowerCase().trim();
+        let totalMatches = 0;
+
+        sections.forEach(section => {
+            let sectionMatches = 0;
+
+            section.querySelectorAll(".faq").forEach(faq => {
+                const matches = faq.textContent
+                    .toLowerCase()
+                    .includes(query);
+
+                faq.style.display = matches ? "" : "none";
+
+                if (matches) {
+                    sectionMatches++;
+                    totalMatches++;
+
+                    if (query) {
+                        faq.open = true;
+                    } else {
+                        faq.open = false;
+                    }
+                }
+            });
+
+            section.style.display =
+                sectionMatches > 0 ? "" : "none";
+        });
+
+        categories.forEach(category => {
+            const target = document.querySelector(
+                category.getAttribute("href")
+            );
+
+            category.style.display =
+                target && target.style.display !== "none"
+                    ? ""
+                    : "none";
+        });
+
+        noResults.style.display =
+            totalMatches === 0 ? "block" : "none";
+
+        helpContent.style.display =
+            totalMatches === 0 ? "none" : "block";
+    });
+</script>
+
+</body>
+</html>
