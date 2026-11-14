@@ -1,829 +1,388 @@
 
-const db = window.supabaseClient;
-
-let adminUser = null;
-let adminVerified = false;
-let platformChart = null;
-
-const $ = id => document.getElementById(id);
-
-function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-    })[char]);
-}
-function money(value) {
-    return "₨" + Number(value || 0).toFixed(2);
+* {
+    box-sizing: border-box;
 }
 
-function showDenied(message) {
-    $("adminLoader")?.classList.add("hidden");
-    $("adminApp")?.classList.add("hidden");
-    $("accessDenied")?.classList.remove("hidden");
-
-    const paragraph = $("accessDenied")?.querySelector("p");
-    if (paragraph) paragraph.textContent = message;
+:root {
+    --bg: #090914;
+    --sidebar: #10101f;
+    --card: #151528;
+    --border: #292743;
+    --purple: #8b5cf6;
+    --purple-light: #a78bfa;
+    --text: #f4f1ff;
+    --muted: #9894b5;
+    --green: #22c55e;
 }
 
-async function verifyAdmin() {
-    if (!db) {
-        showDenied("Supabase connection could not be established.");
-        return false;
-    }
-
-    const { data: sessionData, error: sessionError } =
-        await db.auth.getSession();
-
-    if (sessionError) throw sessionError;
-
-    const user = sessionData.session?.user;
-
-    if (!user) {
-        window.location.replace("index.html");
-        return false;
-    }
-
-    const { data, error } = await db.rpc("is_admin");
-
-    if (error) throw error;
-
-    if (data !== true) {
-        showDenied("Your account does not have administrator permission.");
-        return false;
-    }
-
-    adminUser = user;
-    adminVerified = true;
-
-    $("adminLoader")?.classList.add("hidden");
-    $("accessDenied")?.classList.add("hidden");
-    $("adminApp")?.classList.remove("hidden");
-
-    $("adminEmail").textContent = user.email || "Administrator";
-
-    return true;
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
 }
 
-// ======================================
-// ADMIN ANALYTICS
-// ======================================
-
-async function loadAdminAnalytics() {
-    if (!adminVerified) return;
-
-    try {
-        const [
-            usersResult,
-            depositsResult,
-            withdrawalsResult,
-            pendingDepositsResult,
-            pendingWithdrawalsResult,
-            rewardsResult
-        ] = await Promise.all([
-
-            db.from("profiles")
-                .select("*", { count: "exact", head: true }),
-
-            db.from("deposit_requests")
-                .select("amount")
-                .eq("status", "approved"),
-
-            db.from("withdrawal_requests")
-                .select("amount")
-                .eq("status", "paid"),
-
-            db.from("deposit_requests")
-                .select("*", { count: "exact", head: true })
-                .eq("status", "pending"),
-
-            db.from("withdrawal_requests")
-                .select("*", { count: "exact", head: true })
-                .eq("status", "pending"),
-
-            db.from("wallet_transactions")
-                .select("amount")
-                .eq("transaction_type", "task_reward")
-        ]);
-
-        const results = [
-            usersResult,
-            depositsResult,
-            withdrawalsResult,
-            pendingDepositsResult,
-            pendingWithdrawalsResult,
-            rewardsResult
-        ];
-
-        const failed = results.find(result => result.error);
-        if (failed) throw failed.error;
-
-        const sum = rows =>
-            (rows || []).reduce(
-                (total, row) => total + Number(row.amount || 0),
-                0
-            );
-
-        $("analyticsUsers").textContent =
-            usersResult.count ?? 0;
-
-        $("analyticsDeposits").textContent =
-            money(sum(depositsResult.data));
-
-        $("analyticsWithdrawals").textContent =
-            money(sum(withdrawalsResult.data));
-
-        $("analyticsPending").textContent =
-            (pendingDepositsResult.count ?? 0) +
-            (pendingWithdrawalsResult.count ?? 0);
-
-        $("analyticsRewards").textContent =
-            money(sum(rewardsResult.data));
-
-    } catch (error) {
-        console.error("Analytics error:", error);
-        alert("Analytics error: " + error.message);
-    }
+.hidden {
+    display: none !important;
 }
 
-async function loadPlatformChart() {
-    if (!adminVerified || typeof Chart === "undefined") return;
-
-    const canvas = $("platformChart");
-    if (!canvas) return;
-
-    try {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-        sevenDaysAgo.setHours(0, 0, 0, 0);
-
-        const startDate = sevenDaysAgo.toISOString();
-
-        const [users, deposits, withdrawals] = await Promise.all([
-            db.from("profiles")
-                .select("created_at")
-                .gte("created_at", startDate),
-
-            db.from("deposit_requests")
-                .select("amount, created_at")
-                .eq("status", "approved")
-                .gte("created_at", startDate),
-
-            db.from("withdrawal_requests")
-                .select("amount, created_at")
-                .eq("status", "paid")
-                .gte("created_at", startDate)
-        ]);
-
-        const results = [users, deposits, withdrawals];
-        const failed = results.find(result => result.error);
-        if (failed) throw failed.error;
-
-        const dates = [];
-
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(sevenDaysAgo);
-            date.setDate(date.getDate() + i);
-            dates.push(date);
-        }
-
-        const getDailyData = (rows, field) => dates.map(date => {
-            const total = (rows || [])
-                .filter(row => {
-                    const itemDate = new Date(row.created_at);
-
-                    return itemDate.getFullYear() === date.getFullYear() &&
-                        itemDate.getMonth() === date.getMonth() &&
-                        itemDate.getDate() === date.getDate();
-                })
-                .reduce((sum, row) => sum + Number(row[field] ?? 1), 0);
-
-            return total;
-        });
-
-        const labels = dates.map(date =>
-            date.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric"
-            })
-        );
-
-        if (platformChart) {
-            platformChart.destroy();
-        }
-
-        platformChart = new Chart(canvas, {
-            type: "line",
-            data: {
-                labels,
-                datasets: [
-                    {
-                        label: "Users",
-                        data: getDailyData(users.data, "count"),
-                        borderColor: "#8b5cf6",
-                        backgroundColor: "#8b5cf6",
-                        tension: 0.4
-                    },
-                    {
-                        label: "Deposits",
-                        data: getDailyData(deposits.data, "amount"),
-                        borderColor: "#10b981",
-                        backgroundColor: "#10b981",
-                        tension: 0.4
-                    },
-                    {
-                        label: "Withdrawals",
-                        data: getDailyData(withdrawals.data, "amount"),
-                        borderColor: "#f59e0b",
-                        backgroundColor: "#f59e0b",
-                        tension: 0.4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: { color: "#ffffff" }
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: { color: "#c4b5fd" },
-                        grid: { color: "#292743" }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: "#c4b5fd" },
-                        grid: { color: "#292743" }
-                    }
-                }
-            }
-        });
-
-    } catch (error) {
-        console.error("Platform chart error:", error);
-    }
+#adminApp {
+    min-height: 100vh;
 }
 
-// ======================================
-// TASK SUBMISSIONS
-// ======================================
-
-async function loadAdminSubmissions() {
-    if (!adminVerified) return;
-
-    const container = $("adminSubmissions");
-
-    try {
-        const { data, error } = await db
-            .from("task_submissions")
-            .select("id, user_id, proof, status, submitted_at, tasks(title, reward)")
-            .eq("status", "pending")
-            .order("submitted_at", { ascending: true });
-
-        if (error) throw error;
-
-        if (!data?.length) {
-            container.textContent = "No pending submissions.";
-            return;
-        }
-
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>${escapeHTML(item.tasks?.title || "Task")}</h3>
-                <p>User ID: ${escapeHTML(item.user_id)}</p>
-                <p>Proof: ${escapeHTML(item.proof || "")}</p>
-                <p>Reward: ${money(item.tasks?.reward)}</p>
-
-               <button onclick="adminApproveTask('${escapeHTML(item.id)}')">
-                    Approve
-                </button>
-
-              <button onclick="adminRejectTask('${escapeHTML(item.id)}')">
-                    Reject
-                </button>
-            </article>
-        `).join("");
-
-    } catch (error) {
-        console.error("Submissions error:", error);
-        container.textContent = "Could not load submissions: " + error.message;
-    }
+.sidebar {
+    width: 250px;
+    position: fixed;
+    inset: 0 auto 0 0;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    padding: 28px 18px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
 }
 
-window.adminApproveTask = async function(id) {
-    if (!adminVerified) return;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 45px;
+}
 
-    if (!confirm("Approve this task and credit its reward?")) return;
+.brand-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    font-size: 25px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #8b5cf6, #5b21b6);
+}
 
-    try {
-        const { data, error } = await db.rpc(
-            "approve_task_submission",
-            { p_submission_id: id }
-        );
+.brand h2 {
+    margin: 0;
+    font-size: 20px;
+}
 
-        if (error) throw error;
+.brand small {
+    color: var(--purple-light);
+    font-size: 10px;
+    letter-spacing: 2px;
+}
 
-        alert(data || "Task approved successfully.");
+.sidebar nav {
+    display: grid;
+    gap: 9px;
+}
 
-        await Promise.all([
-            loadAdminSubmissions(),
-            loadAdminAnalytics()
-        ]);
+.sidebar nav a {
+    padding: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: .2s;
+}
 
-    } catch (error) {
-        alert("Approval failed: " + error.message);
-    }
-};
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: #292044;
+    color: white;
+    border-left: 3px solid var(--purple);
+}
 
-window.adminRejectTask = async function(id) {
-    if (!adminVerified) return;
+.sidebar-bottom {
+    margin-top: auto;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 15px 5px;
+}
 
-    if (!confirm("Reject this task submission?")) return;
+.online-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 7px;
+}
 
-    try {
-        const { data, error } = await db.rpc(
-            "reject_task_submission",
-            { p_submission_id: id }
-        );
+.sidebar-bottom button {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: white;
+    background: #211c36;
+    cursor: pointer;
+}
 
-        if (error) throw error;
+.main-content {
+    margin-left: 250px;
+    padding: 30px;
+    max-width: 1700px;
+}
 
-        alert(data || "Task rejected.");
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
 
-        await loadAdminSubmissions();
+.topbar small,
+.eyebrow {
+    color: var(--purple-light);
+    font-size: 10px;
+    letter-spacing: 2px;
+}
 
-    } catch (error) {
-        alert("Rejection failed: " + error.message);
-    }
-};
+.topbar h1 {
+    margin: 8px 0;
+    font-size: 27px;
+}
 
-// ======================================
-// WITHDRAWAL REQUESTS
-// ======================================
+.admin-profile {
+    padding: 12px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 13px;
+}
 
-async function loadAdminWithdrawals() {
-    if (!adminVerified) return;
+.welcome-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 30px;
+    border: 1px solid #49317c;
+    border-radius: 18px;
+    background: linear-gradient(110deg, #211638, #171327);
+    margin-bottom: 25px;
+}
 
-    const container = $("adminWithdrawals");
+.welcome-section h2 {
+    font-size: 24px;
+    margin: 12px 0 6px;
+}
 
-    try {
-        const { data, error } = await db
-            .from("withdrawal_requests")
-            .select("*")
-            .in("status", ["pending", "approved"])
-            .order("created_at", { ascending: true });
+.welcome-section p {
+    color: var(--muted);
+    margin: 0;
+}
 
-        if (error) throw error;
+button {
+    cursor: pointer;
+    transition: .2s;
+}
 
-        if (!data?.length) {
-            container.textContent = "No pending withdrawal requests.";
-            return;
-        }
+#refreshAll,
+.task-form button {
+    background: linear-gradient(135deg, #9b6bff, #6d28d9);
+    color: white;
+    border: 0;
+    border-radius: 9px;
+    padding: 13px 19px;
+    font-weight: bold;
+}
 
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>Withdrawal: ${money(item.amount)}</h3>
-                <p>User ID: ${escapeHTML(item.user_id)}</p>
-                <p>Method: ${escapeHTML(item.method)}</p>
-                <p>Account Name: ${escapeHTML(item.account_name)}</p>
-                <p>Account Number: ${escapeHTML(item.account_number)}</p>
-                <p>Status: ${escapeHTML(item.status)}</p>
+button:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+}
 
-                ${
-                    item.status === "pending"
-                    ? `
-                        <button onclick="adminProcessWithdrawal(${JSON.stringify(item.id)}, true)">
-                            Approve
-                        </button>
-                        <button onclick="adminProcessWithdrawal(${JSON.stringify(item.id)}, false)">
-                            Reject
-                        </button>
-                    `
-                    : `
-                        <button onclick="adminMarkPaid(${JSON.stringify(item.id)})">
-                            Mark as Paid
-                        </button>
-                    `
-                }
-            </article>
-        `).join("");
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 25px;
+}
 
-    } catch (error) {
-        console.error("Withdrawal error:", error);
-        container.textContent = "Could not load withdrawals: " + error.message;
+.stat-card,
+.content-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.stat-card span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.stat-card h2 {
+    color: var(--purple-light);
+    font-size: 27px;
+    margin: 15px 0 8px;
+    overflow-wrap: anywhere;
+}
+
+.stat-card small {
+    color: var(--muted);
+}
+
+.content-card {
+    margin-bottom: 22px;
+    overflow-x: auto;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.section-heading h2 {
+    margin: 8px 0 0;
+    font-size: 20px;
+}
+
+.task-form {
+    display: grid;
+    gap: 12px;
+    max-width: 700px;
+}
+
+.task-form label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.task-form input,
+.task-form textarea,
+input {
+    width: 100%;
+    background: #0d0d1b;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 13px;
+    font: inherit;
+    outline: none;
+}
+
+.task-form input:focus,
+.task-form textarea:focus {
+    border-color: var(--purple);
+}
+
+.task-form button {
+    margin-top: 8px;
+}
+
+.card {
+    background: #101020;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 14px;
+    overflow-wrap: anywhere;
+}
+
+.card h3 {
+    color: var(--purple-light);
+    margin-top: 0;
+}
+
+.card p {
+    color: #c6c2d9;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.card button {
+    padding: 10px 15px;
+    margin: 5px 5px 0 0;
+    border: 0;
+    border-radius: 7px;
+    font-weight: bold;
+    background: var(--purple);
+    color: white;
+}
+
+.card button:hover {
+    filter: brightness(1.15);
+}
+
+.loader,
+#accessDenied {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.loader-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 35px;
+    border-radius: 18px;
+}
+
+.loader-card h2 {
+    color: var(--purple-light);
+}
+
+#accessDenied a {
+    color: var(--purple-light);
+}
+
+@media (max-width: 1100px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-window.adminProcessWithdrawal = async function(id, approve) {
-    if (!adminVerified) return;
-
-    const action = approve ? "approve" : "reject";
-
-    if (!confirm("Are you sure you want to " + action + " this request?")) {
-        return;
+@media (max-width: 700px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        padding: 18px;
     }
 
-    try {
-        const { error } = await db.rpc(
-            "admin_process_withdrawal",
-            {
-                p_request_id: id,
-                p_approve: approve
-            }
-        );
-
-        if (error) throw error;
-
-        alert("Withdrawal " + action + "d successfully.");
-
-        await Promise.all([
-            loadAdminWithdrawals(),
-            loadAdminAnalytics()
-        ]);
-
-    } catch (error) {
-        alert("Withdrawal error: " + error.message);
-    }
-};
-
-window.adminMarkPaid = async function(id) {
-    if (!adminVerified) return;
-
-    const transactionId = prompt(
-        "Enter the payment transaction/reference ID:"
-    );
-
-    if (!transactionId?.trim()) {
-        alert("Transaction ID is required.");
-        return;
+    .brand {
+        margin-bottom: 20px;
     }
 
-    if (!confirm("Have you actually transferred the money?")) return;
-
-    try {
-        const { data, error } = await db.rpc(
-            "admin_mark_withdrawal_paid",
-            {
-                p_request_id: id,
-                p_transaction_id: transactionId.trim()
-            }
-        );
-
-        if (error) throw error;
-
-        alert(data || "Withdrawal marked as paid.");
-
-        await Promise.all([
-            loadAdminWithdrawals(),
-            loadAdminAnalytics()
-        ]);
-
-    } catch (error) {
-        alert("Payment update failed: " + error.message);
+    .sidebar nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-};
 
-// ======================================
-// DEPOSIT REQUESTS
-// ======================================
+    .sidebar-bottom {
+        margin-top: 15px;
+    }
 
-async function loadAdminDeposits() {
-    if (!adminVerified) return;
+    .main-content {
+        margin-left: 0;
+        padding: 16px;
+    }
 
-    const container = $("adminDeposits");
+    .topbar,
+    .welcome-section {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 
-    try {
-        const { data, error } = await db
-            .from("deposit_requests")
-            .select("*")
-            .in("status", ["pending", "approved"])
-            .order("created_at", { ascending: true });
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
 
-        if (error) throw error;
+    .stat-card,
+    .content-card {
+        padding: 15px;
+    }
 
-        if (!data?.length) {
-            container.textContent = "No deposit requests.";
-            return;
-        }
-
-        const cards = await Promise.all(data.map(async item => {
-            let screenshot = "";
-
-            if (item.screenshot_url) {
-                const { data: signed, error: imageError } =
-                    await db.storage
-                        .from("deposit-screenshots")
-                        .createSignedUrl(item.screenshot_url, 600);
-
-                if (!imageError && signed?.signedUrl) {
-                    screenshot = `
-                        <p><strong>Payment Screenshot:</strong></p>
-                        <img src="${escapeHTML(signed.signedUrl)}"
-                             alt="Deposit screenshot"
-                             style="max-width:250px;width:100%;border-radius:8px;">
-                    `;
-                }
-            }
-
-            return `
-                <article class="card">
-                    <h3>Deposit: ${money(item.amount)}</h3>
-                    <p>User ID: ${escapeHTML(item.user_id)}</p>
-                    <p>Method: ${escapeHTML(item.payment_method)}</p>
-                    <p>Transaction ID: ${escapeHTML(item.transaction_id)}</p>
-                    <p>Status: ${escapeHTML(item.status)}</p>
-
-                    ${screenshot}
-
-                    ${
-                        item.status === "pending"
-                        ? `
-                            <button onclick="adminProcessDeposit(${JSON.stringify(item.id)}, true)">
-                                Approve
-                            </button>
-                            <button onclick="adminProcessDeposit(${JSON.stringify(item.id)}, false)">
-                                Reject
-                            </button>
-                        `
-                        : ""
-                    }
-                </article>
-            `;
-        }));
-
-        container.innerHTML = cards.join("");
-
-    } catch (error) {
-        console.error("Deposit error:", error);
-        container.textContent = "Could not load deposits: " + error.message;
+    .stat-card h2 {
+        font-size: 21px;
     }
 }
-
-window.adminProcessDeposit = async function(id, approve) {
-    if (!adminVerified) return;
-
-    const action = approve ? "approve" : "reject";
-
-    if (!confirm("Are you sure you want to " + action + " this deposit?")) {
-        return;
-    }
-
-    try {
-        const { data, error } = await db.rpc(
-            "admin_process_deposit",
-            {
-                p_deposit_id: id,
-                p_approve: approve
-            }
-        );
-
-        if (error) throw error;
-
-        alert(
-            approve
-                ? "Deposit approved successfully!"
-                : "Deposit rejected successfully!"
-        );
-
-        await Promise.all([
-            loadAdminDeposits(),
-            loadAdminAnalytics()
-        ]);
-
-    } catch (error) {
-        alert("Deposit processing failed: " + error.message);
-    }
-};
-
-// ======================================
-// SUPPORT MESSAGES
-// ======================================
-
-async function loadAdminSupportMessages() {
-    if (!adminVerified) return;
-
-    const container = $("adminSupportMessages");
-    if (!container) return;
-
-    container.textContent = "Loading support messages...";
-
-    try {
-        const { data, error } = await db
-            .from("support_messages")
-            .select("*")
-            .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        if (!data?.length) {
-            container.textContent = "No support messages yet.";
-            return;
-        }
-
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>Support Request #${item.id}</h3>
-
-                <p><strong>User ID:</strong>
-                    ${escapeHTML(item.user_id)}
-                </p>
-
-                <p><strong>Message:</strong></p>
-                <p>${escapeHTML(item.message)}</p>
-
-                <p><strong>Status:</strong>
-                    ${escapeHTML(item.status)}
-                </p>
-
-                ${
-                    item.admin_reply
-                    ? `
-                        <p><strong>Your Reply:</strong></p>
-                        <p>${escapeHTML(item.admin_reply)}</p>
-                    `
-                    : ""
-                }
-
-                <textarea
-                    id="supportReply${item.id}"
-                    rows="3"
-                    placeholder="Write your reply..."
-                >${escapeHTML(item.admin_reply || "")}</textarea>
-
-                <button onclick="adminReplySupport(${item.id})">
-                    Send Reply
-                </button>
-            </article>
-        `).join("");
-
-    } catch (error) {
-        console.error("Support messages error:", error);
-        container.textContent =
-            "Could not load messages: " + error.message;
-    }
-}
-
-window.adminReplySupport = async function(id) {
-    if (!adminVerified) return;
-
-    const textarea = $("supportReply" + id);
-    const reply = textarea?.value.trim();
-
-    if (!reply) {
-        alert("Please write a reply first.");
-        return;
-    }
-
-    try {
-        const { error } = await db
-            .from("support_messages")
-            .update({
-                admin_reply: reply,
-                status: "replied",
-                replied_at: new Date().toISOString()
-            })
-            .eq("id", id);
-
-        if (error) throw error;
-
-        alert("Reply sent successfully!");
-
-        await loadAdminSupportMessages();
-
-    } catch (error) {
-        alert("Reply failed: " + error.message);
-    }
-};
-
-$("refreshSupport")?.addEventListener(
-    "click",
-    loadAdminSupportMessages
-);
-
-// ======================================
-// CREATE TASK
-// ======================================
-
-$("createTaskForm")?.addEventListener("submit", async event => {
-    event.preventDefault();
-
-    if (!adminVerified) {
-        alert("Admin access required.");
-        return;
-    }
-
-    const title = $("taskTitle").value.trim();
-    const description = $("taskDescription").value.trim();
-    const taskUrl = $("taskUrl").value.trim();
-    const reward = Number($("taskReward").value);
-    const button = $("createTaskButton");
-
-    if (!title || !Number.isFinite(reward) || reward <= 0) {
-        alert("Enter a valid task title and reward.");
-        return;
-    }
-
-    if (taskUrl) {
-        try {
-            const parsed = new URL(taskUrl);
-
-            if (!["http:", "https:"].includes(parsed.protocol)) {
-                throw new Error("Invalid URL.");
-            }
-        } catch {
-            alert("Please enter a valid task URL.");
-            return;
-        }
-    }
-
-    button.disabled = true;
-
-    try {
-        const { error } = await db.from("tasks").insert({
-            title,
-            description,
-            task_url: taskUrl || null,
-            reward,
-            verification_method: "manual",
-            is_active: true
-        });
-
-        if (error) throw error;
-
-        alert("Task created successfully!");
-        $("createTaskForm").reset();
-
-    } catch (error) {
-        alert("Could not create task: " + error.message);
-    } finally {
-        button.disabled = false;
-    }
-});
-
-// ======================================
-// REFRESH DASHBOARD
-// ======================================
-
-async function refreshAdminDashboard() {
-    if (!adminVerified) return;
-
-await Promise.all([
-    loadAdminAnalytics(),
-    loadAdminSubmissions(),
-    loadAdminWithdrawals(),
-    loadAdminDeposits(),
-    loadPlatformChart(),
-    loadAdminSupportMessages()
-]);
-}
-
-$("refreshAll")?.addEventListener("click", refreshAdminDashboard);
-
-// ======================================
-// LOGOUT
-// ======================================
-
-$("logoutButton")?.addEventListener("click", async () => {
-    if (!confirm("Are you sure you want to logout?")) return;
-
-    const { error } = await db.auth.signOut();
-
-    if (error) {
-        alert("Logout failed: " + error.message);
-        return;
-    }
-
-    window.location.replace("index.html");
-});
-
-// ======================================
-// INITIALIZE ADMIN PANEL
-// ======================================
-
-async function initializeAdminPanel() {
-    try {
-        const allowed = await verifyAdmin();
-
-        if (allowed) {
-            await refreshAdminDashboard();
-        }
-
-    } catch (error) {
-        console.error("Admin initialization error:", error);
-        showDenied("Could not verify administrator access: " + error.message);
-    }
-}
-
-initializeAdminPanel();
-
-db?.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_OUT" || !session) {
-        window.location.replace("index.html");
-    }
-});

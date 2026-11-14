@@ -16,9 +16,8 @@ function escapeHTML(value) {
         "'": "&#39;"
     })[char]);
 }
-
 function money(value) {
-    return "$" + Number(value || 0).toFixed(2);
+    return "₨" + Number(value || 0).toFixed(2);
 }
 
 function showDenied(message) {
