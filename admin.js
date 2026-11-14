@@ -301,11 +301,11 @@ async function loadAdminSubmissions() {
                 <p>Proof: ${escapeHTML(item.proof || "")}</p>
                 <p>Reward: ${money(item.tasks?.reward)}</p>
 
-                <button onclick="adminApproveTask(${JSON.stringify(item.id)})">
+               <button onclick="adminApproveTask('${escapeHTML(item.id)}')">
                     Approve
                 </button>
 
-                <button onclick="adminRejectTask(${JSON.stringify(item.id)})">
+              <button onclick="adminRejectTask('${escapeHTML(item.id)}')">
                     Reject
                 </button>
             </article>
