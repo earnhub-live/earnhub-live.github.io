@@ -603,6 +603,111 @@ window.adminProcessDeposit = async function(id, approve) {
 };
 
 // ======================================
+// SUPPORT MESSAGES
+// ======================================
+
+async function loadAdminSupportMessages() {
+    if (!adminVerified) return;
+
+    const container = $("adminSupportMessages");
+    if (!container) return;
+
+    container.textContent = "Loading support messages...";
+
+    try {
+        const { data, error } = await db
+            .from("support_messages")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        if (!data?.length) {
+            container.textContent = "No support messages yet.";
+            return;
+        }
+
+        container.innerHTML = data.map(item => `
+            <article class="card">
+                <h3>Support Request #${item.id}</h3>
+
+                <p><strong>User ID:</strong>
+                    ${escapeHTML(item.user_id)}
+                </p>
+
+                <p><strong>Message:</strong></p>
+                <p>${escapeHTML(item.message)}</p>
+
+                <p><strong>Status:</strong>
+                    ${escapeHTML(item.status)}
+                </p>
+
+                ${
+                    item.admin_reply
+                    ? `
+                        <p><strong>Your Reply:</strong></p>
+                        <p>${escapeHTML(item.admin_reply)}</p>
+                    `
+                    : ""
+                }
+
+                <textarea
+                    id="supportReply${item.id}"
+                    rows="3"
+                    placeholder="Write your reply..."
+                >${escapeHTML(item.admin_reply || "")}</textarea>
+
+                <button onclick="adminReplySupport(${item.id})">
+                    Send Reply
+                </button>
+            </article>
+        `).join("");
+
+    } catch (error) {
+        console.error("Support messages error:", error);
+        container.textContent =
+            "Could not load messages: " + error.message;
+    }
+}
+
+window.adminReplySupport = async function(id) {
+    if (!adminVerified) return;
+
+    const textarea = $("supportReply" + id);
+    const reply = textarea?.value.trim();
+
+    if (!reply) {
+        alert("Please write a reply first.");
+        return;
+    }
+
+    try {
+        const { error } = await db
+            .from("support_messages")
+            .update({
+                admin_reply: reply,
+                status: "replied",
+                replied_at: new Date().toISOString()
+            })
+            .eq("id", id);
+
+        if (error) throw error;
+
+        alert("Reply sent successfully!");
+
+        await loadAdminSupportMessages();
+
+    } catch (error) {
+        alert("Reply failed: " + error.message);
+    }
+};
+
+$("refreshSupport")?.addEventListener(
+    "click",
+    loadAdminSupportMessages
+);
+
+// ======================================
 // CREATE TASK
 // ======================================
 
@@ -669,12 +774,13 @@ $("createTaskForm")?.addEventListener("submit", async event => {
 async function refreshAdminDashboard() {
     if (!adminVerified) return;
 
-    await Promise.all([
+await Promise.all([
     loadAdminAnalytics(),
     loadAdminSubmissions(),
     loadAdminWithdrawals(),
     loadAdminDeposits(),
-    loadPlatformChart()
+    loadPlatformChart(),
+    loadAdminSupportMessages()
 ]);
 }
 
