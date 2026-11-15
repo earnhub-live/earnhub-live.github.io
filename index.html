@@ -409,6 +409,112 @@
 </div>
 
 
+<!-- PACKAGES SECTION -->
+<section class="panel packages-panel" id="packages">
+
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">INVEST & EARN</span>
+            <h2>Available Packages</h2>
+            <p class="muted">Choose a package to start earning rewards.</p>
+        </div>
+        <span class="wallet-icon">💎</span>
+    </div>
+
+    <div class="packages-grid">
+
+        <div class="package-card">
+            <h3>Silver</h3>
+            <h2>₨200</h2>
+            <p>Daily Reward: ₨20</p>
+            <p>Duration: 60 Days</p>
+            <button onclick="activatePackage('silver')">Activate Package</button>
+        </div>
+
+        <div class="package-card">
+            <h3>Platinum</h3>
+            <h2>₨500</h2>
+            <p>Daily Reward: ₨50</p>
+            <p>Duration: 60 Days</p>
+            <button onclick="activatePackage('platinum')">Activate Package</button>
+        </div>
+
+        <div class="package-card">
+            <h3>Gold</h3>
+            <h2>₨1,200</h2>
+            <p>Daily Reward: ₨100</p>
+            <p>Duration: 60 Days</p>
+            <button onclick="activatePackage('gold')">Activate Package</button>
+        </div>
+
+        <div class="package-card">
+            <h3>VIP Gold</h3>
+            <h2>₨2,200</h2>
+            <p>Daily Reward: ₨270</p>
+            <p>Duration: 60 Days</p>
+            <button onclick="activatePackage('vip_gold')">Activate Package</button>
+        </div>
+
+        <div class="package-card">
+            <h3>VVIP Gold</h3>
+            <h2>₨5,000</h2>
+            <p>Daily Reward: ₨400</p>
+            <p>Duration: 60 Days</p>
+            <button onclick="activatePackage('vvip_gold')">Activate Package</button>
+        </div>
+
+        <div class="package-card">
+            <h3>Diamond</h3>
+            <h2>₨12,000</h2>
+            <p>Daily Reward: ₨700</p>
+            <p>Duration: 60 Days</p>
+            <button onclick="activatePackage('diamond')">Activate Package</button>
+        </div>
+
+    </div>
+
+    <p class="muted">
+        Rewards are subject to available approved business-income funding.
+        Daily rewards are not guaranteed.
+    </p>
+
+</section>
+<!-- END PACKAGES SECTION -->
+ <!-- CURRENT ACTIVE PACKAGE -->
+<section class="panel" id="currentActivePackage">
+
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">YOUR ACTIVE PLAN</span>
+            <h2>💎 Current Active Package</h2>
+        </div>
+    </div>
+
+    <div id="activePackageDetails">
+        Loading active package...
+    </div>
+
+</section>
+<!-- PACKAGE HISTORY -->
+<section class="panel" id="packageHistory">
+
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">PACKAGE ACTIVITY</span>
+            <h2>💎 My Package History</h2>
+            <p class="muted">
+                Track your package purchases and activation status.
+            </p>
+        </div>
+
+        <span class="wallet-icon">💎</span>
+    </div>
+
+    <div id="myPackageHistory">
+        Loading package history...
+    </div>
+
+</section>
     <!-- AVAILABLE TASKS -->
     <section class="panel" id="tasks">
 
