@@ -312,6 +312,8 @@ await Promise.all([
     loadTasks(),
     loadMySubmissions(),
     loadTransactions(),
+    loadPackageHistory(),
+    loadCurrentActivePackage(),
     loadWithdrawalHistory(),
     loadDepositHistory()
 ]);
@@ -1673,7 +1675,13 @@ async function loadTransactions() {
 
         container.innerHTML = data.map(item => `
             <article class="card">
-                <p>Type: ${escapeHTML(item.transaction_type)}</p>
+               <p>Type: ${escapeHTML(
+    item.transaction_type === "package_purchase"
+        ? "Package Purchase"
+        : item.transaction_type === "task_reward"
+            ? "Task Reward"
+            : item.transaction_type
+)}</p>
                 <p>Amount: ${money(item.amount)}</p>
                 <p>Date: ${escapeHTML(
                     item.created_at
@@ -1687,6 +1695,118 @@ async function loadTransactions() {
         console.error("Transaction error:", error);
 
         container.textContent = "Could not load transactions.";
+    }
+}
+
+async function loadPackageHistory() {
+    if (!db || !currentUser) return;
+
+    const container = el("myPackageHistory");
+    if (!container) return;
+
+    const packageNames = {
+        1: "Silver",
+        2: "Platinum",
+        3: "Gold",
+        4: "VIP Gold",
+        5: "VVIP Gold",
+        6: "Diamond"
+    };
+
+    try {
+        const { data, error } = await db
+            .from("package_orders")
+            .select("id, package_id, package_price, daily_reward, duration_days, status, created_at, activated_at, expires_at")
+            .eq("user_id", currentUser.id)
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            container.textContent = "No package history yet.";
+            return;
+        }
+
+        container.innerHTML = data.map(item => `
+            <article class="card">
+                <h3>${escapeHTML(packageNames[item.package_id] || "Package")}</h3>
+                <p>Price: ${money(item.package_price)}</p>
+                <p>Daily Reward: ${money(item.daily_reward)}</p>
+                <p>Duration: ${escapeHTML(item.duration_days)} Days</p>
+                <p>Status: ${escapeHTML(
+    item.status.toUpperCase()
+)}</p>
+                <p>Request Date: ${escapeHTML(
+                    item.created_at
+                        ? new Date(item.created_at).toLocaleString()
+                        : "N/A"
+                )}</p>
+                <p>Activation Date: ${escapeHTML(
+                    item.activated_at
+                        ? new Date(item.activated_at).toLocaleDateString()
+                        : "Not activated"
+                )}</p>
+                <p>Expiry Date: ${escapeHTML(
+                    item.expires_at
+                        ? new Date(item.expires_at).toLocaleDateString()
+                        : "N/A"
+                )}</p>
+            </article>
+        `).join("");
+
+    } catch (error) {
+        console.error("Package history error:", error);
+        container.textContent = "Could not load package history.";
+    }
+}
+
+async function loadCurrentActivePackage() {
+    if (!db || !currentUser) return;
+
+    const container = el("activePackageDetails");
+    if (!container) return;
+
+    const packageNames = {
+        1: "Silver",
+        2: "Platinum",
+        3: "Gold",
+        4: "VIP Gold",
+        5: "VVIP Gold",
+        6: "Diamond"
+    };
+
+    try {
+        const { data, error } = await db
+            .from("package_orders")
+            .select("package_id, package_price, daily_reward, duration_days, activated_at, expires_at")
+            .eq("user_id", currentUser.id)
+            .eq("status", "active")
+            .order("activated_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (!data) {
+            container.textContent = "No active package.";
+            return;
+        }
+
+        container.innerHTML = `
+            <article class="card">
+                <h3>${escapeHTML(packageNames[data.package_id] || "Package")}</h3>
+                <p>Status: ACTIVE</p>
+                <p>Price: ${money(data.package_price)}</p>
+                <p>Daily Reward: ${money(data.daily_reward)}</p>
+                <p>Duration: ${escapeHTML(data.duration_days)} Days</p>
+                <p>Activation Date: ${data.activated_at ? escapeHTML(new Date(data.activated_at).toLocaleDateString()) : "N/A"}</p>
+                <p>Expiry Date: ${data.expires_at ? escapeHTML(new Date(data.expires_at).toLocaleDateString()) : "N/A"}</p>
+            </article>
+        `;
+
+    } catch (error) {
+        console.error("Current package error:", error);
+        container.textContent = "Could not load active package.";
     }
 }
 
@@ -2014,5 +2134,75 @@ async function copyReferralLink() {
             alert("Please copy the link manually.");
         }
 
+    }
+}
+
+/* ========================================
+   EARNHUB PACKAGE ACTIVATION
+======================================== */
+
+
+/* ========================================
+   EARNHUB PACKAGE ACTIVATION
+======================================== */
+
+async function activatePackage(packageName) {
+
+    const packageIds = {
+        silver: 1,
+        platinum: 2,
+        gold: 3,
+        vip_gold: 4,
+        vvip_gold: 5,
+        diamond: 6
+    };
+
+    const packageId = packageIds[packageName];
+
+    if (!packageId) {
+        alert("Invalid package selected.");
+        return;
+    }
+
+    const client = window.supabaseClient;
+
+    if (!client) {
+        alert("Database connection not available.");
+        return;
+    }
+
+    const confirmed = confirm(
+        "Do you want to submit this package request for admin approval?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+
+        const { data, error } = await client.rpc(
+            "request_package",
+            {
+                p_package_id: packageId
+            }
+        );
+
+        if (error) {
+            throw error;
+        }
+
+        alert(
+            "Package request submitted successfully! " +
+            "Your request is now Pending Admin Approval."
+        );
+
+        location.reload();
+
+    } catch (error) {
+
+        console.error("Package Request Error:", error);
+
+        alert(
+            "Package request failed: " + error.message
+        );
     }
 }
