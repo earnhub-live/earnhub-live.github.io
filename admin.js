@@ -367,6 +367,112 @@ window.adminRejectTask = async function(id) {
 // WITHDRAWAL REQUESTS
 // ======================================
 
+// ======================================
+// PACKAGE REQUESTS
+// ======================================
+
+async function loadAdminPackageRequests() {
+    if (!adminVerified) return;
+
+    const container = $("adminPackageRequests");
+    if (!container) return;
+
+    container.textContent = "Loading package requests...";
+
+    try {
+        const { data, error } = await db
+            .from("package_orders")
+            .select("id, user_id, package_id, package_price, daily_reward, duration_days, status, created_at")
+            .eq("status", "pending")
+            .order("created_at", { ascending: true });
+
+        if (error) throw error;
+
+        if (!data?.length) {
+            container.textContent = "No pending package requests.";
+            return;
+        }
+
+        container.innerHTML = data.map(item => `
+            <article class="card">
+                <h3>Package Request #${escapeHTML(item.id)}</h3>
+                <p>User ID: ${escapeHTML(item.user_id)}</p>
+                <p>Package ID: ${escapeHTML(item.package_id)}</p>
+                <p>Package Price: ${money(item.package_price)}</p>
+                <p>Daily Reward: ${money(item.daily_reward)}</p>
+                <p>Duration: ${escapeHTML(item.duration_days)} Days</p>
+                <p>Status: Pending</p>
+
+                <button onclick="adminApprovePackage(${JSON.stringify(item.id)})">
+                    Approve
+                </button>
+
+                <button onclick="adminRejectPackage(${JSON.stringify(item.id)})">
+                    Reject
+                </button>
+            </article>
+        `).join("");
+
+    } catch (error) {
+        console.error("Package requests error:", error);
+        container.textContent =
+            "Could not load package requests: " + error.message;
+    }
+}
+
+window.adminApprovePackage = async function(id) {
+    if (!adminVerified) return;
+
+    if (!confirm("Approve this package? User balance will be deducted.")) {
+        return;
+    }
+
+    try {
+        const { data, error } = await db.rpc(
+            "admin_approve_package",
+            { p_order_id: id }
+        );
+
+        if (error) throw error;
+
+        alert("Package approved successfully!");
+
+        await loadAdminPackageRequests();
+
+    } catch (error) {
+        alert("Package approval failed: " + error.message);
+    }
+};
+
+window.adminRejectPackage = async function(id) {
+    if (!adminVerified) return;
+
+    if (!confirm("Are you sure you want to reject this package request?")) {
+        return;
+    }
+
+    try {
+        const { data, error } = await db.rpc(
+            "admin_reject_package",
+            { p_order_id: id }
+        );
+
+        if (error) throw error;
+
+        alert("Package request rejected.");
+
+        await loadAdminPackageRequests();
+
+    } catch (error) {
+        alert("Package rejection failed: " + error.message);
+    }
+};
+
+$("refreshPackages")?.addEventListener(
+    "click",
+    loadAdminPackageRequests
+);
+
 async function loadAdminWithdrawals() {
     if (!adminVerified) return;
 
@@ -767,6 +873,140 @@ $("createTaskForm")?.addEventListener("submit", async event => {
 });
 
 // ======================================
+// PACKAGE REWARD FUNDING
+// ======================================
+
+async function loadAdminPackageFunding() {
+    const historyBox = $("packageFundingHistory");
+
+    try {
+        const [fundingResult, rewardsResult] = await Promise.all([
+            db.from("package_reward_funding")
+                .select("id, amount, source, reference_note, status, created_at")
+                .order("created_at", { ascending: false }),
+
+            db.from("package_reward_history")
+                .select("amount")
+        ]);
+
+        if (fundingResult.error) throw fundingResult.error;
+        if (rewardsResult.error) throw rewardsResult.error;
+
+        const fundingRows = fundingResult.data || [];
+        const rewardRows = rewardsResult.data || [];
+
+        const totalFunding = fundingRows
+            .filter(item => item.status === "approved")
+            .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+        const totalRewards = rewardRows
+            .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+        const availableFunding = totalFunding - totalRewards;
+
+        $("totalPackageFunding").textContent =
+            "Rs. " + totalFunding.toFixed(2);
+
+        $("totalPackageRewards").textContent =
+            "Rs. " + totalRewards.toFixed(2);
+
+        $("availablePackageFunding").textContent =
+            "Rs. " + availableFunding.toFixed(2);
+
+        if (!fundingRows.length) {
+            historyBox.innerHTML = "<p>No funding records found.</p>";
+            return;
+        }
+
+        historyBox.innerHTML = `
+            <h3>Funding History</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Source</th>
+                            <th>Reference</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${fundingRows.map(item => `
+                            <tr>
+                                <td>Rs. ${Number(item.amount).toFixed(2)}</td>
+                                <td>${escapeHTML(item.source)}</td>
+                                <td>${escapeHTML(item.reference_note || "—")}</td>
+                                <td>${escapeHTML(item.status.toUpperCase())}</td>
+                                <td>${new Date(item.created_at).toLocaleString()}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+    } catch (error) {
+        console.error("Package funding error:", error);
+        historyBox.innerHTML =
+            `<p>Could not load funding: ${escapeHTML(error.message)}</p>`;
+    }
+}
+
+// ADD VERIFIED FUNDING
+$("packageFundingForm")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!adminVerified) {
+        alert("Administrator verification required.");
+        return;
+    }
+
+    const amount = Number($("packageFundingAmount").value);
+    const source = $("packageFundingSource").value.trim();
+    const reference = $("packageFundingReference").value.trim();
+    const button = $("addPackageFundingButton");
+
+    if (!Number.isFinite(amount) || amount <= 0 || !source || !reference) {
+        alert("Enter a valid amount, funding source, and verification reference.");
+        return;
+    }
+
+    if (!confirm(
+        "Confirm that Rs. " + amount.toFixed(2) +
+        " has actually been received and verified?"
+    )) return;
+
+    button.disabled = true;
+
+    try {
+        const { error } = await db.rpc("add_package_reward_funding", {
+            p_amount: amount,
+            p_source: source,
+            p_reference_note: reference
+        });
+
+        if (error) throw error;
+
+        alert("Verified package funding added successfully!");
+
+        $("packageFundingForm").reset();
+        await loadAdminPackageFunding();
+
+    } catch (error) {
+        alert("Could not add funding: " + error.message);
+    } finally {
+        button.disabled = false;
+    }
+});
+
+// REFRESH FUNDING
+$("refreshPackageFunding")?.addEventListener(
+    "click",
+    loadAdminPackageFunding
+);
+
+// ======================================
 // REFRESH DASHBOARD
 // ======================================
 
@@ -778,6 +1018,8 @@ await Promise.all([
     loadAdminSubmissions(),
     loadAdminWithdrawals(),
     loadAdminDeposits(),
+    loadAdminPackageRequests(),
+    loadAdminPackageFunding(),
     loadPlatformChart(),
     loadAdminSupportMessages()
 ]);
