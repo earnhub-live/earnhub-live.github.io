@@ -284,9 +284,9 @@ async function loadDashboard(user) {
         );
 
         setText("totalEarnings", money(profile.total_earnings));
-        setText("availableBalance", money(profile.available_balance));
+        setText("availableBalance", money(profile.deposit_balance));
         setText("completedTasks", profile.completed_tasks || 0);
-        setText("walletBalance", money(profile.available_balance));
+       setText("walletBalance", money(profile.deposit_balance));
 
         setText(
             "walletEarnings",
