@@ -1,5 +1,3 @@
-
 User-agent: *
 Allow: /
-
 Sitemap: https://earnhub-live.github.io/sitemap.xml
