@@ -77,17 +77,18 @@ async function loadSponsorAccount() {
 }
 
 // SPONSOR REGISTRATION
-
 async function registerSponsor(event) {
     event.preventDefault();
 
     if (!await getSession()) return;
 
     const company = $("companyName").value.trim();
+    const contactName = $("contactName").value.trim();
     const email = $("sponsorEmail").value.trim();
+    const phone = $("sponsorPhone").value.trim();
 
-    if (!company || !email) {
-        message("Company name and email are required.", true);
+    if (!company || !contactName || !email || !phone) {
+        message("Please fill all registration fields.", true);
         return;
     }
 
@@ -96,7 +97,9 @@ async function registerSponsor(event) {
         .insert({
             id: currentUser.id,
             company_name: company,
+            contact_name: contactName,
             contact_email: email,
+            contact_phone: phone,
             status: "pending"
         });
 
@@ -111,7 +114,6 @@ async function registerSponsor(event) {
 
     await loadDashboard();
 }
-
 // CAMPAIGN BUDGET CALCULATION
 
 function calculateBudget() {
@@ -304,6 +306,10 @@ async function submitPayment(event) {
 
     const taskId = $("paymentCampaign").value;
     const method = $("paymentMethod").value;
+    if (!["JazzCash Merchant", "UPaisa"].includes(method)) {
+    message("Please select a valid payment method.", true);
+    return;
+}
     const amount = Number($("paymentAmount").value);
     const transactionId = $("transactionId").value.trim();
     const file = $("paymentScreenshot").files[0];
