@@ -366,7 +366,114 @@ window.adminRejectTask = async function(id) {
 // ======================================
 // WITHDRAWAL REQUESTS
 // ======================================
+// ======================================
+// SPONSORED CAMPAIGNS
+// ======================================
 
+async function loadAdminSponsoredCampaigns() {
+    if (!adminVerified) return;
+
+    const container = $("adminSponsoredCampaigns");
+    if (!container) return;
+
+    container.textContent = "Loading sponsored campaigns...";
+
+    try {
+        const { data, error } = await db
+            .from("sponsor_payments")
+            .select(`
+                id, task_id, sponsor_id, sponsor_company,
+                payment_method, payment_amount, transaction_id,
+                submitted_at, screenshot_url
+            `)
+            .eq("payment_status", "pending")
+            .order("submitted_at", { ascending: true });
+
+        if (error) throw error;
+
+        if (!data?.length) {
+            container.textContent = "No pending sponsored payments.";
+            return;
+        }
+
+        container.innerHTML = data.map(item => `
+            <article class="card">
+                <h3>${escapeHTML(item.sponsor_company)}</h3>
+                <p>Task ID: ${escapeHTML(item.task_id)}</p>
+                <p>Amount: ${money(item.payment_amount)}</p>
+                <p>Method: ${escapeHTML(item.payment_method)}</p>
+                <p>Transaction ID: ${escapeHTML(item.transaction_id)}</p>
+                <p>Submitted: ${escapeHTML(item.submitted_at)}</p>
+                ${
+                    item.screenshot_url
+                    ? `<p><a href="#" onclick="adminViewSponsorScreenshot('${escapeHTML(item.id)}'); return false;">View Payment Screenshot</a></p>`
+                    : "<p>No screenshot provided.</p>"
+                }
+                <button onclick="adminVerifySponsoredCampaign('${escapeHTML(item.task_id)}')">
+                    Verify Payment & Activate Campaign
+                </button>
+            </article>
+        `).join("");
+
+    } catch (error) {
+        console.error("Sponsored campaigns error:", error);
+        container.textContent = "Could not load sponsored payments: " + error.message;
+    }
+}
+
+window.adminViewSponsorScreenshot = async function(paymentId) {
+    if (!adminVerified) return;
+
+    try {
+        const { data: payment, error } = await db
+            .from("sponsor_payments")
+            .select("screenshot_url")
+            .eq("id", paymentId)
+            .single();
+
+        if (error) throw error;
+        if (!payment.screenshot_url) throw new Error("Screenshot not found.");
+
+        const { data, error: urlError } = await db.storage
+            .from("deposit-screenshots")
+            .createSignedUrl(payment.screenshot_url, 300);
+
+        if (urlError) throw urlError;
+
+        window.open(data.signedUrl, "_blank", "noopener");
+
+    } catch (error) {
+        alert("Screenshot error: " + error.message);
+    }
+};
+
+window.adminVerifySponsoredCampaign = async function(taskId) {
+    if (!adminVerified) return;
+
+    if (!confirm("Verify sponsor payment and activate this campaign?")) {
+        return;
+    }
+
+    try {
+        const { error } = await db.rpc(
+            "admin_verify_sponsored_campaign",
+            { p_task_id: taskId }
+        );
+
+        if (error) throw error;
+
+        alert("Sponsored campaign verified and activated!");
+        await loadAdminSponsoredCampaigns();
+
+    } catch (error) {
+        alert("Verification failed: " + error.message);
+    }
+};
+
+$("refreshSponsoredCampaigns")?.addEventListener(
+    "click",
+    loadAdminSponsoredCampaigns
+);
 // ======================================
 // PACKAGE REQUESTS
 // ======================================
@@ -1019,6 +1126,7 @@ await Promise.all([
     loadAdminWithdrawals(),
     loadAdminDeposits(),
     loadAdminPackageRequests(),
+    loadAdminSponsoredCampaigns(),
     loadAdminPackageFunding(),
     loadPlatformChart(),
     loadAdminSupportMessages()
