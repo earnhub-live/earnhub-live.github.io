@@ -129,24 +129,28 @@
                 </div>
             </div>
 
-            <form id="createTaskForm" class="task-form">
-                <label for="taskTitle">Task Title</label>
-                <input id="taskTitle" type="text" required
-                       placeholder="Enter task title">
+<form id="createTaskForm" class="task-form">
+    <label for="taskTitle">Task Title</label>
+    <input id="taskTitle" type="text" required
+           placeholder="Enter task title">
 
-                <label for="taskDescription">Description</label>
-                <textarea id="taskDescription" rows="3"
-                          placeholder="Enter task description"></textarea>
+    <label for="taskDescription">Description</label>
+    <textarea id="taskDescription" rows="3"
+              placeholder="Enter task description"></textarea>
 
-                <label for="taskUrl">Task URL</label>
-                <input id="taskUrl" type="url"
-                       placeholder="https://example.com">
+    <label for="taskUrl">Task URL</label>
+    <input id="taskUrl" type="url"
+           placeholder="https://example.com">
 
+    <label for="taskReward">Task Reward (Rs.)</label>
+    <input id="taskReward" type="number" min="1" step="0.01"
+           required placeholder="Enter reward">
 
-                <button id="createTaskButton" type="submit">
-                    + Create Task
-                </button>
-            </form>
+    <button id="createTaskButton" type="submit">
+        + Create Task
+    </button>
+</form>
+
         </section>
 
         <section id="submissions" class="content-card">
