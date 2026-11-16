@@ -19,7 +19,7 @@ if (!window.supabase) {
         SUPABASE_URL,
         SUPABASE_KEY
     );
-
+window.supabaseClient = supabaseClient;
     // Make client available to script.js
     window.supabaseClient = supabaseClient;
 
