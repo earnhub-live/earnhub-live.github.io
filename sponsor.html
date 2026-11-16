@@ -111,17 +111,36 @@
     <section class="sponsor-panel">
         <h2>Submit Campaign Payment</h2>
 
+        <div class="budget-details">
+            <h3>Official EarnHub Deposit Accounts</h3>
+
+            <p>JazzCash Merchant IBAN:
+                <strong>PK03JCMA1211921438880689</strong>
+            </p>
+            <p>Account Name:
+                <strong>Mudasar Shop</strong>
+            </p>
+
+            <p>UPaisa Account Number:
+                <strong>03359190994</strong>
+            </p>
+            <p>Account Name:
+                <strong>Mudasar Shahzad</strong>
+            </p>
+        </div>
+
         <form id="paymentForm">
 
+            <label for="paymentCampaign">Select Campaign</label>
             <select id="paymentCampaign" required>
                 <option value="">Select Campaign</option>
             </select>
 
+            <label for="paymentMethod">Payment Method</label>
             <select id="paymentMethod" required>
                 <option value="">Select Payment Method</option>
-                <option value="JazzCash">JazzCash</option>
-                <option value="Easypaisa">Easypaisa</option>
-                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="JazzCash Merchant">JazzCash Merchant</option>
+                <option value="UPaisa">UPaisa</option>
             </select>
 
             <input id="paymentAmount" type="number"
