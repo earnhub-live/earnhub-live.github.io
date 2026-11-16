@@ -43,7 +43,7 @@
             <a href="#submissions">☑ Submissions</a>
             <a href="#deposits">＋ Deposits</a>
             <a href="#withdrawals">↗ Withdrawals</a>
-            <a href="#sponsoredCampaigns">💰 Sponsored Campaigns</a>
+            <a href="#sponsoredCampaigns" onclick="document.getElementById('sponsoredCampaigns').scrollIntoView({behavior:'smooth'});">💰 Sponsored Campaigns</a>
             <a href="#packages">💎 Package Requests</a>
             <a href="#packageFunding">💰 Package Reward Funding</a>
             <a href="#activity">◷ Activity</a>
@@ -262,21 +262,19 @@
         Loading funding history...
     </div>
 </section>
-
-<section id="packages" class="content-card">
+<section id="sponsoredCampaigns" class="content-card">
     <div class="section-heading">
         <div>
-            <span class="eyebrow">PACKAGE MANAGEMENT</span>
-            <h2>💎 Pending Package Requests</h2>
+            <span class="eyebrow">SPONSOR MANAGEMENT</span>
+            <h2>💰 Sponsored Campaigns</h2>
         </div>
-        <button id="refreshPackages">↻ Refresh</button>
+        <button id="refreshSponsoredCampaigns">↻ Refresh</button>
     </div>
 
-    <div id="adminPackageRequests">
-        Loading package requests...
+    <div id="adminSponsoredCampaigns">
+        Loading sponsored campaigns...
     </div>
 </section>
-
         <section id="users" class="content-card">
             <div class="section-heading">
                 <div>
@@ -319,4 +317,3 @@
 
 </body>
 </html>
-s
