@@ -284,9 +284,9 @@ async function loadDashboard(user) {
         );
 
         setText("totalEarnings", money(profile.total_earnings));
-        setText("availableBalance", money(profile.deposit_balance));
+        setText("availableBalance", money(profile.available_balance));
         setText("completedTasks", profile.completed_tasks || 0);
-       setText("walletBalance", money(profile.deposit_balance));
+setText("walletBalance", money(profile.available_balance));
 
         setText(
             "walletEarnings",
@@ -406,8 +406,9 @@ async function loadTasks() {
         const { data, error } = await db
             .from("tasks")
             .select("*")
-            .eq("is_active", true)
-            .order("created_at", { ascending: false });
+           .eq("is_active", true)
+.or("task_type.eq.normal,and(task_type.eq.sponsored,payment_verified.eq.true)")
+.order("created_at", { ascending: false });
 
         if (error) throw error;
 
@@ -416,17 +417,37 @@ async function loadTasks() {
             return;
         }
 
-        container.innerHTML = data.map(task => `
-            <article class="card">
-                <h3>${escapeHTML(task.title)}</h3>
-                <p>${escapeHTML(task.description || "")}</p>
-                <p>Reward: ${money(task.reward)}</p>
+        container.innerHTML = data.map(task => {
+            const sponsored = task.task_type === "sponsored";
 
-                <button onclick="startTask('${escapeHTML(task.id)}')">
-                    Start Task
-                </button>
-            </article>
-        `).join("");
+            return `
+                <article class="card">
+
+                    <span>
+                        ${sponsored ? "⭐ SPONSORED TASK" : "NORMAL TASK"}
+                    </span>
+
+                    <h3>${escapeHTML(task.title)}</h3>
+
+                    ${sponsored ? `
+                        <p>Company: ${escapeHTML(task.sponsor_company || "Sponsor")}</p>
+                    ` : ""}
+
+                    <p>${escapeHTML(task.description || "")}</p>
+
+                    <p>Reward: ${money(task.reward)}</p>
+
+                    ${sponsored ? `
+                        <p>Remaining Slots: ${task.remaining_slots ?? 0}</p>
+                    ` : ""}
+
+                    <button onclick="startTask('${escapeHTML(task.id)}')">
+                        Start Task
+                    </button>
+
+                </article>
+            `;
+        }).join("");
 
     } catch (error) {
         console.error("Task loading error:", error);
