@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Dashboard | EarnHub</title>
+    <meta name="description" content="Create sponsored campaigns and manage payments on EarnHub.">
+    <link rel="stylesheet" href="sponsor.css">
+</head>
+<body>
+
+<header class="sponsor-header">
+    <a href="index.html" class="brand">EarnHub</a>
+    <div class="header-right">
+        <span id="sponsorName">Sponsor Account</span>
+        <button id="logoutBtn" type="button">Logout</button>
+    </div>
+</header>
+
+<main class="sponsor-container">
+
+    <section class="welcome-section">
+        <h1>Sponsor Dashboard</h1>
+        <p>Manage your advertising campaigns and payments.</p>
+    </section>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Campaigns</h3>
+            <p id="totalCampaigns">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Active Campaigns</h3>
+            <p id="activeCampaigns">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Pending Payments</h3>
+            <p id="pendingPayments">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Investment</h3>
+            <p id="totalInvestment">Rs. 0</p>
+        </div>
+    </section>
+
+    <section class="sponsor-panel">
+        <h2>Sponsor Registration</h2>
+
+        <form id="sponsorRegisterForm">
+            <input id="companyName" type="text"
+                   placeholder="Company / Business Name" required>
+
+            <input id="contactName" type="text"
+                   placeholder="Contact Person Name" required>
+
+            <input id="sponsorEmail" type="email"
+                   placeholder="Business Email" required>
+
+            <input id="sponsorPhone" type="tel"
+                   placeholder="Phone Number" required>
+
+            <button type="submit">Register Sponsor Account</button>
+        </form>
+    </section>
+
+    <section class="sponsor-panel">
+        <h2>Create Sponsored Campaign</h2>
+
+        <form id="campaignForm">
+
+            <input id="campaignTitle" type="text"
+                   placeholder="Campaign Title" required>
+
+            <textarea id="campaignDescription"
+                      placeholder="Campaign Description"
+                      required></textarea>
+
+            <input id="campaignReward" type="number"
+                   min="0.01" step="0.01"
+                   placeholder="Reward Per Task (Rs.)" required>
+
+            <input id="campaignSlots" type="number"
+                   min="1" step="1"
+                   placeholder="Total Task Slots" required>
+
+            <label for="campaignStart">Campaign Start</label>
+            <input id="campaignStart" type="datetime-local" required>
+
+            <label for="campaignEnd">Campaign End</label>
+            <input id="campaignEnd" type="datetime-local" required>
+
+            <h3>Campaign Budget Calculation</h3>
+
+            <div class="budget-details">
+                <p>Sponsor Payment:
+                    <strong id="sponsorAmount">Rs. 0.00</strong>
+                </p>
+                <p>Task Rewards (70%):
+                    <strong id="taskAllocation">Rs. 0.00</strong>
+                </p>
+                <p>EarnHub Revenue (30%):
+                    <strong id="companyAllocation">Rs. 0.00</strong>
+                </p>
+            </div>
+
+            <button type="submit">Create Campaign</button>
+        </form>
+    </section>
+
+    <section class="sponsor-panel">
+        <h2>Submit Campaign Payment</h2>
+
+        <form id="paymentForm">
+
+            <select id="paymentCampaign" required>
+                <option value="">Select Campaign</option>
+            </select>
+
+            <select id="paymentMethod" required>
+                <option value="">Select Payment Method</option>
+                <option value="JazzCash">JazzCash</option>
+                <option value="Easypaisa">Easypaisa</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+
+            <input id="paymentAmount" type="number"
+                   min="0.01" step="0.01"
+                   placeholder="Payment Amount (Rs.)" required>
+
+            <input id="transactionId" type="text"
+                   placeholder="Transaction ID" required>
+
+            <label for="paymentScreenshot">Payment Screenshot</label>
+            <input id="paymentScreenshot" type="file"
+                   accept="image/*" required>
+
+            <button type="submit">Submit Payment</button>
+        </form>
+    </section>
+
+    <section class="sponsor-panel">
+        <h2>My Campaigns</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Reward</th>
+                        <th>Slots</th>
+                        <th>Budget</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="campaignList">
+                    <tr>
+                        <td colspan="5">Loading campaigns...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="sponsor-panel">
+        <h2>Payment History</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Method</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentHistory">
+                    <tr>
+                        <td colspan="5">Loading payment history...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <p id="sponsorMessage" role="status"></p>
+
+</main>
+
+<footer class="sponsor-footer">
+    <p>© 2026 EarnHub. All Rights Reserved.</p>
+</footer>
+
+<script src="supabase.js"></script>
+<script src="sponsor.js"></script>
+
+</body>
+</html>
