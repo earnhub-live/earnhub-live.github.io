@@ -128,8 +128,13 @@
                     <h2>Create New Task</h2>
                 </div>
             </div>
-
 <form id="createTaskForm" class="task-form">
+    <label for="taskType">Task Type</label>
+    <select id="taskType" required>
+        <option value="normal">Normal Task</option>
+        <option value="sponsored">Sponsored Task</option>
+    </select>
+
     <label for="taskTitle">Task Title</label>
     <input id="taskTitle" type="text" required
            placeholder="Enter task title">
@@ -146,9 +151,34 @@
     <input id="taskReward" type="number" min="1" step="0.01"
            required placeholder="Enter reward">
 
+    <div id="sponsoredTaskFields" hidden>
+        <label for="sponsorCompany">Sponsor Company</label>
+        <input id="sponsorCompany" type="text"
+               placeholder="Company name">
+
+        <label for="sponsorPaymentAmount">Total Sponsor Payment (Rs.)</label>
+        <input id="sponsorPaymentAmount" type="number"
+               min="1" step="0.01">
+
+        <label for="sponsorPaymentReference">Payment Reference</label>
+        <input id="sponsorPaymentReference" type="text"
+               placeholder="Transaction ID or reference">
+
+        <label for="totalSlots">Total Task Slots</label>
+        <input id="totalSlots" type="number" min="1"
+               placeholder="Number of users">
+
+        <label for="campaignStartAt">Campaign Start</label>
+        <input id="campaignStartAt" type="datetime-local">
+
+        <label for="campaignEndAt">Campaign End</label>
+        <input id="campaignEndAt" type="datetime-local">
+    </div>
+
     <button id="createTaskButton" type="submit">
         + Create Task
     </button>
+</form>
 </form>
 
         </section>
