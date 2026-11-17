@@ -298,6 +298,8 @@ if (depositError) {
 setText("totalDeposit", money(totalDeposit));
 console.log("Deposit data:", deposits);
 console.log("Deposit error:", depositError);
+console.log("Deposit amounts:", deposits.map(item => item.amount));
+console.log("Calculated total:", totalDeposit);
         setText(
             "welcomeUser",
             "Welcome, " + (profile.full_name || user.email)
