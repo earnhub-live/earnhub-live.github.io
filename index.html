@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#090d1e">
 
-    <title>EarnHub - Complete Online Tasks & Earn Rewards</title>
+    <title>EarnHub Pakistan | Complete Online Tasks & Earn Rewards</title>
 
-<meta name="description" content="Earn rewards with EarnHub by completing online tasks, participating in sponsored campaigns, and referring friends. Join today and explore online earning opportunities.">
-
+    <meta name="description" content="EarnHub is an online task and rewards platform in Pakistan. Explore available tasks, submit your work for review, and manage your rewards in one place.">
 
     <meta name="robots" content="index, follow">
-
     <link rel="canonical" href="https://earnhub-live.github.io/">
-
     <link rel="icon" type="image/png" href="https://earnhub-live.github.io/favicon.png">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="EarnHub - Complete Online Tasks & Earn Rewards">
+    <meta property="og:title" content="EarnHub Pakistan | Complete Online Tasks & Earn Rewards">
     <meta property="og:description" content="Join EarnHub to discover online earning opportunities, complete available tasks, and earn rewards.">
     <meta property="og:url" content="https://earnhub-live.github.io/">
     <meta property="og:image" content="https://earnhub-live.github.io/og-image.png">
@@ -26,15 +22,79 @@
     <meta property="og:image:height" content="630">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="EarnHub - Complete Online Tasks & Earn Rewards">
+    <meta name="twitter:title" content="EarnHub Pakistan | Complete Online Tasks & Earn Rewards">
     <meta name="twitter:description" content="Join EarnHub to discover online earning opportunities, complete available tasks, and earn rewards.">
     <meta name="twitter:image" content="https://earnhub-live.github.io/og-image.png">
 
     <link rel="stylesheet" href="style.css">
+
+<style>
+    .eh-help-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+    }
+
+    .eh-help-widget {
+        position: fixed;
+        right: 22px;
+        bottom: 25px;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        font-family: Arial, sans-serif;
+    }
+
+    .eh-help-message {
+        background: #17132d;
+        color: white;
+        border: 1px solid #8b5cf6;
+        border-radius: 14px;
+        padding: 10px 15px;
+        font-size: 13px;
+        line-height: 1.5;
+        box-shadow: 0 0 15px #8b5cf655;
+    }
+
+    .eh-help-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #8b5cf6, #5b21b6);
+        border: 2px solid #c4b5fd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: 0 0 22px #8b5cf6aa;
+    }
+
+    @media (max-width: 600px) {
+        .eh-help-widget {
+            right: 14px;
+            bottom: 16px;
+            gap: 8px;
+        }
+
+        .eh-help-message {
+            font-size: 12px;
+            padding: 8px 11px;
+        }
+
+        .eh-help-icon {
+            width: 54px;
+            height: 54px;
+        }
+    }
+</style>
+
 </head>
 
 <body>
-
 
 <!-- NAVBAR -->
 <header class="navbar">
@@ -46,34 +106,37 @@
         <span></span>
         <span></span>
     </button>
-<a href="#" class="logo" onclick="showHome(); return false;">
-    <img
-    src="logo.png"
-    alt="EarnHub Logo"
-    class="site-logo"
-    width="120"
-    height="120"
-    fetchpriority="high"
-    decoding="async"
->
-</a>
+
+    <a href="#" class="logo" onclick="showHome(); return false;">
+        <img
+            src="logo.png"
+            alt="EarnHub Logo"
+            class="site-logo"
+            width="120"
+            height="120"
+            fetchpriority="high"
+            decoding="async"
+        >
+    </a>
 
     <nav id="navButtons">
         <button onclick="showHome()">Home</button>
         <button onclick="goTo('about')">About</button>
         <button onclick="goTo('publicTasks')">Tasks</button>
-        
+
         <a href="https://whatsapp.com/channel/0029Vb97phE3WHTRktFWCb41"
            target="_blank"
            rel="noopener noreferrer"
            class="whatsapp-nav-btn">
             <span>☘</span> WhatsApp
         </a>
-<button id="adminPanelLink"
-        class="hidden"
-        onclick="window.location.href='admin.html'">
-    ⚙ Admin Panel
-</button>
+
+        <button id="adminPanelLink"
+            class="hidden"
+            onclick="window.location.href='admin.html'">
+            ⚙ Admin Panel
+        </button>
+
         <button onclick="showLogin()">Login</button>
         <button class="primary" onclick="showSignup()">Sign Up</button>
     </nav>
@@ -128,7 +191,6 @@
     </button>
 
 </aside>
-
 
 <!-- HOME PAGE -->
 <main id="home">
@@ -194,7 +256,6 @@
 
     </section>
 
-
     <!-- ABOUT -->
     <section id="about" class="section">
 
@@ -207,7 +268,12 @@
             <p>
                 Everything you need to manage your online earning activity.
             </p>
-
+<p>
+    Want to learn more about online earning in Pakistan?
+    <a href="online-earning-in-pakistan.html">
+        Read our guide to online earning in Pakistan
+    </a>.
+</p>
         </div>
 
         <div class="feature-grid">
@@ -249,7 +315,6 @@
 
     </section>
 
-
     <!-- PUBLIC TASK INFORMATION -->
     <section id="publicTasks" class="section hidden">
 
@@ -275,108 +340,106 @@
 
 </main>
 
-
 <!-- USER DASHBOARD -->
 <main id="dashboard" class="section hidden">
 
-<!-- DASHBOARD HEADER -->
-<div class="dashboard-heading">
+    <!-- DASHBOARD HEADER -->
+    <div class="dashboard-heading">
 
-    <div class="dashboard-welcome">
+        <div class="dashboard-welcome">
 
-        <span class="eyebrow">✦ YOUR ACCOUNT</span>
+            <span class="eyebrow">✦ YOUR ACCOUNT</span>
 
-        <h2 id="welcomeUser">Welcome to EarnHub</h2>
-        <p>Manage your tasks, earnings and wallet.</p>
+            <h2 id="welcomeUser">Welcome to EarnHub</h2>
+            <p>Manage your tasks, earnings and wallet.</p>
 
-        <div class="dashboard-status">
-            <span class="status-dot"></span>
-            Account Overview
+            <div class="dashboard-status">
+                <span class="status-dot"></span>
+                Account Overview
+            </div>
+
         </div>
 
-    </div>
+        <div class="dashboard-actions">
 
-    <div class="dashboard-actions">
+            <!-- NOTIFICATION BELL -->
+            <div class="notification-wrapper">
 
-        <!-- NOTIFICATION BELL -->
-        <div class="notification-wrapper">
+                <button
+                    class="notification-bell"
+                    type="button"
+                    aria-label="Notifications"
+                    onclick="toggleNotifications()">
 
-            <button
-                class="notification-bell"
-                type="button"
-                aria-label="Notifications"
-                onclick="toggleNotifications()">
+                    🔔
+                    <span id="notificationCount">0</span>
 
-                🔔
-                <span id="notificationCount">0</span>
+                </button>
 
+                <!-- NOTIFICATION DROPDOWN -->
+                <section
+                    id="notificationDropdown"
+                    class="panel notification-panel"
+                    hidden>
+
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">ACCOUNT UPDATES</span>
+                            <h2>Notifications</h2>
+                        </div>
+                    </div>
+
+                    <div id="notificationList">
+                        Loading notifications...
+                    </div>
+
+                </section>
+
+            </div>
+
+            <button class="btn-secondary" onclick="logout()">
+                <span>↪</span> Logout
             </button>
 
-            <!-- NOTIFICATION DROPDOWN -->
-            <section
-                id="notificationDropdown"
-                class="panel notification-panel"
-                hidden>
-
-                <div class="panel-heading">
-                    <div>
-                        <span class="eyebrow">ACCOUNT UPDATES</span>
-                        <h2>Notifications</h2>
-                    </div>
-                </div>
-
-                <div id="notificationList">
-                    Loading notifications...
-                </div>
-
-            </section>
-
         </div>
 
-        <button class="btn-secondary" onclick="logout()">
-            <span>↪</span> Logout
-        </button>
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">💵</div>
+            <span>Total Deposit / Investment</span>
+            <h2 id="totalDeposit">₨0.00</h2>
+            <small>✦ All approved deposits</small>
+        </div>
+
+        <div class="stat-card earnings-card">
+            <div class="stat-icon">💰</div>
+            <span>Total Earnings</span>
+            <h2 id="totalEarnings">₨0.00</h2>
+            <small>✦ Your lifetime earnings</small>
+        </div>
+
+        <div class="stat-card balance-card">
+            <div class="stat-icon">💳</div>
+            <span>Available Balance</span>
+            <h2 id="availableBalance">₨0.00</h2>
+            <small>✦ Ready to withdraw</small>
+        </div>
+
+        <div class="stat-card tasks-card">
+            <div class="stat-icon">✅</div>
+            <span>Completed Tasks</span>
+            <h2 id="completedTasks">0</h2>
+            <small>✦ Your achievements</small>
+        </div>
 
     </div>
 
-</div>
-
-
-<!-- STATISTICS -->
-<div class="stats-grid">
-
-    <div class="stat-card">
-        <div class="stat-icon">💵</div>
-        <span>Total Deposit / Investment</span>
-        <h2 id="totalDeposit">₨0.00</h2>
-        <small>✦ All approved deposits</small>
-    </div>
-
-    <div class="stat-card earnings-card">
-        <div class="stat-icon">💰</div>
-        <span>Total Earnings</span>
-        <h2 id="totalEarnings">₨0.00</h2>
-        <small>✦ Your lifetime earnings</small>
-    </div>
-
-    <div class="stat-card balance-card">
-        <div class="stat-icon">💳</div>
-        <span>Available Balance</span>
-        <h2 id="availableBalance">₨0.00</h2>
-        <small>✦ Ready to withdraw</small>
-    </div>
-
-    <div class="stat-card tasks-card">
-        <div class="stat-icon">✅</div>
-        <span>Completed Tasks</span>
-        <h2 id="completedTasks">0</h2>
-        <small>✦ Your achievements</small>
-    </div>
-
-</div>
 <!-- EARNINGS PROGRESS -->
-
-<!-- REFERRAL PROGRAM -->
+ <!-- REFERRAL PROGRAM -->
 <div class="referral-panel panel">
 
     <div class="panel-heading">
@@ -399,10 +462,7 @@
                 placeholder="Loading your referral link..."
             >
 
-            <button
-                type="button"
-              onclick="copyReferralLink()"
-            >
+            <button type="button" onclick="copyReferralLink()">
                 Copy Link
             </button>
         </div>
@@ -453,7 +513,6 @@
     </div>
 
 </div>
-
 
 <!-- PACKAGES SECTION -->
 <section class="panel packages-panel" id="packages">
@@ -526,7 +585,8 @@
 
 </section>
 <!-- END PACKAGES SECTION -->
- <!-- CURRENT ACTIVE PACKAGE -->
+
+<!-- CURRENT ACTIVE PACKAGE -->
 <section class="panel" id="currentActivePackage">
 
     <div class="panel-heading">
@@ -541,6 +601,7 @@
     </div>
 
 </section>
+
 <!-- PACKAGE HISTORY -->
 <section class="panel" id="packageHistory">
 
@@ -561,462 +622,423 @@
     </div>
 
 </section>
-    <!-- AVAILABLE TASKS -->
-    <section class="panel" id="tasks">
 
-        <div class="panel-heading">
-
-            <div>
-                <span class="eyebrow">EARN REWARDS</span>
-                <h2>Available Tasks</h2>
-            </div>
-
-            <span class="wallet-icon">📋</span>
-
-        </div>
-
-        <div id="availableTaskList" class="task-grid">
-            Loading tasks...
-        </div>
-
-    </section>
-
-
-    <!-- MY SUBMISSIONS -->
-    <section class="panel submissions-panel">
-
-        <div class="panel-heading">
-
-            <div>
-                <span class="eyebrow">TASK ACTIVITY</span>
-                <h2>My Submissions</h2>
-                <p class="muted">
-                    Track your submitted tasks and their status.
-                </p>
-            </div>
-
-            <span class="wallet-icon">📨</span>
-
-        </div>
-
-        <div id="mySubmissions">
-            No submissions yet.
-        </div>
-
-    </section>
-
-
-    <!-- WALLET -->
-    <section class="panel">
-
-        <div class="panel-heading">
-
-            <div>
-                <span class="eyebrow">YOUR MONEY</span>
-                <h2>My Wallet</h2>
-            </div>
-
-            <span class="wallet-icon">👛</span>
-
-        </div>
-
-
-        <!-- WALLET BALANCE -->
-        <div class="wallet-balance-card">
-
-            <div class="wallet-card-top">
-                <span>💎 MY WALLET</span>
-                <span class="wallet-chip">EARNHUB</span>
-            </div>
-
-            <p class="muted">Available Balance</p>
-
-            <h2 class="wallet-balance" id="walletBalance">
-                ₨0.00
-            </h2>
-
-            <p class="muted">Total Earnings</p>
-
-            <h3 id="walletEarnings">₨0.00</h3>
-
-            <small>✦ Your available funds</small>
-
-        </div>
-
-
-        <!-- WITHDRAW SECTION -->
-        <div class="withdraw-section withdrawal-premium">
-
-            <div class="panel-heading">
-
-                <div>
-                    <span class="eyebrow">PAYMENT CENTER</span>
-                    <h2>Withdraw Money</h2>
-                </div>
-
-                <span>💸</span>
-
-            </div>
-
-            <p class="muted">
-                Choose your payment method and request withdrawal.
-            </p>
-
-            <button class="btn-primary" onclick="showWithdrawForm()">
-                Withdraw Now →
-            </button>
-
-            <div id="withdrawForm"
-                 style="display:none; margin-top:20px;">
-
-              <input
-    type="number"
-    id="withdrawAmount"
-    placeholder="Minimum withdrawal ₨600"
-    min="600"
-    step="1"
->
-
-  
-<select id="withdrawMethod">
-    <option value="JazzCash">JazzCash</option>
-    <option value="Easypaisa">Easypaisa</option>
-    <option value="Bank Transfer">Bank Transfer</option>
-    <option value="UPaisa">UPaisa</option>
-    <option value="NayaPay">NayaPay</option>
-    <option value="SadaPay">SadaPay</option>
-</select>
-
-
-
-                <input
-                    type="text"
-                    id="withdrawAccountName"
-                    placeholder="Account Holder Name"
-                >
-
-                <input
-                    type="text"
-                    id="withdrawAccountNumber"
-                    placeholder="Account Number / Mobile Number"
-                >
-
-                <button class="btn-primary"
-                        onclick="submitWithdrawal()">
-                    Submit Request
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- WITHDRAWAL HISTORY -->
-        <div class="withdrawal-history-panel">
-
-            <span class="eyebrow">YOUR RECORDS</span>
-
-            <h3>Withdrawal History</h3>
-
-            <div id="withdrawalHistory"></div>
-
-        </div>
-
-
-        <!-- DEPOSIT SECTION -->
-        <div class="card deposit-premium" id="depositSection">
-
-            <div class="panel-heading">
-
-                <div>
-                    <span class="eyebrow">ADD FUNDS</span>
-                    <h2>Deposit Money</h2>
-                </div>
-
-                <span>💳</span>
-
-            </div>
-
-            <p class="muted">
-                Add money to your EarnHub wallet securely.
-            </p>
-
-            <button class="btn-primary" onclick="showDepositForm()">
-                Deposit Now →
-            </button>
-
-            <div id="depositForm"
-                 style="display:none; margin-top:20px;">
-<input
-    type="number"
-    id="depositAmount"
-    placeholder="Minimum deposit ₨300"
-    min="300"
-    step="1"
->
-
-                <select id="depositMethod"
-                        onchange="updateDepositPaymentDetails()">
-
-                  <option value="JazzCash Merchant">JazzCash Merchant</option>
-<option value="UPaisa">UPaisa</option>
-                </select>
-
-                <div id="depositPaymentDetails"
-                     class="card"
-                     style="margin:12px 0;">
-
-                    <p><strong>Send payment to:</strong></p>
-
-                    <p id="depositReceiverName">JazzCash</p>
-
-                    <h3 id="depositReceiverNumber">
-                        Payment number will appear here
-                    </h3>
-
-                </div>
-
-                <input
-                    type="text"
-                    id="depositTransactionId"
-                    placeholder="Enter Transaction ID"
-                >
-
-                <input
-                    type="file"
-                    id="depositScreenshot"
-                    accept="image/*"
-                >
-
-                <button class="btn-primary"
-                        onclick="submitDeposit()">
-                    Submit Deposit
-                </button>
-
-            </div>
-
-            <div id="depositHistory"></div>
-
-        </div>
-
-    </section>
-    <!-- END WALLET -->
-
-
-    <!-- TRANSACTION HISTORY -->
-    <section class="panel transaction-panel">
-
-        <div class="panel-heading">
-
-            <div>
-                <span class="eyebrow">WALLET ACTIVITY</span>
-                <h2>Transaction History</h2>
-                <p class="muted">
-                    Track all your wallet transactions.
-                </p>
-            </div>
-
-            <span class="wallet-icon">📊</span>
-
-        </div>
-
-        <div id="transactionHistory">
-            No transactions yet.
-        </div>
-
-    </section>
-
-
-    <!-- ADMIN PANEL -->
-    <section id="adminPanel"
-             class="panel admin-panel hidden">
-
-        <div class="panel-heading">
-
-            <div>
-                <span class="eyebrow">MANAGEMENT</span>
-                <h2>Admin Dashboard</h2>
-            </div>
-
-            <span class="admin-label">ADMIN</span>
-
-        </div>
-<!-- ADMIN ANALYTICS -->
-<div class="admin-analytics">
+<!-- AVAILABLE TASKS -->
+<section class="panel" id="tasks">
 
     <div class="panel-heading">
         <div>
-            <span class="eyebrow">BUSINESS OVERVIEW</span>
-            <h2>Admin Analytics</h2>
-            <p class="muted">Live overview of EarnHub activity.</p>
-        </div>
-    </div>
-<button
-    type="button"
-    class="analytics-refresh-btn"
-    onclick="loadAdminAnalytics()"
->
-    ↻ Refresh Analytics
-</button>
-    <div class="analytics-grid">
-
-        <div class="analytics-card">
-            <span>Total Users</span>
-            <h3 id="analyticsUsers">Loading...</h3>
+            <span class="eyebrow">EARN REWARDS</span>
+            <h2>Available Tasks</h2>
         </div>
 
-        <div class="analytics-card">
-            <span>Approved Deposits</span>
-            <h3 id="analyticsDeposits">Loading...</h3>
-        </div>
-
-        <div class="analytics-card">
-            <span>Paid Withdrawals</span>
-            <h3 id="analyticsWithdrawals">Loading...</h3>
-        </div>
-
-        <div class="analytics-card">
-            <span>Pending Requests</span>
-            <h3 id="analyticsPending">Loading...</h3>
-        </div>
-
-        <div class="analytics-card">
-            <span>Task Rewards Paid</span>
-            <h3 id="analyticsRewards">Loading...</h3>
-        </div>
-
+        <span class="wallet-icon">📋</span>
     </div>
 
-</div>
+    <div id="availableTaskList" class="task-grid">
+        Loading tasks...
+    </div>
 
-        <!-- CREATE TASK FORM -->
-        <div class="admin-form">
+</section>
 
-            <h3>Create New Task</h3>
+<!-- MY SUBMISSIONS -->
+<section class="panel submissions-panel">
 
-            <form id="createTaskForm">
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">TASK ACTIVITY</span>
+            <h2>My Submissions</h2>
+            <p class="muted">
+                Track your submitted tasks and their status.
+            </p>
+        </div>
 
-                <label for="taskTitle">Task Title</label>
+        <span class="wallet-icon">📨</span>
+    </div>
 
-                <input
-                    type="text"
-                    id="taskTitle"
-                    placeholder="Enter task title"
-                    required
-                >
+    <div id="mySubmissions">
+        No submissions yet.
+    </div>
 
-                <label for="taskDescription">Description</label>
+</section>
 
-                <textarea
-                    id="taskDescription"
-                    rows="4"
-                    placeholder="Enter task description"
-                ></textarea>
+<!-- WALLET -->
+<section class="panel">
 
-                <label for="taskUrl">Task URL</label>
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">YOUR MONEY</span>
+            <h2>My Wallet</h2>
+        </div>
 
-                <input
-                    type="url"
-                    id="taskUrl"
-                    placeholder="https://example.com"
-                >
+        <span class="wallet-icon">👛</span>
+    </div>
 
-               
-               <label for="taskReward">Task Reward (PKR)</label>
-<input
-    type="number"
-    id="taskReward"
-    value="50"
-    min="50"
-    max="50"
-    step="1"
-    readonly
-    required
->
+    <!-- WALLET BALANCE -->
+    <div class="wallet-balance-card">
 
-                <button
-                    type="submit"
-                    id="createTaskButton"
-                    class="btn-primary full-width">
+        <div class="wallet-card-top">
+            <span>💎 MY WALLET</span>
+            <span class="wallet-chip">EARNHUB</span>
+        </div>
 
-                    + Create Task
+        <p class="muted">Available Balance</p>
 
-                </button>
+        <h2 class="wallet-balance" id="walletBalance">
+            ₨0.00
+        </h2>
 
-            </form>
+        <p class="muted">Total Earnings</p>
+
+        <h3 id="walletEarnings">₨0.00</h3>
+
+        <small>✦ Your available funds</small>
+
+    </div>
+
+    <!-- WITHDRAW SECTION -->
+    <div class="withdraw-section withdrawal-premium">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">PAYMENT CENTER</span>
+                <h2>Withdraw Money</h2>
+            </div>
+
+            <span>💸</span>
+        </div>
+
+        <p class="muted">
+            Choose your payment method and request withdrawal.
+        </p>
+
+        <button class="btn-primary" onclick="showWithdrawForm()">
+            Withdraw Now →
+        </button>
+
+        <div id="withdrawForm" style="display:none; margin-top:20px;">
+
+            <input
+                type="number"
+                id="withdrawAmount"
+                placeholder="Minimum withdrawal ₨600"
+                min="600"
+                step="1"
+            >
+
+            <select id="withdrawMethod">
+                <option value="JazzCash">JazzCash</option>
+                <option value="Easypaisa">Easypaisa</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="UPaisa">UPaisa</option>
+                <option value="NayaPay">NayaPay</option>
+                <option value="SadaPay">SadaPay</option>
+            </select>
+
+            <input
+                type="text"
+                id="withdrawAccountName"
+                placeholder="Account Holder Name"
+            >
+
+            <input
+                type="text"
+                id="withdrawAccountNumber"
+                placeholder="Account Number / Mobile Number"
+            >
+
+            <button class="btn-primary" onclick="submitWithdrawal()">
+                Submit Request
+            </button>
 
         </div>
 
+    </div>
 
-        <!-- PENDING SUBMISSIONS -->
-        <div class="admin-submissions">
+    <!-- WITHDRAWAL HISTORY -->
+    <div class="withdrawal-history-panel">
+
+        <span class="eyebrow">YOUR RECORDS</span>
+
+        <h3>Withdrawal History</h3>
+
+        <div id="withdrawalHistory"></div>
+
+    </div>
+
+    <!-- DEPOSIT SECTION -->
+    <div class="card deposit-premium" id="depositSection">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">ADD FUNDS</span>
+                <h2>Deposit Money</h2>
+            </div>
+
+            <span>💳</span>
+        </div>
+
+        <p class="muted">
+            Add money to your EarnHub wallet securely.
+        </p>
+
+        <button class="btn-primary" onclick="showDepositForm()">
+            Deposit Now →
+        </button>
+
+        <div id="depositForm" style="display:none; margin-top:20px;">
+
+            <input
+                type="number"
+                id="depositAmount"
+                placeholder="Minimum deposit ₨300"
+                min="300"
+                step="1"
+            >
+
+            <select
+                id="depositMethod"
+                onchange="updateDepositPaymentDetails()"
+            >
+                <option value="JazzCash Merchant">JazzCash Merchant</option>
+                <option value="UPaisa">UPaisa</option>
+            </select>
+
+            <div id="depositPaymentDetails" class="card" style="margin:12px 0;">
+
+                <p><strong>Send payment to:</strong></p>
+
+                <p id="depositReceiverName">JazzCash</p>
+
+                <h3 id="depositReceiverNumber">
+                    Payment number will appear here
+                </h3>
+
+            </div>
+
+            <input
+                type="text"
+                id="depositTransactionId"
+                placeholder="Enter Transaction ID"
+            >
+
+            <input
+                type="file"
+                id="depositScreenshot"
+                accept="image/*"
+            >
+
+            <button class="btn-primary" onclick="submitDeposit()">
+                Submit Deposit
+            </button>
+
+        </div>
+
+        <div id="depositHistory"></div>
+
+    </div>
+
+</section>
+<!-- END WALLET -->
+
+<!-- TRANSACTION HISTORY -->
+<section class="panel transaction-panel">
+
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">WALLET ACTIVITY</span>
+            <h2>Transaction History</h2>
+            <p class="muted">
+                Track all your wallet transactions.
+            </p>
+        </div>
+
+        <span class="wallet-icon">📊</span>
+    </div>
+
+    <div id="transactionHistory">
+        No transactions yet.
+    </div>
+
+</section>
+
+<!-- ADMIN PANEL -->
+<section id="adminPanel" class="panel admin-panel hidden">
+
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">MANAGEMENT</span>
+            <h2>Admin Dashboard</h2>
+        </div>
+
+        <span class="admin-label">ADMIN</span>
+    </div>
+
+    <!-- ADMIN ANALYTICS -->
+    <div class="admin-analytics">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">BUSINESS OVERVIEW</span>
+                <h2>Admin Analytics</h2>
+                <p class="muted">Live overview of EarnHub activity.</p>
+            </div>
+        </div>
+
+        <button
+            type="button"
+            class="analytics-refresh-btn"
+            onclick="loadAdminAnalytics()"
+        >
+            ↻ Refresh Analytics
+        </button>
+
+        <div class="analytics-grid">
+
+            <div class="analytics-card">
+                <span>Total Users</span>
+                <h3 id="analyticsUsers">Loading...</h3>
+            </div>
+
+            <div class="analytics-card">
+                <span>Approved Deposits</span>
+                <h3 id="analyticsDeposits">Loading...</h3>
+            </div>
+
+            <div class="analytics-card">
+                <span>Paid Withdrawals</span>
+                <h3 id="analyticsWithdrawals">Loading...</h3>
+            </div>
+
+            <div class="analytics-card">
+                <span>Pending Requests</span>
+                <h3 id="analyticsPending">Loading...</h3>
+            </div>
+
+            <div class="analytics-card">
+                <span>Task Rewards Paid</span>
+                <h3 id="analyticsRewards">Loading...</h3>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CREATE TASK FORM -->
+    <div class="admin-form">
+
+        <h3>Create New Task</h3>
+
+        <form id="createTaskForm">
+
+            <label for="taskTitle">Task Title</label>
+
+            <input
+                type="text"
+                id="taskTitle"
+                placeholder="Enter task title"
+                required
+            >
+
+            <label for="taskDescription">Description</label>
+
+            <textarea
+                id="taskDescription"
+                rows="4"
+                placeholder="Enter task description"
+            ></textarea>
+
+            <label for="taskUrl">Task URL</label>
+
+            <input
+                type="url"
+                id="taskUrl"
+                placeholder="https://example.com"
+            >
+
+            <label for="taskReward">Task Reward (PKR)</label>
+
+            <input
+                type="number"
+                id="taskReward"
+                value="50"
+                min="50"
+                max="50"
+                step="1"
+                readonly
+                required
+            >
+
+            <button
+                type="submit"
+                id="createTaskButton"
+                class="btn-primary full-width"
+            >
+                + Create Task
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- PENDING SUBMISSIONS -->
+    <div class="admin-submissions">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">REVIEW TASKS</span>
+                <h3>Pending Submissions</h3>
+            </div>
+        </div>
+
+        <div id="adminSubmissions">
+            No pending submissions.
+        </div>
+
+        <!-- ADMIN WITHDRAWALS -->
+        <div class="panel withdrawal-panel" style="margin-top:25px;">
 
             <div class="panel-heading">
-
                 <div>
-                    <span class="eyebrow">REVIEW TASKS</span>
-                    <h3>Pending Submissions</h3>
+                    <span class="eyebrow">PAYMENT MANAGEMENT</span>
+                    <h2>Withdrawal Requests</h2>
                 </div>
 
+                <span>💸</span>
             </div>
 
-            <div id="adminSubmissions">
-                No pending submissions.
-            </div>
-
-
-            <!-- ADMIN WITHDRAWALS -->
-            <div class="panel withdrawal-panel"
-                 style="margin-top:25px;">
-
-                <div class="panel-heading">
-
-                    <div>
-                        <span class="eyebrow">PAYMENT MANAGEMENT</span>
-                        <h2>Withdrawal Requests</h2>
-                    </div>
-
-                    <span>💸</span>
-
-                </div>
-
-                <div id="adminWithdrawals">
-                    No pending withdrawal requests.
-                </div>
-
-            </div>
-
-
-            <!-- ADMIN DEPOSITS -->
-            <div class="admin-deposits-panel">
-
-                <div class="panel-heading">
-
-                    <div>
-                        <span class="eyebrow">PAYMENT MANAGEMENT</span>
-                        <h2>Deposit Requests</h2>
-                        <p class="muted">
-                            Review and manage user deposits.
-                        </p>
-                    </div>
-
-                    <span>💳</span>
-
-                </div>
-
-                <div id="adminDeposits">
-                    No deposit requests.
-                </div>
-
+            <div id="adminWithdrawals">
+                No pending withdrawal requests.
             </div>
 
         </div>
 
-    </section>
+        <!-- ADMIN DEPOSITS -->
+        <div class="admin-deposits-panel">
+
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow">PAYMENT MANAGEMENT</span>
+                    <h2>Deposit Requests</h2>
+                    <p class="muted">
+                        Review and manage user deposits.
+                    </p>
+                </div>
+
+                <span>💳</span>
+            </div>
+
+            <div id="adminDeposits">
+                No deposit requests.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
 </main>
-
-
 <!-- LOGIN / SIGNUP MODAL -->
 <div id="authModal" class="modal hidden">
 
@@ -1044,11 +1066,7 @@
 
         <form id="authForm">
             <input type="hidden" id="referralCode" name="referralCode">
-<input
-    type="hidden"
-    id="referralCode"
-    name="referralCode"
->
+
             <label for="authName">Full Name</label>
 
             <input
@@ -1102,57 +1120,25 @@
 
     </div>
 
-</div><a href="privacy.html">Privacy Policy</a>
+</div>
 
 <!-- FOOTER -->
-<footer>
+<footer class="site-footer">
+
+    <p>© 2026 EarnHub. All rights reserved.</p>
+
+    <p>Complete Tasks • Earn Rewards</p>
 
     <p>
-        © 2026 EarnHub. All rights reserved.
-    </p>
-
-    <p>
-        Complete Tasks • Earn Rewards
-    </p>
-
-    <p>
-        <a href="privacy.html" style="color:#38bdf8;">
-            Privacy Policy
-        </a>
+        <a href="privacy.html">Privacy Policy</a>
         &nbsp; | &nbsp;
-        <a href="terms.html" style="color:#38bdf8;">
-            Terms & Conditions
-        </a>
-
-<!-- FOOTER -->
-<footer>
-
-    <p>
-        © 2026 EarnHub. All rights reserved.
+        <a href="terms.html">Terms &amp; Conditions</a>
     </p>
 
     <p>
-        Complete Tasks • Earn Rewards
-    </p>
-
-    <p>
-        <a href="privacy.html" style="color:#38bdf8;">
-            Privacy Policy
-        </a>
-        &nbsp; | &nbsp;
-        <a href="terms.html" style="color:#38bdf8;">
-            Terms & Conditions
-        </a>
-    </p>
-
-    <p>
-        <a href="online-earning-in-pakistan.html" style="color:#38bdf8;">
+        <a href="online-earning-in-pakistan.html">
             Online Earning in Pakistan
         </a>
-    </p>
-
-</footer>
-
     </p>
 
 </footer>
@@ -1170,18 +1156,19 @@
             });
         }
     }
-document.addEventListener("DOMContentLoaded", function () {
 
-    const params = new URLSearchParams(window.location.search);
-    const referral = params.get("ref");
+    document.addEventListener("DOMContentLoaded", function () {
 
-    const referralInput = document.getElementById("referralCode");
+        const params = new URLSearchParams(window.location.search);
+        const referral = params.get("ref");
 
-    if (referral && referralInput) {
-        referralInput.value = referral;
-    }
+        const referralInput = document.getElementById("referralCode");
 
-});
+        if (referral && referralInput) {
+            referralInput.value = referral;
+        }
+
+    });
 </script>
 
 <!-- SUPABASE + APPLICATION SCRIPTS -->
@@ -1190,71 +1177,27 @@ document.addEventListener("DOMContentLoaded", function () {
 <script src="supabase.js"></script>
 
 <script src="script.js"></script>
-<a href="admin.html" id="adminPanelLink" class="hidden"
-   style="padding:12px 20px; background:#8b5cf6;
-   color:white; text-decoration:none; border-radius:10px;
-   font-weight:bold; margin:15px;">
-    ⚙ Admin Panel
-</a>
-</html>
+
 <!-- EARNHUB FLOATING HELP BUTTON -->
-<a href="help.html" class="eh-help-widget">
+<a href="help.html" class="eh-help-widget" aria-label="Open EarnHub Help Center">
+
     <span class="eh-help-message">
         Hello 👋<br>
         How can I help you?
     </span>
+
     <span class="eh-help-icon">
-   <img src="./help.support.png" alt="EarnHub AI Support">
-</span>
+        <img
+            src="./help.support.png"
+            alt=""
+            width="62"
+            height="62"
+            loading="lazy"
+            decoding="async"
+        >
+    </span>
+
 </a>
 
-
-<style>
-    .eh-help-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
-}
-.eh-help-widget {
-    position: fixed;
-    right: 22px;
-    bottom: 25px;
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    font-family: Arial, sans-serif;
-}
-
-.eh-help-message {
-    background: #17132d;
-    color: white;
-    border: 1px solid #8b5cf6;
-    border-radius: 14px;
-    padding: 10px 15px;
-    font-size: 13px;
-    line-height: 1.5;
-    box-shadow: 0 0 15px #8b5cf655;
-}
-
-.eh-help-icon {
-    width: 62px;
-    height: 62px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #8b5cf6, #5b21b6);
-    border: 2px solid #c4b5fd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    box-shadow: 0 0 22px #8b5cf6aa;
-    transition: 0.3s;
-}
-
-.eh-help-widget:hover .eh-help-icon {
-    transform: scale(1.1);
-}
-</style>
+</body>
+</html>
