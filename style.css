@@ -2932,3 +2932,78 @@ textarea {
         grid-template-columns: 1fr;
     }
 }
+
+/* DASHBOARD NOTIFICATION BELL */
+
+.dashboard-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.notification-wrapper {
+    position: relative;
+}
+
+.notification-bell {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(154, 131, 255, 0.3);
+    border-radius: 12px;
+    background: #111831;
+    color: white;
+    font-size: 21px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-bell:hover {
+    background: #1b2545;
+}
+
+#notificationCount {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 20px;
+    background: #ef4444;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #090d1e;
+}
+
+.notification-panel {
+    position: absolute;
+    top: 54px;
+    right: 0;
+    width: 320px;
+    max-width: calc(100vw - 30px);
+    z-index: 999;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+.notification-panel[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 600px) {
+    .dashboard-actions {
+        gap: 9px;
+    }
+
+    .notification-panel {
+        right: -55px;
+    }
+}
