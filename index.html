@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#090d1e">
 
- <title>EarnHub - Complete Online Tasks & Earn Rewards</title>
+    <title>EarnHub - Complete Online Tasks & Earn Rewards</title>
 
     <meta name="description" content="Join EarnHub to discover online earning opportunities, complete available tasks, and earn rewards. Explore tasks and start your earning journey today.">
 
@@ -277,20 +278,57 @@
 <!-- USER DASHBOARD -->
 <main id="dashboard" class="section hidden">
 
-    <!-- DASHBOARD HEADER -->
-    <div class="dashboard-heading">
+<!-- DASHBOARD HEADER -->
+<div class="dashboard-heading">
 
-        <div class="dashboard-welcome">
+    <div class="dashboard-welcome">
 
-            <span class="eyebrow">✦ YOUR ACCOUNT</span>
+        <span class="eyebrow">✦ YOUR ACCOUNT</span>
 
-            <h2 id="welcomeUser">Welcome to EarnHub</h2>
-            <p>Manage your tasks, earnings and wallet.</p>
+        <h2 id="welcomeUser">Welcome to EarnHub</h2>
+        <p>Manage your tasks, earnings and wallet.</p>
 
-            <div class="dashboard-status">
-                <span class="status-dot"></span>
-                Account Overview
-            </div>
+        <div class="dashboard-status">
+            <span class="status-dot"></span>
+            Account Overview
+        </div>
+
+    </div>
+
+    <div class="dashboard-actions">
+
+        <!-- NOTIFICATION BELL -->
+        <div class="notification-wrapper">
+
+            <button
+                class="notification-bell"
+                type="button"
+                aria-label="Notifications"
+                onclick="toggleNotifications()">
+
+                🔔
+                <span id="notificationCount">0</span>
+
+            </button>
+
+            <!-- NOTIFICATION DROPDOWN -->
+            <section
+                id="notificationDropdown"
+                class="panel notification-panel"
+                hidden>
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">ACCOUNT UPDATES</span>
+                        <h2>Notifications</h2>
+                    </div>
+                </div>
+
+                <div id="notificationList">
+                    Loading notifications...
+                </div>
+
+            </section>
 
         </div>
 
@@ -299,20 +337,10 @@
         </button>
 
     </div>
-    <!-- NOTIFICATIONS -->
-    <section class="panel notification-panel">
-        <div class="panel-heading">
-            <div>
-                <span class="eyebrow">ACCOUNT UPDATES</span>
-                <h2>Notifications</h2>
-            </div>
-            <span id="notificationCount">0</span>
-        </div>
 
-        <div id="notificationList">
-            Loading notifications...
-        </div>
-    </section>
+</div>
+
+
 <!-- STATISTICS -->
 <div class="stats-grid">
 
