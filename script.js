@@ -220,9 +220,46 @@ function updateAuthButtons(user) {
             <button onclick="showHome()">Home</button>
             <button onclick="goTo('about')">About</button>
             <button onclick="goTo('publicTasks')">Tasks</button>
+
             ${whatsappButton}
+
             <span>Hi, ${escapeHTML(name)}</span>
+
             <button onclick="openDashboard()">Dashboard</button>
+
+            <!-- NAVBAR NOTIFICATION BELL -->
+            <div class="notification-wrapper">
+
+                <button
+                    class="notification-bell"
+                    type="button"
+                    aria-label="Notifications"
+                    onclick="toggleNotifications()">
+
+                    🔔
+                    <span id="notificationCount">0</span>
+
+                </button>
+
+                <section
+                    id="notificationDropdown"
+                    class="panel notification-panel"
+                    hidden>
+
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">ACCOUNT UPDATES</span>
+                            <h2>Notifications</h2>
+                        </div>
+                    </div>
+
+                    <div id="notificationList">
+                        Loading notifications...
+                    </div>
+
+                </section>
+            </div>
+
             <button onclick="logout()">Logout</button>
         `;
     } else {
@@ -230,7 +267,9 @@ function updateAuthButtons(user) {
             <button onclick="showHome()">Home</button>
             <button onclick="goTo('about')">About</button>
             <button onclick="goTo('publicTasks')">Tasks</button>
+
             ${whatsappButton}
+
             <button onclick="showLogin()">Login</button>
             <button class="primary" onclick="showSignup()">Sign Up</button>
         `;
@@ -2249,3 +2288,12 @@ async function activatePackage(packageName) {
         );
     }
 }
+
+// TOGGLE NOTIFICATION DROPDOWN
+window.toggleNotifications = function () {
+    const dropdown = document.getElementById("notificationDropdown");
+
+    if (!dropdown) return;
+
+    dropdown.hidden = !dropdown.hidden;
+};
