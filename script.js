@@ -296,6 +296,8 @@ if (depositError) {
 }
 
 setText("totalDeposit", money(totalDeposit));
+console.log("Deposit data:", deposits);
+console.log("Deposit error:", depositError);
         setText(
             "welcomeUser",
             "Welcome, " + (profile.full_name || user.email)
