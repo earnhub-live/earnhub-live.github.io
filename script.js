@@ -277,7 +277,25 @@ async function loadDashboard(user) {
             .single();
 
         if (error) throw error;
+// LOAD USER'S TOTAL APPROVED DEPOSITS
+const { data: deposits, error: depositError } = await db
+    .from("deposit_requests")
+    .select("amount")
+    .eq("user_id", user.id)
+    .eq("status", "approved");
 
+let totalDeposit = 0;
+
+if (depositError) {
+    console.error("Deposit loading error:", depositError);
+} else {
+    totalDeposit = (deposits || []).reduce(
+        (total, item) => total + Number(item.amount || 0),
+        0
+    );
+}
+
+setText("totalDeposit", money(totalDeposit));
         setText(
             "welcomeUser",
             "Welcome, " + (profile.full_name || user.email)
