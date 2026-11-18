@@ -1772,3 +1772,24 @@ button:not(:disabled) {
 #sidebarToggle:hover {
     background: #16a36a;
 }
+/* EARNHUB TASK BUTTONS */
+#availableTaskList button {
+    background: #16a875 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px 22px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    min-height: 44px;
+}
+
+#availableTaskList button:hover {
+    background: #119565 !important;
+}
+
+#availableTaskList button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
