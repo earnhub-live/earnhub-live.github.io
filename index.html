@@ -179,6 +179,16 @@
         <span>▤</span> Tasks
     </a>
 
+<a href="#referral" class="sidebar-link"
+   onclick="navigateMenu('referral'); return false;">
+    <span>🎁</span> Referral Program
+</a>
+
+<a href="#currentActivePackage" class="sidebar-link"
+   onclick="navigateMenu('currentActivePackage'); return false;">
+    <span>💎</span> Active Package
+</a>
+
     <div class="sidebar-profile">
         <div class="profile-avatar">👤</div>
 
@@ -322,6 +332,7 @@
     </div>
 
 </section>
+
 <!-- PUBLIC TASK INFORMATION -->
 <section id="publicTasks" class="section hidden">
 
@@ -448,273 +459,61 @@
 
     </div>
 
-<!-- EARNINGS PROGRESS -->
- <!-- REFERRAL PROGRAM -->
-<div class="referral-panel panel">
+    <!-- WALLET -->
+    <section class="panel">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">YOUR MONEY</span>
+                <h2>My Wallet</h2>
+            </div>
+
+            <span class="wallet-icon">👛</span>
+        </div>
+
+        <!-- WALLET BALANCE -->
+        <div class="wallet-balance-card">
+
+            <div class="wallet-card-top">
+                <span>💎 MY WALLET</span>
+                <span class="wallet-chip">EARNHUB</span>
+            </div>
+
+            <p class="muted">Available Balance</p>
+
+            <h2 class="wallet-balance" id="walletBalance">
+                ₨0.00
+            </h2>
+
+            <p class="muted">Total Earnings</p>
+
+            <h3 id="walletEarnings">₨0.00</h3>
+
+            <small>✦ Your available funds</small>
+
+        </div>
+
+        
+<!-- PAYMENT CENTER: WITHDRAW + DEPOSIT -->
+<div class="payment-center">
 
     <div class="panel-heading">
         <div>
-            <span class="eyebrow">INVITE & EARN</span>
-            <h2>Referral Program</h2>
-            <p class="muted">Invite friends and earn ₨35 for each successful referral.</p>
+            <span class="eyebrow">PAYMENT CENTER</span>
+            <h2>Withdraw & Deposit</h2>
+            <p class="muted">Manage your payments in one place.</p>
         </div>
-        <span class="progress-icon">🎁</span>
+        <span class="wallet-icon">💳</span>
     </div>
 
-    <div class="referral-link-box">
-        <label>Your Referral Link</label>
-
-        <div class="referral-copy-row">
-            <input
-                type="text"
-                id="referralLink"
-                readonly
-                placeholder="Loading your referral link..."
-            >
-
-            <button type="button" onclick="copyReferralLink()">
-                Copy Link
-            </button>
-        </div>
-    </div>
-
-    <div class="referral-stats">
-        <div class="progress-item">
-            <span>Total Referrals</span>
-            <h3 id="totalReferrals">0</h3>
-        </div>
-
-        <div class="progress-item">
-            <span>Referral Earnings</span>
-            <h3 id="referralEarnings">₨0.00</h3>
-        </div>
-    </div>
-
-</div>
-
-<div class="earnings-progress panel">
-
-    <div class="panel-heading">
-        <div>
-            <span class="eyebrow">YOUR PERFORMANCE</span>
-            <h2>Earnings Progress</h2>
-            <p class="muted">Track your monthly activity.</p>
-        </div>
-        <span class="progress-icon">📈</span>
-    </div>
-
-    <div class="progress-stats">
-
-        <div class="progress-item">
-            <span>This Month's Earnings</span>
-            <h3 id="monthlyEarnings">Loading...</h3>
-        </div>
-
-        <div class="progress-item">
-            <span>Tasks Completed This Month</span>
-            <h3 id="monthlyTasks">Loading...</h3>
-        </div>
-
-        <div class="progress-item">
-            <span>Pending Submissions</span>
-            <h3 id="pendingTasks">Loading...</h3>
-        </div>
-
-    </div>
-
-</div>
-
-<!-- PACKAGES SECTION -->
-<section class="panel packages-panel" id="packages">
-
-    <div class="panel-heading">
-        <div>
-            <span class="eyebrow">INVEST & EARN</span>
-            <h2>Available Packages</h2>
-            <p class="muted">Choose a package to start earning rewards.</p>
-        </div>
-        <span class="wallet-icon">💎</span>
-    </div>
-
-    <div class="packages-grid">
-
-        <div class="package-card">
-            <h3>Silver</h3>
-            <h2>₨200</h2>
-            <p>Daily Reward: ₨20</p>
-            <p>Duration: 60 Days</p>
-            <button onclick="activatePackage('silver')">Activate Package</button>
-        </div>
-
-        <div class="package-card">
-            <h3>Platinum</h3>
-            <h2>₨500</h2>
-            <p>Daily Reward: ₨50</p>
-            <p>Duration: 60 Days</p>
-            <button onclick="activatePackage('platinum')">Activate Package</button>
-        </div>
-
-        <div class="package-card">
-            <h3>Gold</h3>
-            <h2>₨1,200</h2>
-            <p>Daily Reward: ₨100</p>
-            <p>Duration: 60 Days</p>
-            <button onclick="activatePackage('gold')">Activate Package</button>
-        </div>
-
-        <div class="package-card">
-            <h3>VIP Gold</h3>
-            <h2>₨2,200</h2>
-            <p>Daily Reward: ₨270</p>
-            <p>Duration: 60 Days</p>
-            <button onclick="activatePackage('vip_gold')">Activate Package</button>
-        </div>
-
-        <div class="package-card">
-            <h3>VVIP Gold</h3>
-            <h2>₨5,000</h2>
-            <p>Daily Reward: ₨400</p>
-            <p>Duration: 60 Days</p>
-            <button onclick="activatePackage('vvip_gold')">Activate Package</button>
-        </div>
-
-        <div class="package-card">
-            <h3>Diamond</h3>
-            <h2>₨12,000</h2>
-            <p>Daily Reward: ₨700</p>
-            <p>Duration: 60 Days</p>
-            <button onclick="activatePackage('diamond')">Activate Package</button>
-        </div>
-
-    </div>
-
-    <p class="muted">
-        Rewards are subject to available approved business-income funding.
-        Daily rewards are not guaranteed.
-    </p>
-
-</section>
-<!-- END PACKAGES SECTION -->
-
-<!-- CURRENT ACTIVE PACKAGE -->
-<section class="panel" id="currentActivePackage">
-
-    <div class="panel-heading">
-        <div>
-            <span class="eyebrow">YOUR ACTIVE PLAN</span>
-            <h2>💎 Current Active Package</h2>
-        </div>
-    </div>
-
-    <div id="activePackageDetails">
-        Loading active package...
-    </div>
-
-</section>
-
-<!-- PACKAGE HISTORY -->
-<section class="panel" id="packageHistory">
-
-    <div class="panel-heading">
-        <div>
-            <span class="eyebrow">PACKAGE ACTIVITY</span>
-            <h2>💎 My Package History</h2>
-            <p class="muted">
-                Track your package purchases and activation status.
-            </p>
-        </div>
-
-        <span class="wallet-icon">💎</span>
-    </div>
-
-    <div id="myPackageHistory">
-        Loading package history...
-    </div>
-
-</section>
-
-<!-- AVAILABLE TASKS -->
-<section class="panel" id="tasks">
-
-    <div class="panel-heading">
-        <div>
-            <span class="eyebrow">EARN REWARDS</span>
-            <h2>Available Tasks</h2>
-        </div>
-
-        <span class="wallet-icon">📋</span>
-    </div>
-
-    <div id="availableTaskList" class="task-grid">
-        Loading tasks...
-    </div>
-
-</section>
-
-<!-- MY SUBMISSIONS -->
-<section class="panel submissions-panel">
-
-    <div class="panel-heading">
-        <div>
-            <span class="eyebrow">TASK ACTIVITY</span>
-            <h2>My Submissions</h2>
-            <p class="muted">
-                Track your submitted tasks and their status.
-            </p>
-        </div>
-
-        <span class="wallet-icon">📨</span>
-    </div>
-
-    <div id="mySubmissions">
-        No submissions yet.
-    </div>
-
-</section>
-
-<!-- WALLET -->
-<section class="panel">
-
-    <div class="panel-heading">
-        <div>
-            <span class="eyebrow">YOUR MONEY</span>
-            <h2>My Wallet</h2>
-        </div>
-
-        <span class="wallet-icon">👛</span>
-    </div>
-
-    <!-- WALLET BALANCE -->
-    <div class="wallet-balance-card">
-
-        <div class="wallet-card-top">
-            <span>💎 MY WALLET</span>
-            <span class="wallet-chip">EARNHUB</span>
-        </div>
-
-        <p class="muted">Available Balance</p>
-
-        <h2 class="wallet-balance" id="walletBalance">
-            ₨0.00
-        </h2>
-
-        <p class="muted">Total Earnings</p>
-
-        <h3 id="walletEarnings">₨0.00</h3>
-
-        <small>✦ Your available funds</small>
-
-    </div>
-
-    <!-- WITHDRAW SECTION -->
+    <!-- WITHDRAW MONEY -->
     <div class="withdraw-section withdrawal-premium">
 
         <div class="panel-heading">
             <div>
-                <span class="eyebrow">PAYMENT CENTER</span>
+                <span class="eyebrow">WITHDRAW FUNDS</span>
                 <h2>Withdraw Money</h2>
             </div>
-
             <span>💸</span>
         </div>
 
@@ -728,13 +527,9 @@
 
         <div id="withdrawForm" style="display:none; margin-top:20px;">
 
-            <input
-                type="number"
-                id="withdrawAmount"
+            <input type="number" id="withdrawAmount"
                 placeholder="Minimum withdrawal ₨600"
-                min="600"
-                step="1"
-            >
+                min="600" step="1">
 
             <select id="withdrawMethod">
                 <option value="JazzCash">JazzCash</option>
@@ -745,17 +540,11 @@
                 <option value="SadaPay">SadaPay</option>
             </select>
 
-            <input
-                type="text"
-                id="withdrawAccountName"
-                placeholder="Account Holder Name"
-            >
+            <input type="text" id="withdrawAccountName"
+                placeholder="Account Holder Name">
 
-            <input
-                type="text"
-                id="withdrawAccountNumber"
-                placeholder="Account Number / Mobile Number"
-            >
+            <input type="text" id="withdrawAccountNumber"
+                placeholder="Account Number / Mobile Number">
 
             <button class="btn-primary" onclick="submitWithdrawal()">
                 Submit Request
@@ -765,18 +554,7 @@
 
     </div>
 
-    <!-- WITHDRAWAL HISTORY -->
-    <div class="withdrawal-history-panel">
-
-        <span class="eyebrow">YOUR RECORDS</span>
-
-        <h3>Withdrawal History</h3>
-
-        <div id="withdrawalHistory"></div>
-
-    </div>
-
-    <!-- DEPOSIT SECTION -->
+    <!-- DEPOSIT MONEY -->
     <div class="card deposit-premium" id="depositSection">
 
         <div class="panel-heading">
@@ -784,12 +562,11 @@
                 <span class="eyebrow">ADD FUNDS</span>
                 <h2>Deposit Money</h2>
             </div>
-
             <span>💳</span>
         </div>
 
         <p class="muted">
-            Add money to your EarnHub wallet securely.
+            Add money to your EarnHub account.
         </p>
 
         <button class="btn-primary" onclick="showDepositForm()">
@@ -798,26 +575,20 @@
 
         <div id="depositForm" style="display:none; margin-top:20px;">
 
-            <input
-                type="number"
-                id="depositAmount"
+            <input type="number" id="depositAmount"
                 placeholder="Minimum deposit ₨300"
-                min="300"
-                step="1"
-            >
+                min="300" step="1">
 
-            <select
-                id="depositMethod"
-                onchange="updateDepositPaymentDetails()"
-            >
+            <select id="depositMethod"
+                onchange="updateDepositPaymentDetails()">
                 <option value="JazzCash Merchant">JazzCash Merchant</option>
                 <option value="UPaisa">UPaisa</option>
             </select>
 
-            <div id="depositPaymentDetails" class="card" style="margin:12px 0;">
+            <div id="depositPaymentDetails" class="card"
+                style="margin:12px 0;">
 
                 <p><strong>Send payment to:</strong></p>
-
                 <p id="depositReceiverName">JazzCash</p>
 
                 <h3 id="depositReceiverNumber">
@@ -826,229 +597,458 @@
 
             </div>
 
-            <input
-                type="text"
-                id="depositTransactionId"
-                placeholder="Enter Transaction ID"
-            >
+            <input type="text" id="depositTransactionId"
+                placeholder="Enter Transaction ID">
 
-            <input
-                type="file"
-                id="depositScreenshot"
-                accept="image/*"
-            >
+            <input type="file" id="depositScreenshot"
+                accept="image/*">
 
             <button class="btn-primary" onclick="submitDeposit()">
                 Submit Deposit
             </button>
 
         </div>
+<!-- AVAILABLE TASKS -->
+<section class="panel" id="tasks">
 
+    <div class="panel-heading">
+        <div>
+            <span class="eyebrow">EARN REWARDS</span>
+            <h2>Available Tasks</h2>
+        </div>
+        <span class="wallet-icon">📋</span>
+    </div>
+
+    <div id="availableTaskList" class="task-grid">
+        Loading tasks...
+    </div>
+
+</section>
         <div id="depositHistory"></div>
 
     </div>
 
+</div>
+
+
+<!-- WITHDRAWAL HISTORY -->
+<div class="withdrawal-history-panel">
+
+    <span class="eyebrow">YOUR RECORDS</span>
+    <h3>Withdrawal History</h3>
+
+    <div id="withdrawalHistory"></div>
+
+</div>
+
 </section>
 <!-- END WALLET -->
 
-<!-- TRANSACTION HISTORY -->
-<section class="panel transaction-panel">
-
-    <div class="panel-heading">
-        <div>
-            <span class="eyebrow">WALLET ACTIVITY</span>
-            <h2>Transaction History</h2>
-            <p class="muted">
-                Track all your wallet transactions.
-            </p>
-        </div>
-
-        <span class="wallet-icon">📊</span>
-    </div>
-
-    <div id="transactionHistory">
-        No transactions yet.
-    </div>
-
-</section>
-
-<!-- ADMIN PANEL -->
-<section id="adminPanel" class="panel admin-panel hidden">
-
-    <div class="panel-heading">
-        <div>
-            <span class="eyebrow">MANAGEMENT</span>
-            <h2>Admin Dashboard</h2>
-        </div>
-
-        <span class="admin-label">ADMIN</span>
-    </div>
-
-    <!-- ADMIN ANALYTICS -->
-    <div class="admin-analytics">
+    <!-- EARNINGS PROGRESS -->
+    <div class="earnings-progress panel">
 
         <div class="panel-heading">
             <div>
-                <span class="eyebrow">BUSINESS OVERVIEW</span>
-                <h2>Admin Analytics</h2>
-                <p class="muted">Live overview of EarnHub activity.</p>
+                <span class="eyebrow">YOUR PERFORMANCE</span>
+                <h2>Earnings Progress</h2>
+                <p class="muted">Track your monthly activity.</p>
             </div>
+            <span class="progress-icon">📈</span>
         </div>
 
-        <button
-            type="button"
-            class="analytics-refresh-btn"
-            onclick="loadAdminAnalytics()"
-        >
-            ↻ Refresh Analytics
-        </button>
+        <div class="progress-stats">
 
-        <div class="analytics-grid">
-
-            <div class="analytics-card">
-                <span>Total Users</span>
-                <h3 id="analyticsUsers">Loading...</h3>
+            <div class="progress-item">
+                <span>This Month's Earnings</span>
+                <h3 id="monthlyEarnings">Loading...</h3>
             </div>
 
-            <div class="analytics-card">
-                <span>Approved Deposits</span>
-                <h3 id="analyticsDeposits">Loading...</h3>
+            <div class="progress-item">
+                <span>Tasks Completed This Month</span>
+                <h3 id="monthlyTasks">Loading...</h3>
             </div>
 
-            <div class="analytics-card">
-                <span>Paid Withdrawals</span>
-                <h3 id="analyticsWithdrawals">Loading...</h3>
-            </div>
-
-            <div class="analytics-card">
-                <span>Pending Requests</span>
-                <h3 id="analyticsPending">Loading...</h3>
-            </div>
-
-            <div class="analytics-card">
-                <span>Task Rewards Paid</span>
-                <h3 id="analyticsRewards">Loading...</h3>
+            <div class="progress-item">
+                <span>Pending Submissions</span>
+                <h3 id="pendingTasks">Loading...</h3>
             </div>
 
         </div>
 
     </div>
 
-    <!-- CREATE TASK FORM -->
-    <div class="admin-form">
+    <!-- PACKAGES SECTION -->
+    <section class="panel packages-panel" id="packages">
 
-        <h3>Create New Task</h3>
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">INVEST & EARN</span>
+                <h2>Available Packages</h2>
+                <p class="muted">Choose a package to start earning rewards.</p>
+            </div>
+            <span class="wallet-icon">💎</span>
+        </div>
 
-        <form id="createTaskForm">
+        <div class="packages-grid">
 
-            <label for="taskTitle">Task Title</label>
+            <div class="package-card">
+                <h3>Silver</h3>
+                <h2>₨200</h2>
+                <p>Daily Reward: ₨20</p>
+                <p>Duration: 60 Days</p>
+                <button onclick="activatePackage('silver')">Activate Package</button>
+            </div>
 
-            <input
-                type="text"
-                id="taskTitle"
-                placeholder="Enter task title"
-                required
-            >
+            <div class="package-card">
+                <h3>Platinum</h3>
+                <h2>₨500</h2>
+                <p>Daily Reward: ₨50</p>
+                <p>Duration: 60 Days</p>
+                <button onclick="activatePackage('platinum')">Activate Package</button>
+            </div>
 
-            <label for="taskDescription">Description</label>
+            <div class="package-card">
+                <h3>Gold</h3>
+                <h2>₨1,200</h2>
+                <p>Daily Reward: ₨100</p>
+                <p>Duration: 60 Days</p>
+                <button onclick="activatePackage('gold')">Activate Package</button>
+            </div>
 
-            <textarea
-                id="taskDescription"
-                rows="4"
-                placeholder="Enter task description"
-            ></textarea>
+            <div class="package-card">
+                <h3>VIP Gold</h3>
+                <h2>₨2,200</h2>
+                <p>Daily Reward: ₨270</p>
+                <p>Duration: 60 Days</p>
+                <button onclick="activatePackage('vip_gold')">Activate Package</button>
+            </div>
 
-            <label for="taskUrl">Task URL</label>
+            <div class="package-card">
+                <h3>VVIP Gold</h3>
+                <h2>₨5,000</h2>
+                <p>Daily Reward: ₨400</p>
+                <p>Duration: 60 Days</p>
+                <button onclick="activatePackage('vvip_gold')">Activate Package</button>
+            </div>
 
-            <input
-                type="url"
-                id="taskUrl"
-                placeholder="https://example.com"
-            >
+            <div class="package-card">
+                <h3>Diamond</h3>
+                <h2>₨12,000</h2>
+                <p>Daily Reward: ₨700</p>
+                <p>Duration: 60 Days</p>
+                <button onclick="activatePackage('diamond')">Activate Package</button>
+            </div>
 
-            <label for="taskReward">Task Reward (PKR)</label>
+        </div>
 
-            <input
-                type="number"
-                id="taskReward"
-                value="50"
-                min="50"
-                max="50"
-                step="1"
-                readonly
-                required
-            >
+        <p class="muted">
+    Daily package rewards are guaranteed for active packages
+    throughout their 60-day duration.
+</p>
+
+    </section>
+    <!-- END PACKAGES SECTION -->
+
+    <!-- CURRENT ACTIVE PACKAGE -->
+    <section class="panel" id="currentActivePackage">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">YOUR ACTIVE PLAN</span>
+                <h2>💎 Current Active Package</h2>
+            </div>
+        </div>
+
+        <div id="activePackageDetails">
+            Loading active package...
+        </div>
+
+    </section>
+
+    <!-- PACKAGE HISTORY -->
+    <section class="panel" id="packageHistory">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">PACKAGE ACTIVITY</span>
+                <h2>💎 My Package History</h2>
+                <p class="muted">
+                    Track your package purchases and activation status.
+                </p>
+            </div>
+
+            <span class="wallet-icon">💎</span>
+        </div>
+
+        <div id="myPackageHistory">
+            Loading package history...
+        </div>
+
+    </section>
+
+    <!-- MY SUBMISSIONS -->
+    <section class="panel submissions-panel">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">TASK ACTIVITY</span>
+                <h2>My Submissions</h2>
+                <p class="muted">
+                    Track your submitted tasks and their status.
+                </p>
+            </div>
+
+            <span class="wallet-icon">📨</span>
+        </div>
+
+        <div id="mySubmissions">
+            No submissions yet.
+        </div>
+
+    </section>
+
+    <!-- REFERRAL PROGRAM -->
+    <div class="referral-panel panel" id="referral"></div>
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">INVITE & EARN</span>
+                <h2>Referral Program</h2>
+                <p class="muted">Invite friends and earn ₨35 for each successful referral.</p>
+            </div>
+            <span class="progress-icon">🎁</span>
+        </div>
+
+        <div class="referral-link-box">
+            <label>Your Referral Link</label>
+
+            <div class="referral-copy-row">
+                <input
+                    type="text"
+                    id="referralLink"
+                    readonly
+                    placeholder="Loading your referral link..."
+                >
+
+                <button type="button" onclick="copyReferralLink()">
+                    Copy Link
+                </button>
+            </div>
+        </div>
+
+        <div class="referral-stats">
+            <div class="progress-item">
+                <span>Total Referrals</span>
+                <h3 id="totalReferrals">0</h3>
+            </div>
+
+            <div class="progress-item">
+                <span>Referral Earnings</span>
+                <h3 id="referralEarnings">₨0.00</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TRANSACTION HISTORY -->
+    <section class="panel transaction-panel">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">WALLET ACTIVITY</span>
+                <h2>Transaction History</h2>
+                <p class="muted">
+                    Track all your wallet transactions.
+                </p>
+            </div>
+
+            <span class="wallet-icon">📊</span>
+        </div>
+
+        <div id="transactionHistory">
+            No transactions yet.
+        </div>
+
+    </section>
+
+    <!-- ADMIN PANEL -->
+    <section id="adminPanel" class="panel admin-panel hidden">
+
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">MANAGEMENT</span>
+                <h2>Admin Dashboard</h2>
+            </div>
+
+            <span class="admin-label">ADMIN</span>
+        </div>
+
+        <!-- ADMIN ANALYTICS -->
+        <div class="admin-analytics">
+
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow">BUSINESS OVERVIEW</span>
+                    <h2>Admin Analytics</h2>
+                    <p class="muted">Live overview of EarnHub activity.</p>
+                </div>
+            </div>
 
             <button
-                type="submit"
-                id="createTaskButton"
-                class="btn-primary full-width"
+                type="button"
+                class="analytics-refresh-btn"
+                onclick="loadAdminAnalytics()"
             >
-                + Create Task
+                ↻ Refresh Analytics
             </button>
 
-        </form>
+            <div class="analytics-grid">
 
-    </div>
+                <div class="analytics-card">
+                    <span>Total Users</span>
+                    <h3 id="analyticsUsers">Loading...</h3>
+                </div>
 
-    <!-- PENDING SUBMISSIONS -->
-    <div class="admin-submissions">
+                <div class="analytics-card">
+                    <span>Approved Deposits</span>
+                    <h3 id="analyticsDeposits">Loading...</h3>
+                </div>
 
-        <div class="panel-heading">
-            <div>
-                <span class="eyebrow">REVIEW TASKS</span>
-                <h3>Pending Submissions</h3>
+                <div class="analytics-card">
+                    <span>Paid Withdrawals</span>
+                    <h3 id="analyticsWithdrawals">Loading...</h3>
+                </div>
+
+                <div class="analytics-card">
+                    <span>Pending Requests</span>
+                    <h3 id="analyticsPending">Loading...</h3>
+                </div>
+
+                <div class="analytics-card">
+                    <span>Task Rewards Paid</span>
+                    <h3 id="analyticsRewards">Loading...</h3>
+                </div>
+
             </div>
+
         </div>
 
-        <div id="adminSubmissions">
-            No pending submissions.
+        <!-- CREATE TASK FORM -->
+        <div class="admin-form">
+
+            <h3>Create New Task</h3>
+
+            <form id="createTaskForm">
+
+                <label for="taskTitle">Task Title</label>
+
+                <input
+                    type="text"
+                    id="taskTitle"
+                    placeholder="Enter task title"
+                    required
+                >
+
+                <label for="taskDescription">Description</label>
+
+                <textarea
+                    id="taskDescription"
+                    rows="4"
+                    placeholder="Enter task description"
+                ></textarea>
+
+                <label for="taskUrl">Task URL</label>
+
+                <input
+                    type="url"
+                    id="taskUrl"
+                    placeholder="https://example.com"
+                >
+
+                <label for="taskReward">Task Reward (PKR)</label>
+
+                <input
+                    type="number"
+                    id="taskReward"
+                    value="50"
+                    min="50"
+                    max="50"
+                    step="1"
+                    readonly
+                    required
+                >
+
+                <button
+                    type="submit"
+                    id="createTaskButton"
+                    class="btn-primary full-width"
+                >
+                    + Create Task
+                </button>
+
+            </form>
+
         </div>
 
-        <!-- ADMIN WITHDRAWALS -->
-        <div class="panel withdrawal-panel" style="margin-top:25px;">
+        <!-- PENDING SUBMISSIONS -->
+        <div class="admin-submissions">
 
             <div class="panel-heading">
                 <div>
-                    <span class="eyebrow">PAYMENT MANAGEMENT</span>
-                    <h2>Withdrawal Requests</h2>
+                    <span class="eyebrow">REVIEW TASKS</span>
+                    <h3>Pending Submissions</h3>
                 </div>
-
-                <span>💸</span>
             </div>
 
-            <div id="adminWithdrawals">
-                No pending withdrawal requests.
+            <div id="adminSubmissions">
+                No pending submissions.
+            </div>
+
+            <!-- ADMIN WITHDRAWALS -->
+            <div class="panel withdrawal-panel" style="margin-top:25px;">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">PAYMENT MANAGEMENT</span>
+                        <h2>Withdrawal Requests</h2>
+                    </div>
+
+                    <span>💸</span>
+                </div>
+
+                <div id="adminWithdrawals">
+                    No pending withdrawal requests.
+                </div>
+
+            </div>
+
+            <!-- ADMIN DEPOSITS -->
+            <div class="admin-deposits-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">PAYMENT MANAGEMENT</span>
+                        <h2>Deposit Requests</h2>
+                        <p class="muted">
+                            Review and manage user deposits.
+                        </p>
+                    </div>
+
+                    <span>💳</span>
+                </div>
+
+                <div id="adminDeposits">
+                    No deposit requests.
+                </div>
+
             </div>
 
         </div>
 
-        <!-- ADMIN DEPOSITS -->
-        <div class="admin-deposits-panel">
-
-            <div class="panel-heading">
-                <div>
-                    <span class="eyebrow">PAYMENT MANAGEMENT</span>
-                    <h2>Deposit Requests</h2>
-                    <p class="muted">
-                        Review and manage user deposits.
-                    </p>
-                </div>
-
-                <span>💳</span>
-            </div>
-
-            <div id="adminDeposits">
-                No deposit requests.
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
+    </section>
 
 </main>
+
 <!-- LOGIN / SIGNUP MODAL -->
 <div id="authModal" class="modal hidden">
 
@@ -1154,7 +1154,6 @@
     </p>
 
 </footer>
-
 
 <!-- NAVIGATION HELPER -->
 <script>
