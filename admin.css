@@ -1,1285 +1,547 @@
 
-const db = window.supabaseClient;
+/* =========================================
+   EARNHUB ADMIN PANEL - PREMIUM BLUE THEME
+   Blue + White + Green | No Animations
+========================================= */
 
-let adminUser = null;
-let adminVerified = false;
-let platformChart = null;
-
-const $ = id => document.getElementById(id);
-
-function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-    })[char]);
-}
-function money(value) {
-    return "₨" + Number(value || 0).toFixed(2);
+* {
+    box-sizing: border-box;
 }
 
-function showDenied(message) {
-    $("adminLoader")?.classList.add("hidden");
-    $("adminApp")?.classList.add("hidden");
-    $("accessDenied")?.classList.remove("hidden");
+:root {
+    --bg: #080f1e;
+    --sidebar: #0d192d;
+    --card: #12233b;
+    --card-light: #192e49;
+    --border: #263d58;
 
-    const paragraph = $("accessDenied")?.querySelector("p");
-    if (paragraph) paragraph.textContent = message;
+    --blue: #1677e8;
+    --blue-light: #3696ff;
+    --blue-dark: #105bb5;
+
+    --green: #16a875;
+    --green-light: #21c58b;
+
+    --red: #e34b55;
+
+    --text: #f5f8fc;
+    --muted: #a7b5c8;
+    --white: #ffffff;
 }
 
-async function verifyAdmin() {
-    if (!db) {
-        showDenied("Supabase connection could not be established.");
-        return false;
-    }
-
-    const { data: sessionData, error: sessionError } =
-        await db.auth.getSession();
-
-    if (sessionError) throw sessionError;
-
-    const user = sessionData.session?.user;
-
-    if (!user) {
-        window.location.replace("index.html");
-        return false;
-    }
-
-    const { data, error } = await db.rpc("is_admin");
-
-    if (error) throw error;
-
-    if (data !== true) {
-        showDenied("Your account does not have administrator permission.");
-        return false;
-    }
-
-    adminUser = user;
-    adminVerified = true;
-    await loadAdminTasks();
-
-    $("adminLoader")?.classList.add("hidden");
-    $("accessDenied")?.classList.add("hidden");
-    $("adminApp")?.classList.remove("hidden");
-
-    $("adminEmail").textContent = user.email || "Administrator";
-
-    return true;
+html {
+    scroll-behavior: auto;
 }
 
-// ======================================
-// ADMIN ANALYTICS
-// ======================================
-
-async function loadAdminAnalytics() {
-    if (!adminVerified) return;
-
-    try {
-        const [
-            usersResult,
-            depositsResult,
-            withdrawalsResult,
-            pendingDepositsResult,
-            pendingWithdrawalsResult,
-            rewardsResult
-        ] = await Promise.all([
-
-            db.from("profiles")
-                .select("*", { count: "exact", head: true }),
-
-            db.from("deposit_requests")
-                .select("amount")
-                .eq("status", "approved"),
-
-            db.from("withdrawal_requests")
-                .select("amount")
-                .eq("status", "paid"),
-
-            db.from("deposit_requests")
-                .select("*", { count: "exact", head: true })
-                .eq("status", "pending"),
-
-            db.from("withdrawal_requests")
-                .select("*", { count: "exact", head: true })
-                .eq("status", "pending"),
-
-            db.from("wallet_transactions")
-                .select("amount")
-                .eq("transaction_type", "task_reward")
-        ]);
-
-        const results = [
-            usersResult,
-            depositsResult,
-            withdrawalsResult,
-            pendingDepositsResult,
-            pendingWithdrawalsResult,
-            rewardsResult
-        ];
-
-        const failed = results.find(result => result.error);
-        if (failed) throw failed.error;
-
-        const sum = rows =>
-            (rows || []).reduce(
-                (total, row) => total + Number(row.amount || 0),
-                0
-            );
-
-        $("analyticsUsers").textContent =
-            usersResult.count ?? 0;
-
-        $("analyticsDeposits").textContent =
-            money(sum(depositsResult.data));
-
-        $("analyticsWithdrawals").textContent =
-            money(sum(withdrawalsResult.data));
-
-        $("analyticsPending").textContent =
-            (pendingDepositsResult.count ?? 0) +
-            (pendingWithdrawalsResult.count ?? 0);
-
-        $("analyticsRewards").textContent =
-            money(sum(rewardsResult.data));
-
-    } catch (error) {
-        console.error("Analytics error:", error);
-        alert("Analytics error: " + error.message);
-    }
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+    line-height: 1.5;
 }
 
-async function loadPlatformChart() {
-    if (!adminVerified || typeof Chart === "undefined") return;
-
-    const canvas = $("platformChart");
-    if (!canvas) return;
-
-    try {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-        sevenDaysAgo.setHours(0, 0, 0, 0);
-
-        const startDate = sevenDaysAgo.toISOString();
-
-        const [users, deposits, withdrawals] = await Promise.all([
-            db.from("profiles")
-                .select("created_at")
-                .gte("created_at", startDate),
-
-            db.from("deposit_requests")
-                .select("amount, created_at")
-                .eq("status", "approved")
-                .gte("created_at", startDate),
-
-            db.from("withdrawal_requests")
-                .select("amount, created_at")
-                .eq("status", "paid")
-                .gte("created_at", startDate)
-        ]);
-
-        const results = [users, deposits, withdrawals];
-        const failed = results.find(result => result.error);
-        if (failed) throw failed.error;
-
-        const dates = [];
-
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(sevenDaysAgo);
-            date.setDate(date.getDate() + i);
-            dates.push(date);
-        }
-
-        const getDailyData = (rows, field) => dates.map(date => {
-            const total = (rows || [])
-                .filter(row => {
-                    const itemDate = new Date(row.created_at);
-
-                    return itemDate.getFullYear() === date.getFullYear() &&
-                        itemDate.getMonth() === date.getMonth() &&
-                        itemDate.getDate() === date.getDate();
-                })
-                .reduce((sum, row) => sum + Number(row[field] ?? 1), 0);
-
-            return total;
-        });
-
-        const labels = dates.map(date =>
-            date.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric"
-            })
-        );
-
-        if (platformChart) {
-            platformChart.destroy();
-        }
-
-        platformChart = new Chart(canvas, {
-            type: "line",
-            data: {
-                labels,
-                datasets: [
-                    {
-                        label: "Users",
-                        data: getDailyData(users.data, "count"),
-                        borderColor: "#8b5cf6",
-                        backgroundColor: "#8b5cf6",
-                        tension: 0.4
-                    },
-                    {
-                        label: "Deposits",
-                        data: getDailyData(deposits.data, "amount"),
-                        borderColor: "#10b981",
-                        backgroundColor: "#10b981",
-                        tension: 0.4
-                    },
-                    {
-                        label: "Withdrawals",
-                        data: getDailyData(withdrawals.data, "amount"),
-                        borderColor: "#f59e0b",
-                        backgroundColor: "#f59e0b",
-                        tension: 0.4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: { color: "#ffffff" }
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: { color: "#c4b5fd" },
-                        grid: { color: "#292743" }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: "#c4b5fd" },
-                        grid: { color: "#292743" }
-                    }
-                }
-            }
-        });
-
-    } catch (error) {
-        console.error("Platform chart error:", error);
-    }
+.hidden {
+    display: none !important;
 }
 
-// ======================================
-// TASK SUBMISSIONS
-// ======================================
-
-async function loadAdminSubmissions() {
-    if (!adminVerified) return;
-
-    const container = $("adminSubmissions");
-
-    try {
-        const { data, error } = await db
-            .from("task_submissions")
-            .select("id, user_id, proof, status, submitted_at, tasks(title, reward)")
-            .eq("status", "pending")
-            .order("submitted_at", { ascending: true });
-
-        if (error) throw error;
-
-        if (!data?.length) {
-            container.textContent = "No pending submissions.";
-            return;
-        }
-
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>${escapeHTML(item.tasks?.title || "Task")}</h3>
-                <p>User ID: ${escapeHTML(item.user_id)}</p>
-                <p>Proof: ${escapeHTML(item.proof || "")}</p>
-                <p>Reward: ${money(item.tasks?.reward)}</p>
-
-               <button onclick="adminApproveTask('${escapeHTML(item.id)}')">
-                    Approve
-                </button>
-
-              <button onclick="adminRejectTask('${escapeHTML(item.id)}')">
-                    Reject
-                </button>
-            </article>
-        `).join("");
-
-    } catch (error) {
-        console.error("Submissions error:", error);
-        container.textContent = "Could not load submissions: " + error.message;
-    }
+#adminApp {
+    min-height: 100vh;
 }
 
-window.adminApproveTask = async function(id) {
-    if (!adminVerified) return;
+/* =========================================
+   SIDEBAR
+========================================= */
 
-    if (!confirm("Approve this task and credit its reward?")) return;
-
-    try {
-        const { data, error } = await db.rpc(
-            "approve_task_submission",
-            { p_submission_id: id }
-        );
-
-        if (error) throw error;
-
-        alert(data || "Task approved successfully.");
-
-        await Promise.all([
-            loadAdminSubmissions(),
-            loadAdminAnalytics()
-        ]);
-
-    } catch (error) {
-        alert("Approval failed: " + error.message);
-    }
-};
-
-window.adminRejectTask = async function(id) {
-    if (!adminVerified) return;
-
-    if (!confirm("Reject this task submission?")) return;
-
-    try {
-        const { data, error } = await db.rpc(
-            "reject_task_submission",
-            { p_submission_id: id }
-        );
-
-        if (error) throw error;
-
-        alert(data || "Task rejected.");
-
-        await loadAdminSubmissions();
-
-    } catch (error) {
-        alert("Rejection failed: " + error.message);
-    }
-};
-
-// ======================================
-// WITHDRAWAL REQUESTS
-// ======================================
-// ======================================
-// SPONSORED CAMPAIGNS
-// ======================================
-
-async function loadAdminSponsoredCampaigns() {
-    if (!adminVerified) return;
-
-    const container = $("adminSponsoredCampaigns");
-    if (!container) return;
-
-    container.textContent = "Loading sponsored campaigns...";
-
-    try {
-        const { data, error } = await db
-            .from("sponsor_payments")
-            .select(`
-                id, task_id, sponsor_id, sponsor_company,
-                payment_method, payment_amount, transaction_id,
-                submitted_at, screenshot_url
-            `)
-            .eq("payment_status", "pending")
-            .order("submitted_at", { ascending: true });
-
-        if (error) throw error;
-
-        if (!data?.length) {
-            container.textContent = "No pending sponsored payments.";
-            return;
-        }
-
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>${escapeHTML(item.sponsor_company)}</h3>
-                <p>Task ID: ${escapeHTML(item.task_id)}</p>
-                <p>Amount: ${money(item.payment_amount)}</p>
-                <p>Method: ${escapeHTML(item.payment_method)}</p>
-                <p>Transaction ID: ${escapeHTML(item.transaction_id)}</p>
-                <p>Submitted: ${escapeHTML(item.submitted_at)}</p>
-                ${
-                    item.screenshot_url
-                    ? `<p><a href="#" onclick="adminViewSponsorScreenshot('${escapeHTML(item.id)}'); return false;">View Payment Screenshot</a></p>`
-                    : "<p>No screenshot provided.</p>"
-                }
-                <button onclick="adminVerifySponsoredCampaign('${escapeHTML(item.task_id)}')">
-                    Verify Payment & Activate Campaign
-                </button>
-            </article>
-        `).join("");
-
-    } catch (error) {
-        console.error("Sponsored campaigns error:", error);
-        container.textContent = "Could not load sponsored payments: " + error.message;
-    }
+.sidebar {
+    width: 250px;
+    position: fixed;
+    inset: 0 auto 0 0;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    padding: 28px 18px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    overflow-y: auto;
 }
 
-window.adminViewSponsorScreenshot = async function(paymentId) {
-    if (!adminVerified) return;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 45px;
+}
 
-    try {
-        const { data: payment, error } = await db
-            .from("sponsor_payments")
-            .select("screenshot_url")
-            .eq("id", paymentId)
-            .single();
+.brand-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 25px;
+    font-weight: 800;
+    color: white;
+    background: linear-gradient(135deg, #1677e8, #064b9c);
+}
 
-        if (error) throw error;
-        if (!payment.screenshot_url) throw new Error("Screenshot not found.");
+.brand h2 {
+    margin: 0;
+    font-size: 20px;
+    color: white;
+    font-weight: 800;
+}
 
-        const { data, error: urlError } = await db.storage
-            .from("deposit-screenshots")
-            .createSignedUrl(payment.screenshot_url, 300);
+.brand small {
+    color: var(--green-light);
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
 
-        if (urlError) throw urlError;
+.sidebar nav {
+    display: grid;
+    gap: 9px;
+}
 
-        window.open(data.signedUrl, "_blank", "noopener");
+.sidebar nav a {
+    padding: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border-left: 3px solid transparent;
+}
 
-    } catch (error) {
-        alert("Screenshot error: " + error.message);
-    }
-};
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: #17385e;
+    color: var(--white);
+    border-left-color: var(--green);
+}
 
-window.adminVerifySponsoredCampaign = async function(taskId) {
-    if (!adminVerified) return;
+.sidebar-bottom {
+    margin-top: auto;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 15px 5px;
+}
 
-    if (!confirm("Verify sponsor payment and activate this campaign?")) {
-        return;
-    }
+.online-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--green-light);
+    border-radius: 50%;
+    margin-right: 7px;
+}
 
-    try {
-        const { error } = await db.rpc(
-            "admin_verify_sponsored_campaign",
-            { p_task_id: taskId }
-        );
+.sidebar-bottom button {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: white;
+    background: #193451;
+    cursor: pointer;
+    font-weight: 700;
+}
 
-        if (error) throw error;
+.sidebar-bottom button:hover {
+    background: var(--blue-dark);
+}
 
-        alert("Sponsored campaign verified and activated!");
-        await loadAdminSponsoredCampaigns();
+/* =========================================
+   MAIN CONTENT
+========================================= */
 
-    } catch (error) {
-        alert("Verification failed: " + error.message);
-    }
-};
+.main-content {
+    margin-left: 250px;
+    padding: 30px;
+    max-width: 1700px;
+}
 
-$("refreshSponsoredCampaigns")?.addEventListener(
-    "click",
-    loadAdminSponsoredCampaigns
-);
-// ======================================
-// PACKAGE REQUESTS
-// ======================================
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
 
-async function loadAdminPackageRequests() {
-    if (!adminVerified) return;
+.topbar small,
+.eyebrow {
+    color: var(--green-light);
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 800;
+}
 
-    const container = $("adminPackageRequests");
-    if (!container) return;
+.topbar h1 {
+    margin: 8px 0;
+    font-size: 27px;
+    color: white;
+    font-weight: 800;
+}
 
-    container.textContent = "Loading package requests...";
+.admin-profile {
+    padding: 12px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--white);
+}
 
-    try {
-        const { data, error } = await db
-            .from("package_orders")
-            .select("id, user_id, package_id, package_price, daily_reward, duration_days, status, created_at")
-            .eq("status", "pending")
-            .order("created_at", { ascending: true });
+/* =========================================
+   WELCOME SECTION
+========================================= */
 
-        if (error) throw error;
+.welcome-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 30px;
+    border: 1px solid #24568b;
+    border-radius: 18px;
+    background: linear-gradient(110deg, #12345a, #10243e);
+    margin-bottom: 25px;
+}
 
-        if (!data?.length) {
-            container.textContent = "No pending package requests.";
-            return;
-        }
+.welcome-section h2 {
+    font-size: 24px;
+    margin: 12px 0 6px;
+    color: white;
+}
 
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>Package Request #${escapeHTML(item.id)}</h3>
-                <p>User ID: ${escapeHTML(item.user_id)}</p>
-                <p>Package ID: ${escapeHTML(item.package_id)}</p>
-                <p>Package Price: ${money(item.package_price)}</p>
-                <p>Daily Reward: ${money(item.daily_reward)}</p>
-                <p>Duration: ${escapeHTML(item.duration_days)} Days</p>
-                <p>Status: Pending</p>
+.welcome-section p {
+    color: #c0d0e2;
+    margin: 0;
+}
 
-                <button onclick="adminApprovePackage(${JSON.stringify(item.id)})">
-                    Approve
-                </button>
+/* =========================================
+   BUTTONS
+========================================= */
 
-                <button onclick="adminRejectPackage(${JSON.stringify(item.id)})">
-                    Reject
-                </button>
-            </article>
-        `).join("");
+button {
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+}
 
-    } catch (error) {
-        console.error("Package requests error:", error);
-        container.textContent =
-            "Could not load package requests: " + error.message;
+#refreshAll,
+.task-form button {
+    background: var(--green);
+    color: white;
+    border: 0;
+    border-radius: 9px;
+    padding: 13px 19px;
+    font-weight: 800;
+}
+
+#refreshAll:hover,
+.task-form button:hover {
+    background: #10865e;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   STATISTICS
+========================================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.stat-card,
+.content-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.stat-card span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.stat-card h2 {
+    color: var(--green-light);
+    font-size: 27px;
+    margin: 15px 0 8px;
+    overflow-wrap: anywhere;
+}
+
+.stat-card small {
+    color: var(--muted);
+}
+
+/* =========================================
+   CONTENT SECTIONS
+========================================= */
+
+.content-card {
+    margin-bottom: 22px;
+    overflow-x: auto;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.section-heading h2 {
+    margin: 8px 0 0;
+    font-size: 20px;
+    color: white;
+}
+
+/* =========================================
+   TASK FORM
+========================================= */
+
+.task-form {
+    display: grid;
+    gap: 12px;
+    max-width: 700px;
+}
+
+.task-form label {
+    color: #c4d2e2;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.task-form input,
+.task-form textarea,
+.task-form select,
+input,
+select,
+textarea {
+    width: 100%;
+    background: #0b192b;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 13px;
+    font: inherit;
+    outline: none;
+}
+
+.task-form input:focus,
+.task-form textarea:focus,
+.task-form select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--blue-light);
+}
+
+select option {
+    background: var(--sidebar);
+    color: white;
+}
+
+.task-form button {
+    margin-top: 8px;
+}
+
+/* =========================================
+   TASK CARDS
+========================================= */
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 14px;
+    overflow-wrap: anywhere;
+}
+
+.card h3,
+.card h4 {
+    color: var(--blue-light);
+    margin-top: 0;
+}
+
+.card p {
+    color: #c6d3e2;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Normal card buttons */
+.card button {
+    padding: 10px 15px;
+    margin: 5px 5px 0 0;
+    border: 0;
+    border-radius: 7px;
+    font-weight: bold;
+    background: var(--green);
+    color: white;
+}
+
+.card button:hover {
+    background: #10865e;
+}
+
+/* Delete button */
+.card button[onclick*="deleteTask"] {
+    background: var(--red) !important;
+    color: white !important;
+}
+
+.card button[onclick*="deleteTask"]:hover {
+    background: #bd303b !important;
+}
+
+/* =========================================
+   TABLES
+========================================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+th {
+    background: #193451;
+    color: white;
+    font-size: 13px;
+    text-align: left;
+    padding: 14px;
+}
+
+td {
+    color: #d4dfeb;
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+tr:hover td {
+    background: #172b43;
+}
+
+/* =========================================
+   LOADER & ACCESS DENIED
+========================================= */
+
+.loader,
+#accessDenied {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.loader-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 35px;
+    border-radius: 18px;
+}
+
+.loader-card h2 {
+    color: var(--blue-light);
+}
+
+#accessDenied a {
+    color: var(--green-light);
+}
+
+/* =========================================
+   MOBILE RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-window.adminApprovePackage = async function(id) {
-    if (!adminVerified) return;
+@media (max-width: 700px) {
 
-    if (!confirm("Approve this package? User balance will be deducted.")) {
-        return;
+    .sidebar {
+        position: relative;
+        width: 100%;
+        padding: 18px;
     }
 
-    try {
-        const { data, error } = await db.rpc(
-            "admin_approve_package",
-            { p_order_id: id }
-        );
-
-        if (error) throw error;
-
-        alert("Package approved successfully!");
-
-        await loadAdminPackageRequests();
-
-    } catch (error) {
-        alert("Package approval failed: " + error.message);
-    }
-};
-
-window.adminRejectPackage = async function(id) {
-    if (!adminVerified) return;
-
-    if (!confirm("Are you sure you want to reject this package request?")) {
-        return;
+    .brand {
+        margin-bottom: 20px;
     }
 
-    try {
-        const { data, error } = await db.rpc(
-            "admin_reject_package",
-            { p_order_id: id }
-        );
-
-        if (error) throw error;
-
-        alert("Package request rejected.");
-
-        await loadAdminPackageRequests();
-
-    } catch (error) {
-        alert("Package rejection failed: " + error.message);
-    }
-};
-
-$("refreshPackages")?.addEventListener(
-    "click",
-    loadAdminPackageRequests
-);
-
-async function loadAdminWithdrawals() {
-    if (!adminVerified) return;
-
-    const container = $("adminWithdrawals");
-
-    try {
-        const { data, error } = await db
-            .from("withdrawal_requests")
-            .select("*")
-            .in("status", ["pending", "approved"])
-            .order("created_at", { ascending: true });
-
-        if (error) throw error;
-
-        if (!data?.length) {
-            container.textContent = "No pending withdrawal requests.";
-            return;
-        }
-
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>Withdrawal: ${money(item.amount)}</h3>
-                <p>User ID: ${escapeHTML(item.user_id)}</p>
-                <p>Method: ${escapeHTML(item.method)}</p>
-                <p>Account Name: ${escapeHTML(item.account_name)}</p>
-                <p>Account Number: ${escapeHTML(item.account_number)}</p>
-                <p>Status: ${escapeHTML(item.status)}</p>
-
-                ${
-                    item.status === "pending"
-                    ? `
-                        <button onclick="adminProcessWithdrawal(${JSON.stringify(item.id)}, true)">
-                            Approve
-                        </button>
-                        <button onclick="adminProcessWithdrawal(${JSON.stringify(item.id)}, false)">
-                            Reject
-                        </button>
-                    `
-                    : `
-                        <button onclick="adminMarkPaid(${JSON.stringify(item.id)})">
-                            Mark as Paid
-                        </button>
-                    `
-                }
-            </article>
-        `).join("");
-
-    } catch (error) {
-        console.error("Withdrawal error:", error);
-        container.textContent = "Could not load withdrawals: " + error.message;
-    }
-}
-
-window.adminProcessWithdrawal = async function(id, approve) {
-    if (!adminVerified) return;
-
-    const action = approve ? "approve" : "reject";
-
-    if (!confirm("Are you sure you want to " + action + " this request?")) {
-        return;
+    .sidebar nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    try {
-        const { error } = await db.rpc(
-            "admin_process_withdrawal",
-            {
-                p_request_id: id,
-                p_approve: approve
-            }
-        );
-
-        if (error) throw error;
-
-        alert("Withdrawal " + action + "d successfully.");
-
-        await Promise.all([
-            loadAdminWithdrawals(),
-            loadAdminAnalytics()
-        ]);
-
-    } catch (error) {
-        alert("Withdrawal error: " + error.message);
-    }
-};
-
-window.adminMarkPaid = async function(id) {
-    if (!adminVerified) return;
-
-    const transactionId = prompt(
-        "Enter the payment transaction/reference ID:"
-    );
-
-    if (!transactionId?.trim()) {
-        alert("Transaction ID is required.");
-        return;
+    .sidebar-bottom {
+        margin-top: 15px;
     }
 
-    if (!confirm("Have you actually transferred the money?")) return;
-
-    try {
-        const { data, error } = await db.rpc(
-            "admin_mark_withdrawal_paid",
-            {
-                p_request_id: id,
-                p_transaction_id: transactionId.trim()
-            }
-        );
-
-        if (error) throw error;
-
-        alert(data || "Withdrawal marked as paid.");
-
-        await Promise.all([
-            loadAdminWithdrawals(),
-            loadAdminAnalytics()
-        ]);
-
-    } catch (error) {
-        alert("Payment update failed: " + error.message);
-    }
-};
-
-// ======================================
-// DEPOSIT REQUESTS
-// ======================================
-
-async function loadAdminDeposits() {
-    if (!adminVerified) return;
-
-    const container = $("adminDeposits");
-
-    try {
-        const { data, error } = await db
-            .from("deposit_requests")
-            .select("*")
-            .in("status", ["pending", "approved"])
-            .order("created_at", { ascending: true });
-
-        if (error) throw error;
-
-        if (!data?.length) {
-            container.textContent = "No deposit requests.";
-            return;
-        }
-
-        const cards = await Promise.all(data.map(async item => {
-            let screenshot = "";
-
-            if (item.screenshot_url) {
-                const { data: signed, error: imageError } =
-                    await db.storage
-                        .from("deposit-screenshots")
-                        .createSignedUrl(item.screenshot_url, 600);
-
-                if (!imageError && signed?.signedUrl) {
-                    screenshot = `
-                        <p><strong>Payment Screenshot:</strong></p>
-                        <img src="${escapeHTML(signed.signedUrl)}"
-                             alt="Deposit screenshot"
-                             style="max-width:250px;width:100%;border-radius:8px;">
-                    `;
-                }
-            }
-
-            return `
-                <article class="card">
-                    <h3>Deposit: ${money(item.amount)}</h3>
-                    <p>User ID: ${escapeHTML(item.user_id)}</p>
-                    <p>Method: ${escapeHTML(item.payment_method)}</p>
-                    <p>Transaction ID: ${escapeHTML(item.transaction_id)}</p>
-                    <p>Status: ${escapeHTML(item.status)}</p>
-
-                    ${screenshot}
-
-                    ${
-                        item.status === "pending"
-                        ? `
-                            <button onclick="adminProcessDeposit(${JSON.stringify(item.id)}, true)">
-                                Approve
-                            </button>
-                            <button onclick="adminProcessDeposit(${JSON.stringify(item.id)}, false)">
-                                Reject
-                            </button>
-                        `
-                        : ""
-                    }
-                </article>
-            `;
-        }));
-
-        container.innerHTML = cards.join("");
-
-    } catch (error) {
-        console.error("Deposit error:", error);
-        container.textContent = "Could not load deposits: " + error.message;
-    }
-}
-
-window.adminProcessDeposit = async function(id, approve) {
-    if (!adminVerified) return;
-
-    const action = approve ? "approve" : "reject";
-
-    if (!confirm("Are you sure you want to " + action + " this deposit?")) {
-        return;
+    .main-content {
+        margin-left: 0;
+        padding: 16px;
     }
 
-    try {
-        const { data, error } = await db.rpc(
-            "admin_process_deposit",
-            {
-                p_deposit_id: id,
-                p_approve: approve
-            }
-        );
-
-        if (error) throw error;
-
-        alert(
-            approve
-                ? "Deposit approved successfully!"
-                : "Deposit rejected successfully!"
-        );
-
-        await Promise.all([
-            loadAdminDeposits(),
-            loadAdminAnalytics()
-        ]);
-
-    } catch (error) {
-        alert("Deposit processing failed: " + error.message);
-    }
-};
-
-// ======================================
-// SUPPORT MESSAGES
-// ======================================
-
-async function loadAdminSupportMessages() {
-    if (!adminVerified) return;
-
-    const container = $("adminSupportMessages");
-    if (!container) return;
-
-    container.textContent = "Loading support messages...";
-
-    try {
-        const { data, error } = await db
-            .from("support_messages")
-            .select("*")
-            .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        if (!data?.length) {
-            container.textContent = "No support messages yet.";
-            return;
-        }
-
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>Support Request #${item.id}</h3>
-
-                <p><strong>User ID:</strong>
-                    ${escapeHTML(item.user_id)}
-                </p>
-
-                <p><strong>Message:</strong></p>
-                <p>${escapeHTML(item.message)}</p>
-
-                <p><strong>Status:</strong>
-                    ${escapeHTML(item.status)}
-                </p>
-
-                ${
-                    item.admin_reply
-                    ? `
-                        <p><strong>Your Reply:</strong></p>
-                        <p>${escapeHTML(item.admin_reply)}</p>
-                    `
-                    : ""
-                }
-
-                <textarea
-                    id="supportReply${item.id}"
-                    rows="3"
-                    placeholder="Write your reply..."
-                >${escapeHTML(item.admin_reply || "")}</textarea>
-
-                <button onclick="adminReplySupport(${item.id})">
-                    Send Reply
-                </button>
-            </article>
-        `).join("");
-
-    } catch (error) {
-        console.error("Support messages error:", error);
-        container.textContent =
-            "Could not load messages: " + error.message;
-    }
-}
-
-window.adminReplySupport = async function(id) {
-    if (!adminVerified) return;
-
-    const textarea = $("supportReply" + id);
-    const reply = textarea?.value.trim();
-
-    if (!reply) {
-        alert("Please write a reply first.");
-        return;
+    .topbar,
+    .welcome-section {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
-    try {
-        const { error } = await db
-            .from("support_messages")
-            .update({
-                admin_reply: reply,
-                status: "replied",
-                replied_at: new Date().toISOString()
-            })
-            .eq("id", id);
-
-        if (error) throw error;
-
-        alert("Reply sent successfully!");
-
-        await loadAdminSupportMessages();
-
-    } catch (error) {
-        alert("Reply failed: " + error.message);
-    }
-};
-
-$("refreshSupport")?.addEventListener(
-    "click",
-    loadAdminSupportMessages
-);
-
-// ======================================
-// CREATE TASK
-// ======================================
-
-$("createTaskForm")?.addEventListener("submit", async event => {
-    event.preventDefault();
-
-    if (!adminVerified) {
-        alert("Admin access required.");
-        return;
+    .topbar h1 {
+        font-size: 23px;
     }
 
-    const title = $("taskTitle").value.trim();
-    const description = $("taskDescription").value.trim();
-    const taskUrl = $("taskUrl").value.trim();
-    const reward = Number($("taskReward").value);
-    const button = $("createTaskButton");
-
-    if (!title || !Number.isFinite(reward) || reward <= 0) {
-        alert("Enter a valid task title and reward.");
-        return;
+    .welcome-section {
+        padding: 22px;
     }
 
-    if (taskUrl) {
-        try {
-            const parsed = new URL(taskUrl);
-
-            if (!["http:", "https:"].includes(parsed.protocol)) {
-                throw new Error("Invalid URL.");
-            }
-        } catch {
-            alert("Please enter a valid task URL.");
-            return;
-        }
+    .welcome-section h2 {
+        font-size: 21px;
     }
 
-    button.disabled = true;
-
-    try {
-        const { error } = await db.from("tasks").insert({
-            title,
-            description,
-            task_url: taskUrl || null,
-            reward,
-            verification_method: "manual",
-            is_active: true
-        });
-
-        if (error) throw error;
-
-        alert("Task created successfully!");
-        $("createTaskForm").reset();
-
-    } catch (error) {
-        alert("Could not create task: " + error.message);
-    } finally {
-        button.disabled = false;
-    }
-});
-
-// ======================================
-// DELETE TASK
-// ======================================
-
-async function deleteTask(taskId) {
-
-    if (!adminVerified) {
-        alert("Admin access required.");
-        return;
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
     }
 
-    if (!confirm("Are you sure you want to remove this task?")) {
-        return;
+    .stat-card,
+    .content-card {
+        padding: 15px;
     }
 
-    try {
-        const { error } = await db
-            .from("tasks")
-            .update({ is_active: false })
-            .eq("id", taskId);
-
-        if (error) throw error;
-
-        alert("Task removed successfully!");
-        location.reload();
-
-    } catch (error) {
-        alert("Could not remove task: " + error.message);
-    }
-}
-
-// ======================================
-// PACKAGE REWARD FUNDING
-// ======================================
-
-async function loadAdminPackageFunding() {
-    const historyBox = $("packageFundingHistory");
-
-    try {
-        const [fundingResult, rewardsResult] = await Promise.all([
-            db.from("package_reward_funding")
-                .select("id, amount, source, reference_note, status, created_at")
-                .order("created_at", { ascending: false }),
-
-            db.from("package_reward_history")
-                .select("amount")
-        ]);
-
-        if (fundingResult.error) throw fundingResult.error;
-        if (rewardsResult.error) throw rewardsResult.error;
-
-        const fundingRows = fundingResult.data || [];
-        const rewardRows = rewardsResult.data || [];
-
-        const totalFunding = fundingRows
-            .filter(item => item.status === "approved")
-            .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-
-        const totalRewards = rewardRows
-            .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-
-        const availableFunding = totalFunding - totalRewards;
-
-        $("totalPackageFunding").textContent =
-            "Rs. " + totalFunding.toFixed(2);
-
-        $("totalPackageRewards").textContent =
-            "Rs. " + totalRewards.toFixed(2);
-
-        $("availablePackageFunding").textContent =
-            "Rs. " + availableFunding.toFixed(2);
-
-        if (!fundingRows.length) {
-            historyBox.innerHTML = "<p>No funding records found.</p>";
-            return;
-        }
-
-        historyBox.innerHTML = `
-            <h3>Funding History</h3>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Amount</th>
-                            <th>Source</th>
-                            <th>Reference</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${fundingRows.map(item => `
-                            <tr>
-                                <td>Rs. ${Number(item.amount).toFixed(2)}</td>
-                                <td>${escapeHTML(item.source)}</td>
-                                <td>${escapeHTML(item.reference_note || "—")}</td>
-                                <td>${escapeHTML(item.status.toUpperCase())}</td>
-                                <td>${new Date(item.created_at).toLocaleString()}</td>
-                            </tr>
-                        `).join("")}
-                    </tbody>
-                </table>
-            </div>
-        `;
-
-    } catch (error) {
-        console.error("Package funding error:", error);
-        historyBox.innerHTML =
-            `<p>Could not load funding: ${escapeHTML(error.message)}</p>`;
-    }
-}
-
-// ADD VERIFIED FUNDING
-$("packageFundingForm")?.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    if (!adminVerified) {
-        alert("Administrator verification required.");
-        return;
+    .stat-card h2 {
+        font-size: 21px;
     }
 
-    const amount = Number($("packageFundingAmount").value);
-    const source = $("packageFundingSource").value.trim();
-    const reference = $("packageFundingReference").value.trim();
-    const button = $("addPackageFundingButton");
-
-    if (!Number.isFinite(amount) || amount <= 0 || !source || !reference) {
-        alert("Enter a valid amount, funding source, and verification reference.");
-        return;
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
     }
 
-    if (!confirm(
-        "Confirm that Rs. " + amount.toFixed(2) +
-        " has actually been received and verified?"
-    )) return;
-
-    button.disabled = true;
-
-    try {
-        const { error } = await db.rpc("add_package_reward_funding", {
-            p_amount: amount,
-            p_source: source,
-            p_reference_note: reference
-        });
-
-        if (error) throw error;
-
-        alert("Verified package funding added successfully!");
-
-        $("packageFundingForm").reset();
-        await loadAdminPackageFunding();
-
-    } catch (error) {
-        alert("Could not add funding: " + error.message);
-    } finally {
-        button.disabled = false;
-    }
-});
-
-// REFRESH FUNDING
-$("refreshPackageFunding")?.addEventListener(
-    "click",
-    loadAdminPackageFunding
-);
-
-// ======================================
-// REFRESH DASHBOARD
-// ======================================
-
-async function refreshAdminDashboard() {
-    if (!adminVerified) return;
-
-await Promise.all([
-    loadAdminAnalytics(),
-    loadAdminSubmissions(),
-    loadAdminWithdrawals(),
-    loadAdminDeposits(),
-    loadAdminPackageRequests(),
-    loadAdminSponsoredCampaigns(),
-    loadAdminPackageFunding(),
-    loadPlatformChart(),
-    loadAdminSupportMessages()
-]);
-}
-
-$("refreshAll")?.addEventListener("click", refreshAdminDashboard);
-
-// ======================================
-// LOGOUT
-// ======================================
-
-$("logoutButton")?.addEventListener("click", async () => {
-    if (!confirm("Are you sure you want to logout?")) return;
-
-    const { error } = await db.auth.signOut();
-
-    if (error) {
-        alert("Logout failed: " + error.message);
-        return;
-    }
-
-    window.location.replace("index.html");
-});
-
-// ======================================
-// INITIALIZE ADMIN PANEL
-// ======================================
-
-async function initializeAdminPanel() {
-    try {
-        const allowed = await verifyAdmin();
-
-        if (allowed) {
-            await refreshAdminDashboard();
-        }
-
-    } catch (error) {
-        console.error("Admin initialization error:", error);
-        showDenied("Could not verify administrator access: " + error.message);
-    }
-}
-
-initializeAdminPanel();
-
-db?.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_OUT" || !session) {
-        window.location.replace("index.html");
-    }
-});
-
-// ======================================
-// LOAD & MANAGE EXISTING TASKS
-// ======================================
-async function loadAdminTasks() {
-    const container = $("adminTaskList");
-    if (!container || !db || !adminVerified) return;
-
-    container.textContent = "Loading tasks...";
-
-    try {
-        const { data, error } = await db
-            .from("tasks")
-            .select("id, title, reward, task_type, is_active, created_at")
-            .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-            container.textContent = "No tasks found.";
-            return;
-        }
-
-        container.innerHTML = data.map(task => `
-            <div class="card" style="margin-bottom:12px;padding:15px;">
-                <h4>${escapeHTML(task.title)}</h4>
-                <p>Reward: Rs. ${Number(task.reward).toFixed(2)}</p>
-                <p>Type: ${escapeHTML(task.task_type || "Normal")}</p>
-                <p>Status: ${task.is_active ? "Active" : "Removed"}</p>
-
-                ${task.is_active ? `
-                    <button type="button"
-                        onclick="deleteTask('${task.id}')"
-                        style="background:#dc3545;color:white;padding:10px 18px;border:0;border-radius:8px;cursor:pointer;">
-                        Delete Task
-                    </button>
-                ` : ""}
-            </div>
-        `).join("");
-
-    } catch (error) {
-        console.error("Admin task loading error:", error);
-        container.textContent = "Could not load tasks: " + error.message;
-    }
-}
-
-// ======================================
-// SOFT DELETE TASK
-// ======================================
-async function deleteTask(taskId) {
-    if (!adminVerified) {
-        alert("Admin access required.");
-        return;
-    }
-
-    if (!confirm("Remove this task? Old submissions and wallet history will remain safe.")) {
-        return;
-    }
-
-    try {
-        const { error } = await db
-            .from("tasks")
-            .update({ is_active: false })
-            .eq("id", taskId);
-
-        if (error) throw error;
-
-        alert("Task removed successfully!");
-        await loadAdminTasks();
-
-    } catch (error) {
-        alert("Could not remove task: " + error.message);
+    .task-form {
+        max-width: 100%;
     }
 }
