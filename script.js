@@ -2018,34 +2018,33 @@ async function navigateMenu(section) {
         return;
     }
 
-    if (el("dashboard")?.classList.contains("hidden")) {
+    if (document.getElementById("dashboard")?.classList.contains("hidden")) {
         await openDashboard();
     }
 
-    let target = null;
+    const targets = {
+        deposit: "depositSection",
+        withdraw: "withdrawForm",
+        tasks: "tasks",
+        referral: "referral",
+        currentActivePackage: "currentActivePackage"
+    };
 
-    if (section === "deposit") {
-        target = el("depositSection");
-    }
+    const targetId = targets[section];
 
-    if (section === "withdraw") {
-        target = document.querySelector(".withdrawal-premium");
-    }
+    setTimeout(() => {
+        const target = document.getElementById(targetId);
 
-    if (section === "tasks") {
-        target = el("tasks");
-    }
+        if (!target) {
+            console.error("Menu target missing:", targetId);
+            return;
+        }
 
-    if (target) {
-        setTimeout(() => {
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-        }, 250);
-    } else {
-        console.log("Section not found:", section);
-    }
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }, 500);
 }
 
 
