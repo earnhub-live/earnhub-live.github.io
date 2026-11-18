@@ -58,6 +58,7 @@ async function verifyAdmin() {
 
     adminUser = user;
     adminVerified = true;
+    await loadAdminTasks();
 
     $("adminLoader")?.classList.add("hidden");
     $("accessDenied")?.classList.add("hidden");
@@ -980,6 +981,37 @@ $("createTaskForm")?.addEventListener("submit", async event => {
 });
 
 // ======================================
+// DELETE TASK
+// ======================================
+
+async function deleteTask(taskId) {
+
+    if (!adminVerified) {
+        alert("Admin access required.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to remove this task?")) {
+        return;
+    }
+
+    try {
+        const { error } = await db
+            .from("tasks")
+            .update({ is_active: false })
+            .eq("id", taskId);
+
+        if (error) throw error;
+
+        alert("Task removed successfully!");
+        location.reload();
+
+    } catch (error) {
+        alert("Could not remove task: " + error.message);
+    }
+}
+
+// ======================================
 // PACKAGE REWARD FUNDING
 // ======================================
 
@@ -1177,3 +1209,77 @@ db?.auth.onAuthStateChange((event, session) => {
         window.location.replace("index.html");
     }
 });
+
+// ======================================
+// LOAD & MANAGE EXISTING TASKS
+// ======================================
+async function loadAdminTasks() {
+    const container = $("adminTaskList");
+    if (!container || !db || !adminVerified) return;
+
+    container.textContent = "Loading tasks...";
+
+    try {
+        const { data, error } = await db
+            .from("tasks")
+            .select("id, title, reward, task_type, is_active, created_at")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            container.textContent = "No tasks found.";
+            return;
+        }
+
+        container.innerHTML = data.map(task => `
+            <div class="card" style="margin-bottom:12px;padding:15px;">
+                <h4>${escapeHTML(task.title)}</h4>
+                <p>Reward: Rs. ${Number(task.reward).toFixed(2)}</p>
+                <p>Type: ${escapeHTML(task.task_type || "Normal")}</p>
+                <p>Status: ${task.is_active ? "Active" : "Removed"}</p>
+
+                ${task.is_active ? `
+                    <button type="button"
+                        onclick="deleteTask('${task.id}')"
+                        style="background:#dc3545;color:white;padding:10px 18px;border:0;border-radius:8px;cursor:pointer;">
+                        Delete Task
+                    </button>
+                ` : ""}
+            </div>
+        `).join("");
+
+    } catch (error) {
+        console.error("Admin task loading error:", error);
+        container.textContent = "Could not load tasks: " + error.message;
+    }
+}
+
+// ======================================
+// SOFT DELETE TASK
+// ======================================
+async function deleteTask(taskId) {
+    if (!adminVerified) {
+        alert("Admin access required.");
+        return;
+    }
+
+    if (!confirm("Remove this task? Old submissions and wallet history will remain safe.")) {
+        return;
+    }
+
+    try {
+        const { error } = await db
+            .from("tasks")
+            .update({ is_active: false })
+            .eq("id", taskId);
+
+        if (error) throw error;
+
+        alert("Task removed successfully!");
+        await loadAdminTasks();
+
+    } catch (error) {
+        alert("Could not remove task: " + error.message);
+    }
+}
