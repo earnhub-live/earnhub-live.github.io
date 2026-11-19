@@ -1088,14 +1088,13 @@ async function handleCreateTask(event) {
         notify("Admin access required.");
         return;
     }
+const title = el("taskTitle")?.value.trim() || "";
+const description =
+    el("taskDescription")?.value.trim() || "";
+const taskUrl = el("taskUrl")?.value.trim() || "";
+const reward = 20;
 
-    const title = el("taskTitle")?.value.trim() || "";
-    const description =
-        el("taskDescription")?.value.trim() || "";
-    const taskUrl = el("taskUrl")?.value.trim() || "";
-    const reward = 50;
-
-    const button = el("createTaskButton");
+const button = el("createTaskButton");
 
    if (!title) {
     notify("Enter a valid task title.");
