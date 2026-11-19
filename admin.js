@@ -1146,6 +1146,122 @@ $("refreshPackageFunding")?.addEventListener(
 );
 
 // ======================================
+// SENTRY ERROR MONITORING
+// Fetches issue data through a protected Supabase Edge Function.
+// Never place the Sentry auth token in this browser file.
+// =======================
+async function loadSentryMonitoring() {
+    if (!adminVerified) return;
+
+    const statusBox = $("sentryMonitoringStatus");
+    const issuesBox = $("sentryIssuesList");
+
+    if (!statusBox || !issuesBox) return;
+
+    statusBox.textContent = "Loading Sentry issues...";
+    issuesBox.textContent = "Please wait...";
+
+    try {
+        const { data, error } = await db.functions.invoke("sentry-issues");
+
+        if (error) throw error;
+
+        if (!data || data.success !== true) {
+            throw new Error(data?.error || "Invalid Sentry response.");
+        }
+
+        const issues = Array.isArray(data.issues) ? data.issues : [];
+
+        const totalEvents = issues.reduce(
+            (sum, issue) => sum + Number(issue.count || 0), 0
+        );
+
+        const totalUsers = issues.reduce(
+            (sum, issue) => sum + Number(issue.userCount || 0), 0
+        );
+
+        $("sentryUnresolvedCount").textContent =
+            data.unresolvedCount ?? issues.length;
+
+        $("sentryTotalEvents").textContent = totalEvents;
+        $("sentryAffectedUsers").textContent = totalUsers;
+
+        statusBox.textContent =
+            `Last updated: ${new Date().toLocaleString()}`;
+
+        if (!issues.length) {
+            issuesBox.textContent = "No unresolved Sentry issues found.";
+            return;
+        }
+
+        issuesBox.innerHTML = `
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Issue</th>
+                            <th>Level</th>
+                            <th>Events</th>
+                            <th>Users</th>
+                            <th>Last Seen</th>
+                            <th>Open</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${issues.map(issue => {
+                            const lastSeen = issue.lastSeen
+                                ? new Date(issue.lastSeen).toLocaleString()
+                                : "—";
+
+                            const issueUrl =
+                                /^https:\/\//i.test(issue.permalink || "")
+                                    ? issue.permalink
+                                    : "https://earnhub.sentry.io/issues/";
+
+                            return `
+                                <tr>
+                                    <td>
+                                        <strong>${escapeHTML(issue.title || "Untitled issue")}</strong>
+                                        <small>${escapeHTML(issue.culprit || "")}</small>
+                                        <small>${escapeHTML(issue.shortId || "")}</small>
+                                    </td>
+                                    <td>${escapeHTML(String(issue.level || "error").toUpperCase())}</td>
+                                    <td>${Number(issue.count || 0)}</td>
+                                    <td>${Number(issue.userCount || 0)}</td>
+                                    <td>${escapeHTML(lastSeen)}</td>
+                                    <td>
+                                        <a href="${escapeHTML(issueUrl)}"
+                                           target="_blank"
+                                           rel="noopener noreferrer">
+                                           View issue
+                                        </a>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+    } catch (error) {
+        console.error("Sentry monitoring error:", error);
+
+        statusBox.textContent = "Could not load Sentry data.";
+        issuesBox.textContent = error.message || "Unknown error.";
+
+        $("sentryUnresolvedCount").textContent = "—";
+        $("sentryTotalEvents").textContent = "—";
+        $("sentryAffectedUsers").textContent = "—";
+    }
+}
+
+$("refreshSentryIssues")?.addEventListener(
+    "click",
+    loadSentryMonitoring
+);
+
+// ======================================
 // REFRESH DASHBOARD
 // ======================================
 
@@ -1161,7 +1277,8 @@ await Promise.all([
     loadAdminSponsoredCampaigns(),
     loadAdminPackageFunding(),
     loadPlatformChart(),
-    loadAdminSupportMessages()
+    loadAdminSupportMessages(),
+    loadSentryMonitoring()
 ]);
 }
 
