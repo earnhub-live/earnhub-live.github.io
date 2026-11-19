@@ -468,7 +468,7 @@ async function loadTasks() {
             .from("tasks")
             .select("*")
            .eq("is_active", true)
-.or("task_type.eq.normal,and(task_type.eq.sponsored,payment_verified.eq.true)")
+.or("task_type.eq.normal,and(task_type.eq.sponsored,payment_verified.eq.true),and(task_type.eq.sponsored,sponsor_id.is.null,payment_verified.eq.false)")
 .order("created_at", { ascending: false });
 
         if (error) throw error;
