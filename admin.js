@@ -936,6 +936,7 @@ $("createTaskForm")?.addEventListener("submit", async event => {
     const description = $("taskDescription").value.trim();
     const taskUrl = $("taskUrl").value.trim();
     const reward = Number($("taskReward").value);
+    const taskType = $("taskType").value;
     const button = $("createTaskButton");
 
     if (!title || !Number.isFinite(reward) || reward <= 0) {
@@ -959,17 +960,15 @@ $("createTaskForm")?.addEventListener("submit", async event => {
     button.disabled = true;
 
     try {
-        const { error } = await db.from("tasks").insert({
-            title,
-            description,
-            task_url: taskUrl || null,
-            reward,
-            verification_method: "manual",
-            is_active: true
-        });
-
-        if (error) throw error;
-
+       const { error } = await db.from("tasks").insert({
+    title,
+    description,
+    task_url: taskUrl || null,
+    reward,
+    task_type: taskType,
+    verification_method: "manual",
+    is_active: true
+});
         alert("Task created successfully!");
         $("createTaskForm").reset();
 
