@@ -960,22 +960,23 @@ $("createTaskForm")?.addEventListener("submit", async event => {
     button.disabled = true;
 
     try {
-       const { error } = await db.from("tasks").insert({
-    title,
-    description,
-    task_url: taskUrl || null,
-    reward,
-    task_type: taskType,
-    verification_method: "manual",
-    is_active: true
-});
+       
         alert("Task created successfully!");
         $("createTaskForm").reset();
 
     } catch (error) {
         alert("Could not create task: " + error.message);
     } finally {
-        button.disabled = false;
+        button.disabled = false;const { error } = await db.from("tasks").insert({
+    title,
+    description,
+    task_url: taskUrl || null,
+    reward,
+    task_type: taskType,
+    payment_verified: taskType === "sponsored",
+    verification_method: "manual",
+    is_active: true
+});
     }
 });
 
