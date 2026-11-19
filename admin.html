@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,10 +7,9 @@
   crossorigin="anonymous"
 ></script>
 
-    <meta name="robots" content="noindex, follow">
+<meta name="robots" content="noindex, follow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, follow">
 <title>EarnHub - Earn Rewards Online Through Tasks</title>
 <meta name="description" content="EarnHub helps you discover online tasks, complete activities, and earn rewards. Join EarnHub to explore earning opportunities online.">
 
@@ -54,6 +52,7 @@
             <a href="#packages">💎 Package Requests</a>
             <a href="#packageFunding">💰 Package Reward Funding</a>
             <a href="#activity">◷ Activity</a>
+            <a href="#errorMonitoring">⚠ Error Monitoring</a>
             <a href="#support">✉ Support Messages</a>
         </nav>
 
@@ -117,6 +116,7 @@
                 <small>Total task rewards</small>
             </article>
         </section>
+
 <section class="content-card" id="platformOverview">
     <div class="section-heading">
         <div>
@@ -124,11 +124,11 @@
             <h2>📊 Platform Overview</h2>
         </div>
     </div>
-
     <div style="height:300px; position:relative;">
         <canvas id="platformChart"></canvas>
     </div>
 </section>
+
         <section id="tasks" class="content-card">
             <div class="section-heading">
                 <div>
@@ -136,6 +136,7 @@
                     <h2>Create New Task</h2>
                 </div>
             </div>
+
 <form id="createTaskForm" class="task-form">
     <label for="taskType">Task Type</label>
     <select id="taskType" required>
@@ -144,37 +145,29 @@
     </select>
 
     <label for="taskTitle">Task Title</label>
-    <input id="taskTitle" type="text" required
-           placeholder="Enter task title">
+    <input id="taskTitle" type="text" required placeholder="Enter task title">
 
     <label for="taskDescription">Description</label>
-    <textarea id="taskDescription" rows="3"
-              placeholder="Enter task description"></textarea>
+    <textarea id="taskDescription" rows="3" placeholder="Enter task description"></textarea>
 
     <label for="taskUrl">Task URL</label>
-    <input id="taskUrl" type="url"
-           placeholder="https://example.com">
+    <input id="taskUrl" type="url" placeholder="https://example.com">
 
     <label for="taskReward">Task Reward (Rs.)</label>
-    <input id="taskReward" type="number" min="1" step="0.01"
-           required placeholder="Enter reward">
+    <input id="taskReward" type="number" min="1" step="0.01" required placeholder="Enter reward">
 
     <div id="sponsoredTaskFields" hidden>
         <label for="sponsorCompany">Sponsor Company</label>
-        <input id="sponsorCompany" type="text"
-               placeholder="Company name">
+        <input id="sponsorCompany" type="text" placeholder="Company name">
 
         <label for="sponsorPaymentAmount">Total Sponsor Payment (Rs.)</label>
-        <input id="sponsorPaymentAmount" type="number"
-               min="1" step="0.01">
+        <input id="sponsorPaymentAmount" type="number" min="1" step="0.01">
 
         <label for="sponsorPaymentReference">Payment Reference</label>
-        <input id="sponsorPaymentReference" type="text"
-               placeholder="Transaction ID or reference">
+        <input id="sponsorPaymentReference" type="text" placeholder="Transaction ID or reference">
 
         <label for="totalSlots">Total Task Slots</label>
-        <input id="totalSlots" type="number" min="1"
-               placeholder="Number of users">
+        <input id="totalSlots" type="number" min="1" placeholder="Number of users">
 
         <label for="campaignStartAt">Campaign Start</label>
         <input id="campaignStartAt" type="datetime-local">
@@ -183,23 +176,15 @@
         <input id="campaignEndAt" type="datetime-local">
     </div>
 
-    <button id="createTaskButton" type="submit">
-        + Create Task
-    </button>
+    <button id="createTaskButton" type="submit">+ Create Task</button>
 </form>
 
-<!-- MANAGE EXISTING TASKS -->
 <div class="admin-section">
     <h3>Manage Existing Tasks</h3>
-    <div id="adminTaskList">
-        Loading tasks...
-    </div>
+    <div id="adminTaskList">Loading tasks...</div>
 </div>
 
-</form>
-
-        </section>
-
+</section>
         <section id="submissions" class="content-card">
             <div class="section-heading">
                 <div>
@@ -230,67 +215,70 @@
             <div id="adminWithdrawals">Loading withdrawals...</div>
         </section>
 
-<!-- PACKAGE REWARD FUNDING -->
-<section id="packageFunding" class="content-card">
-    <div class="section-heading">
-        <div>
-            <span class="eyebrow">REWARD MANAGEMENT</span>
-            <h2>💰 Package Reward Funding</h2>
-        </div>
-        <button id="refreshPackageFunding" type="button">↻ Refresh</button>
-    </div>
+        <!-- PACKAGE REWARD FUNDING -->
+        <section id="packageFunding" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">REWARD MANAGEMENT</span>
+                    <h2>💰 Package Reward Funding</h2>
+                </div>
+                <button id="refreshPackageFunding" type="button">↻ Refresh</button>
+            </div>
 
-    <div class="stats-grid">
-        <article class="stat-card">
-            <span>Total Approved Funding</span>
-            <h2 id="totalPackageFunding">Loading...</h2>
-        </article>
-        <article class="stat-card">
-            <span>Total Rewards Credited</span>
-            <h2 id="totalPackageRewards">Loading...</h2>
-        </article>
-        <article class="stat-card">
-            <span>Available Reward Funds</span>
-            <h2 id="availablePackageFunding">Loading...</h2>
-        </article>
-    </div>
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <span>Total Approved Funding</span>
+                    <h2 id="totalPackageFunding">Loading...</h2>
+                </article>
+                <article class="stat-card">
+                    <span>Total Rewards Credited</span>
+                    <h2 id="totalPackageRewards">Loading...</h2>
+                </article>
+                <article class="stat-card">
+                    <span>Available Reward Funds</span>
+                    <h2 id="availablePackageFunding">Loading...</h2>
+                </article>
+            </div>
 
-    <form id="packageFundingForm" class="task-form">
-        <label for="packageFundingAmount">Funding Amount (Rs.)</label>
-        <input id="packageFundingAmount" type="number"
-               min="0.01" step="0.01" required
-               placeholder="Enter actual funding amount">
+            <form id="packageFundingForm" class="task-form">
+                <label for="packageFundingAmount">Funding Amount (Rs.)</label>
+                <input id="packageFundingAmount" type="number"
+                       min="0.01" step="0.01" required
+                       placeholder="Enter actual funding amount">
 
-        <label for="packageFundingSource">Funding Source</label>
-        <input id="packageFundingSource" type="text" required
-               placeholder="Enter funding source">
+                <label for="packageFundingSource">Funding Source</label>
+                <input id="packageFundingSource" type="text" required
+                       placeholder="Enter funding source">
 
-        <label for="packageFundingReference">Verification Reference</label>
-        <textarea id="packageFundingReference" rows="3"
-                  placeholder="Enter payment/reference details"></textarea>
+                <label for="packageFundingReference">Verification Reference</label>
+                <textarea id="packageFundingReference" rows="3"
+                          placeholder="Enter payment/reference details"></textarea>
 
-        <button id="addPackageFundingButton" type="submit">
-            + Add Verified Funding
-        </button>
-    </form>
+                <button id="addPackageFundingButton" type="submit">
+                    + Add Verified Funding
+                </button>
+            </form>
 
-    <div id="packageFundingHistory">
-        Loading funding history...
-    </div>
-</section>
-<section id="sponsoredCampaigns" class="content-card">
-    <div class="section-heading">
-        <div>
-            <span class="eyebrow">SPONSOR MANAGEMENT</span>
-            <h2>💰 Sponsored Campaigns</h2>
-        </div>
-        <button id="refreshSponsoredCampaigns">↻ Refresh</button>
-    </div>
+            <div id="packageFundingHistory">
+                Loading funding history...
+            </div>
+        </section>
 
-    <div id="adminSponsoredCampaigns">
-        Loading sponsored campaigns...
-    </div>
-</section>
+        <!-- SPONSORED CAMPAIGNS -->
+        <section id="sponsoredCampaigns" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">SPONSOR MANAGEMENT</span>
+                    <h2>💰 Sponsored Campaigns</h2>
+                </div>
+                <button id="refreshSponsoredCampaigns">↻ Refresh</button>
+            </div>
+
+            <div id="adminSponsoredCampaigns">
+                Loading sponsored campaigns...
+            </div>
+        </section>
+
         <section id="users" class="content-card">
             <div class="section-heading">
                 <div>
@@ -310,19 +298,60 @@
             </div>
             <p>Activity monitoring will be added in the next stage.</p>
         </section>
-<section id="support" class="content-card">
-    <div class="section-heading">
-        <div>
-            <span class="eyebrow">USER SUPPORT</span>
-            <h2>✉ Support Messages</h2>
-        </div>
-        <button id="refreshSupport">↻ Refresh</button>
-    </div>
 
-    <div id="adminSupportMessages">
-        Loading support messages...
-    </div>
-</section>
+        <!-- ERROR MONITORING -->
+        <section id="errorMonitoring" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">SYSTEM HEALTH</span>
+                    <h2>⚠ Error Monitoring</h2>
+                </div>
+                <button id="refreshSentryIssues" type="button">
+                    ↻ Refresh Errors
+                </button>
+            </div>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <span>Unresolved Issues</span>
+                    <h2 id="sentryUnresolvedCount">—</h2>
+                </article>
+
+                <article class="stat-card">
+                    <span>Total Events</span>
+                    <h2 id="sentryTotalEvents">—</h2>
+                </article>
+
+                <article class="stat-card">
+                    <span>Affected Users</span>
+                    <h2 id="sentryAffectedUsers">—</h2>
+                </article>
+            </div>
+
+            <p id="sentryMonitoringStatus">
+                Monitoring data has not been loaded yet.
+            </p>
+
+            <div id="sentryIssuesList">
+                <p>Click Refresh Errors to load reported issues.</p>
+            </div>
+        </section>
+
+        <!-- SUPPORT MESSAGES -->
+        <section id="support" class="content-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">USER SUPPORT</span>
+                    <h2>✉ Support Messages</h2>
+                </div>
+                <button id="refreshSupport">↻ Refresh</button>
+            </div>
+
+            <div id="adminSupportMessages">
+                Loading support messages...
+            </div>
+        </section>
+
     </main>
 </div>
 
