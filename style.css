@@ -1793,3 +1793,24 @@ button:not(:disabled) {
     opacity: 0.6;
     cursor: not-allowed;
 }
+/* EarnHub Compact Help Button */
+.eh-help-widget {
+    position: fixed;
+    right: 16px;
+    bottom: 18px;
+    z-index: 9999;
+}
+
+.eh-help-message {
+    font-size: 11px !important;
+    padding: 7px 10px !important;
+    border-radius: 10px !important;
+    background: #7657ff !important;
+    color: #ffffff !important;
+}
+
+.eh-help-icon img {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50%;
+}
