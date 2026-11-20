@@ -560,7 +560,7 @@ body {
             rgba(4, 12, 28, 0.42),
             rgba(5, 15, 35, 0.32)
         ),
-        url("robot-bg.png") center center / cover fixed !important;
+      url("robot-bg.webp") !important;
     background-color: #071426;
 }
 
