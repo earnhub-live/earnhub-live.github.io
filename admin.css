@@ -545,3 +545,268 @@ tr:hover td {
         max-width: 100%;
     }
 }
+
+/* =================================================
+   EARNHUB ADMIN — FUTURISTIC 3D CRYSTAL GLASS
+   Existing functionality preserved
+================================================= */
+
+/* ROBOTIC BACKGROUND */
+
+body {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(4, 12, 28, 0.42),
+            rgba(5, 15, 35, 0.32)
+        ),
+        url("robot-bg.png") center center / cover fixed !important;
+    background-color: #071426;
+}
+
+/* MAIN ADMIN AREA */
+
+#adminApp {
+    background: transparent !important;
+}
+
+.main-content {
+    background: transparent !important;
+}
+
+/* GLASS SIDEBAR */
+
+.sidebar {
+    background: rgba(5, 17, 38, 0.58) !important;
+    border-right: 1px solid rgba(160, 205, 255, 0.24);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: 12px 0 35px rgba(0,0,0,.22);
+}
+
+.brand-icon {
+    background: linear-gradient(145deg,#3185ff,#7657ff) !important;
+    box-shadow:
+        0 0 20px rgba(49,133,255,.35),
+        inset 0 1px 2px rgba(255,255,255,.35);
+}
+
+.sidebar nav a {
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.07);
+    border-left: 3px solid transparent;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: rgba(49,133,255,.16) !important;
+    border-color: rgba(100,175,255,.35);
+    border-left: 3px solid #21d4b4;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+/* GLASS TOPBAR */
+
+.topbar {
+    padding: 18px 20px;
+    border-radius: 18px;
+    background: rgba(10,25,48,.24);
+    border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.admin-profile {
+    background: rgba(255,255,255,.07) !important;
+    border: 1px solid rgba(180,215,255,.25);
+    backdrop-filter: blur(10px);
+}
+
+/* WELCOME GLASS PANEL */
+
+.welcome-section {
+    background: rgba(15,42,78,.30) !important;
+    border: 1px solid rgba(130,190,255,.38) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.22),
+        inset 0 1px 0 rgba(255,255,255,.18);
+}
+
+/* 3D STAT CARDS */
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+        145deg,
+        rgba(190,220,255,.12),
+        rgba(30,75,125,.20),
+        rgba(110,90,190,.10)
+    ) !important;
+    border: 1px solid rgba(170,210,255,.30) !important;
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+        0 14px 30px rgba(0,0,0,.22),
+        inset 0 1px 1px rgba(255,255,255,.22);
+}
+
+.stat-card::before,
+.content-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.65),
+        transparent
+    );
+    pointer-events: none;
+}
+
+.stat-card h2 {
+    color: #53d9ff !important;
+    text-shadow: 0 0 15px rgba(49,133,255,.35);
+}
+
+/* MAIN GLASS PANELS */
+
+.content-card {
+    position: relative;
+    background: rgba(9,25,49,.30) !important;
+    border: 1px solid rgba(160,205,255,.27) !important;
+    border-radius: 20px !important;
+    backdrop-filter: blur(9px) saturate(140%);
+    -webkit-backdrop-filter: blur(9px) saturate(140%);
+    box-shadow:
+        0 16px 40px rgba(0,0,0,.22),
+        inset 0 1px 0 rgba(255,255,255,.13);
+}
+
+.section-heading h2,
+.topbar h1,
+.welcome-section h2 {
+    text-shadow: 0 2px 14px rgba(49,133,255,.22);
+}
+
+/* TASK FORM GLASS INPUTS */
+
+.task-form input,
+.task-form textarea,
+.task-form select,
+input,
+select,
+textarea {
+    background: rgba(5,17,35,.42) !important;
+    border: 1px solid rgba(160,205,255,.25) !important;
+    color: white !important;
+    border-radius: 11px;
+}
+
+.task-form input:focus,
+.task-form textarea:focus,
+.task-form select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #3696ff !important;
+    box-shadow: 0 0 0 3px rgba(49,133,255,.12);
+}
+
+/* ADMIN TASK AND REQUEST CARDS */
+
+.card {
+    background: rgba(18,43,76,.34) !important;
+    border: 1px solid rgba(160,205,255,.25) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.card h3,
+.card h4 {
+    color: #75caff !important;
+}
+
+/* GLASS TABLES */
+
+table {
+    border-collapse: separate !important;
+    border-spacing: 0 7px !important;
+}
+
+th {
+    background: rgba(35,91,155,.62) !important;
+    color: white !important;
+}
+
+td {
+    background: rgba(10,28,52,.34);
+    border-bottom: 1px solid rgba(255,255,255,.08) !important;
+}
+
+tr:hover td {
+    background: rgba(49,133,255,.14) !important;
+}
+
+/* BUTTONS */
+
+#refreshAll,
+.task-form button {
+    background: linear-gradient(135deg,#1769e8,#7657ff) !important;
+    border: 1px solid rgba(255,255,255,.22);
+    box-shadow:
+        0 7px 18px rgba(23,105,232,.25),
+        inset 0 1px 0 rgba(255,255,255,.25);
+}
+
+.sidebar-bottom button {
+    background: rgba(255,255,255,.07) !important;
+    border: 1px solid rgba(160,205,255,.25);
+}
+
+/* LOADER */
+
+.loader-card {
+    background: rgba(10,28,55,.70) !important;
+    border: 1px solid rgba(160,205,255,.35);
+    backdrop-filter: blur(16px);
+}
+
+/* MOBILE */
+
+@media(max-width:700px) {
+    body {
+        background-attachment: scroll !important;
+        background-position: center center !important;
+    }
+
+    .sidebar {
+        background: rgba(5,17,38,.82) !important;
+    }
+
+    .topbar,
+    .welcome-section {
+        background: rgba(10,30,58,.48) !important;
+    }
+
+    .stat-card,
+    .content-card {
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+    }
+
+    .content-card {
+        padding: 15px;
+    }
+}
