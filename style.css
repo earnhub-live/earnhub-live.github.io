@@ -4054,3 +4054,59 @@ main *,
         -webkit-backdrop-filter: blur(6px);
     }
 }
+
+/* =====================================
+   EARNHUB MOBILE PERFORMANCE BOOST
+===================================== */
+
+@media (max-width: 700px) {
+
+    /* Smooth background rendering */
+    body {
+        background-attachment: scroll !important;
+        background-position: center center !important;
+        background-size: cover !important;
+    }
+
+    /* Disable expensive glass blur */
+    .sidebar,
+    .topbar,
+    .welcome-section,
+    .stat-card,
+    .content-card,
+    .card,
+    .history-record,
+    .dashboard-card {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,.16) !important;
+    }
+
+    /* Keep transparent glass appearance */
+    .stat-card,
+    .content-card,
+    .card,
+    .history-record,
+    .dashboard-card {
+        background-color: rgba(12, 35, 65, 0.78) !important;
+    }
+
+    /* Reduce expensive visual effects */
+    * {
+        text-shadow: none !important;
+        animation: none !important;
+        transition: none !important;
+    }
+
+    /* Prevent horizontal overflow */
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
