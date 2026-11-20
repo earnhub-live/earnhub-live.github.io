@@ -4036,3 +4036,21 @@ main *,
     background: transparent !important;
     border: 1px solid rgba(164, 190, 220, 0.15) !important;
 }
+
+/* MOBILE ROBOT BACKGROUND OPTIMIZATION */
+
+@media (max-width: 700px) {
+    body {
+        background-position: center center !important;
+        background-size: cover !important;
+        background-attachment: scroll !important;
+    }
+
+    .dashboard-card,
+    .history-record,
+    .stat-card,
+    .content-card {
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
+}
