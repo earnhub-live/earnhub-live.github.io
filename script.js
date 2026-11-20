@@ -378,10 +378,7 @@ await Promise.all([
     loadWithdrawalHistory(),
     loadDepositHistory()
 ]);
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+       
 
     } catch (error) {
         console.error("Dashboard error:", error);
@@ -2301,22 +2298,18 @@ function setActiveMenu(section) {
         activeLink.classList.add("active");
     }
 }
+
 async function navigateMenu(section) {
+
     closeMainMenu();
-    setActiveMenu(section);
-
-    if (section === "dashboard") {
-        if (!currentUser) {
-            showLogin();
-            return;
-        }
-
-        await openDashboard();
-        return;
-    }
 
     if (!currentUser) {
         showLogin();
+        return;
+    }
+
+    if (section === "dashboard") {
+        await openDashboard();
         return;
     }
 
@@ -2336,20 +2329,30 @@ async function navigateMenu(section) {
         await openDashboard();
     }
 
+    if (section === "withdraw") {
+        showWithdrawForm();
+    }
+
+    setActiveMenu(section);
+
     setTimeout(() => {
+
         const target = document.getElementById(targetId);
 
-        if (target) {
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-        } else {
-            console.error("Section not found:", targetId);
+        if (!target) {
+            console.error("Target not found:", targetId);
+            return;
         }
-    }, 700);
-}
 
+        const top = target.getBoundingClientRect().top + window.scrollY - 100;
+
+        window.scrollTo({
+            top: top,
+            behavior: "smooth"
+        });
+
+    }, 300);
+}
 
 // =================================================
 // 29. KEYBOARD EVENTS
