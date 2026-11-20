@@ -2978,8 +2978,7 @@ body {
         linear-gradient(
             rgba(4, 7, 20, 0.48),
             rgba(4, 7, 20, 0.68)
-        ),
-        url("robot-bg.png") !important;
+        ),url("robot-bg.webp") !important;
     background-position: center center !important;
     background-size: cover !important;
     background-repeat: no-repeat !important;
