@@ -556,30 +556,128 @@ async function startTask(taskId) {
             return;
         }
 
-        const proof = prompt("Enter your task completion proof:");
+        // TASK PROOF INPUT MODAL
+        const overlay = document.createElement("div");
 
-        if (proof === null || !proof.trim()) {
-            notify("Proof is required.");
-            return;
-        }
+        overlay.style.cssText = `
+            position:fixed;
+            inset:0;
+            z-index:99999999;
+            background:rgba(2,8,20,.88);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+        `;
+
+        overlay.innerHTML = `
+            <div style="
+                width:100%;
+                max-width:450px;
+                padding:26px;
+                background:linear-gradient(145deg,#122945,#071426);
+                border:1px solid #3185ff;
+                border-radius:18px;
+                box-shadow:0 15px 50px rgba(0,0,0,.55);
+                color:white;
+            ">
+                <h3 style="color:white;margin-bottom:10px;">
+                    Submit Task Proof
+                </h3>
+
+                <p style="color:#a8b8cc;margin-bottom:18px;">
+                    Enter your task completion proof below.
+                </p>
+
+                <textarea
+                    id="earnHubTaskProof"
+                    placeholder="Write your task completion proof..."
+                    style="
+                        width:100%;
+                        min-height:120px;
+                        padding:13px;
+                        color:white;
+                        background:#091a2e;
+                        border:1px solid #3185ff;
+                        border-radius:10px;
+                        resize:vertical;
+                    "
+                ></textarea>
+
+                <div style="display:flex;gap:10px;margin-top:15px;">
+                    <button id="cancelTaskProof"
+                        type="button"
+                        style="
+                            flex:1;padding:12px;
+                            background:#34445a;color:white;
+                            border:0;border-radius:9px;
+                        ">
+                        Cancel
+                    </button>
+
+                    <button id="submitTaskProof"
+                        type="button"
+                        style="
+                            flex:1;padding:12px;
+                            background:#16a36a;color:white;
+                            border:0;border-radius:9px;
+                            font-weight:bold;
+                        ">
+                        Submit Proof
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        const proof = await new Promise(resolve => {
+            const input = overlay.querySelector("#earnHubTaskProof");
+
+            overlay.querySelector("#cancelTaskProof").onclick = () => {
+                overlay.remove();
+                resolve(null);
+            };
+
+            overlay.querySelector("#submitTaskProof").onclick = () => {
+                const value = input.value.trim();
+
+                if (!value) {
+                    notify("Proof is required.");
+                    input.focus();
+                    return;
+                }
+
+                overlay.remove();
+                resolve(value);
+            };
+
+            input.focus();
+        });
+
+        if (!proof) return;
 
         const { error: submitError } = await db
             .from("task_submissions")
             .insert({
                 user_id: currentUser.id,
                 task_id: task.id,
-                proof: proof.trim(),
+                proof: proof,
                 status: "pending"
             });
 
         if (submitError) {
-    if (submitError.message?.includes("You can submit this task again after 24 hours.")) {
-        notify("You can submit this task again after 24 hours.");
-        return;
-    }
+            if (
+                submitError.message?.includes(
+                    "You can submit this task again after 24 hours."
+                )
+            ) {
+                notify("You can submit this task again after 24 hours.");
+                return;
+            }
 
-    throw submitError;
-}
+            throw submitError;
+        }
 
         window.earnHubOpenedTasks.delete(taskId);
 
@@ -598,7 +696,6 @@ async function startTask(taskId) {
         notify("Submission failed: " + error.message);
     }
 }
-
 
 // =================================================
 // 10. WITHDRAWAL SYSTEM
@@ -927,43 +1024,59 @@ async function loadDepositHistory() {
 
         if (error) throw error;
 
+        container.innerHTML = `
+            <h3>Deposit History</h3>
+            <div class="history-list" id="depositHistoryList"></div>
+        `;
+
+        const list = el("depositHistoryList");
+
         if (!data || data.length === 0) {
-            container.innerHTML =
-                "<h3>Deposit History</h3>No deposits yet.";
+            list.innerHTML = `<div class="history-empty">No deposits yet.</div>`;
             return;
         }
 
-        container.innerHTML = "<h3>Deposit History</h3>";
+        list.innerHTML = data.map(request => {
+            const status = String(request.status || "pending")
+                .toLowerCase()
+                .replace(/[^a-z0-9_-]/g, "");
 
-        data.forEach(request => {
-            const item = document.createElement("div");
-            item.className = "card";
+            return `
+                <article class="history-record">
+                    <div class="history-record-top">
+                        <h3>Deposit: ${money(request.amount)}</h3>
+                        <span class="history-status status-${status}">
+                            ${escapeHTML(String(request.status || "Pending").toUpperCase())}
+                        </span>
+                    </div>
 
-            item.innerHTML = `
-                <h3>Deposit: ${money(request.amount)}</h3>
-                <p>Method: ${escapeHTML(request.payment_method)}</p>
-                <p>Transaction ID: ${escapeHTML(request.transaction_id)}</p>
-                <p>Status: <strong>${escapeHTML(
-                    String(request.status).toUpperCase()
-                )}</strong></p>
-                <p>Requested: ${
-                    request.created_at
-                    ? new Date(request.created_at).toLocaleString()
-                    : "N/A"
-                }</p>
+                    <div class="history-record-details">
+                        <p>
+                            <span>Payment Method</span>
+                            <strong>${escapeHTML(request.payment_method || "N/A")}</strong>
+                        </p>
+
+                        <p>
+                            <span>Transaction ID</span>
+                            <strong>${escapeHTML(request.transaction_id || "N/A")}</strong>
+                        </p>
+
+                        <p>
+                            <span>Requested</span>
+                            <strong>${escapeHTML(request.created_at
+                                ? new Date(request.created_at).toLocaleString()
+                                : "N/A")}</strong>
+                        </p>
+                    </div>
+                </article>
             `;
-
-            container.appendChild(item);
-        });
+        }).join("");
 
     } catch (error) {
         console.error("Deposit history error:", error);
-
-        container.textContent =
-            "Could not load deposit history: " + error.message;
+        container.textContent = "Could not load deposit history: " + error.message;
     }
 }
-
 
 // =================================================
 // 13. WITHDRAWAL HISTORY
@@ -984,47 +1097,73 @@ async function loadWithdrawalHistory() {
 
         if (error) throw error;
 
+        container.innerHTML = `
+            <h3>Withdrawal History</h3>
+            <div class="history-list" id="withdrawalHistoryList"></div>
+        `;
+
+        const list = el("withdrawalHistoryList");
+
         if (!data || data.length === 0) {
-            container.textContent =
-                "No withdrawal requests yet.";
+            list.innerHTML = `
+                <div class="history-empty">
+                    No withdrawal requests yet.
+                </div>
+            `;
             return;
         }
 
-        container.innerHTML = "<h3>Withdrawal History</h3>";
+        list.innerHTML = data.map(request => {
+            const status = String(request.status || "pending")
+                .toLowerCase()
+                .replace(/[^a-z0-9_-]/g, "");
 
-        data.forEach(request => {
-            const item = document.createElement("div");
-            item.className = "card";
+            return `
+                <article class="history-record">
+                    <div class="history-record-top">
+                        <h3>Withdrawal: ${money(request.amount)}</h3>
+                        <span class="history-status status-${status}">
+                            ${escapeHTML(String(request.status || "Pending").toUpperCase())}
+                        </span>
+                    </div>
 
-            const status = String(request.status).toUpperCase();
+                    <div class="history-record-details">
+                        <p>
+                            <span>Payment Method</span>
+                            <strong>${escapeHTML(request.method || "N/A")}</strong>
+                        </p>
 
-            item.innerHTML = `
-                <h3>Withdrawal: ${money(request.amount)}</h3>
-                <p>Method: ${escapeHTML(request.method)}</p>
-                <p>Status: <strong>${escapeHTML(status)}</strong></p>
-                <p>Requested: ${
-                    request.created_at
-                    ? new Date(request.created_at).toLocaleString()
-                    : "N/A"
-                }</p>
-                ${
-                    request.transaction_id
-                    ? `<p>Transaction ID: ${escapeHTML(request.transaction_id)}</p>`
-                    : ""
-                }
-                ${
-                    request.paid_at
-                    ? `<p>Paid Date: ${new Date(request.paid_at).toLocaleString()}</p>`
-                    : ""
-                }
+                        <p>
+                            <span>Requested</span>
+                            <strong>${escapeHTML(request.created_at
+                                ? new Date(request.created_at).toLocaleString()
+                                : "N/A")}</strong>
+                        </p>
+
+                        ${
+                            request.transaction_id
+                            ? `<p>
+                                <span>Transaction ID</span>
+                                <strong>${escapeHTML(request.transaction_id)}</strong>
+                            </p>`
+                            : ""
+                        }
+
+                        ${
+                            request.paid_at
+                            ? `<p>
+                                <span>Paid Date</span>
+                                <strong>${escapeHTML(new Date(request.paid_at).toLocaleString())}</strong>
+                            </p>`
+                            : ""
+                        }
+                    </div>
+                </article>
             `;
-
-            container.appendChild(item);
-        });
+        }).join("");
 
     } catch (error) {
         console.error("Withdrawal history error:", error);
-
         container.textContent =
             "Could not load withdrawal history: " + error.message;
     }
@@ -1051,27 +1190,54 @@ async function loadMySubmissions() {
         if (error) throw error;
 
         if (!data || data.length === 0) {
-            container.textContent = "No submissions yet.";
+            container.innerHTML = `
+                <div class="history-empty">
+                    No submissions yet.
+                </div>
+            `;
             return;
         }
 
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>${escapeHTML(item.tasks?.title || "Task")}</h3>
-                <p>Reward: ${money(item.tasks?.reward)}</p>
-                <p>Proof: ${escapeHTML(item.proof || "")}</p>
-                <p>Status: <strong>${escapeHTML(item.status)}</strong></p>
-                <p>${escapeHTML(
-                    item.submitted_at
-                        ? new Date(item.submitted_at).toLocaleString()
-                        : ""
-                )}</p>
-            </article>
-        `).join("");
+        container.innerHTML = data.map(item => {
+            const status = String(item.status || "pending")
+                .toLowerCase()
+                .replace(/[^a-z0-9_-]/g, "");
+
+            return `
+                <article class="history-record submission-record">
+                    <div class="history-record-top">
+                        <h3>${escapeHTML(item.tasks?.title || "Task")}</h3>
+                        <span class="history-status status-${status}">
+                            ${escapeHTML(item.status || "Pending")}
+                        </span>
+                    </div>
+
+                    <div class="history-record-details">
+                        <p>
+                            <span>Reward</span>
+                            <strong>${money(item.tasks?.reward)}</strong>
+                        </p>
+
+                        <p>
+                            <span>Submitted</span>
+                            <strong>
+                                ${escapeHTML(item.submitted_at
+                                    ? new Date(item.submitted_at).toLocaleString()
+                                    : "N/A")}
+                            </strong>
+                        </p>
+                    </div>
+
+                    <div class="history-proof">
+                        <span>Submission Proof</span>
+                        <p>${escapeHTML(item.proof || "No proof provided")}</p>
+                    </div>
+                </article>
+            `;
+        }).join("");
 
     } catch (error) {
         console.error("Submissions error:", error);
-
         container.textContent = "Could not load submissions.";
     }
 }
@@ -1470,25 +1636,95 @@ async function markWithdrawalPaid(requestId) {
         notify("Admin access required.");
         return;
     }
-const transactionId = prompt(
-    "Enter the payment transaction/reference ID:"
-);
 
-    if (!transactionId || !transactionId.trim()) {
-        notify("Transaction ID is required.");
-        return;
-    }
+    const overlay = document.createElement("div");
 
-    if (!confirm("Have you actually transferred the money?")) {
-        return;
-    }
+    overlay.style.cssText = `
+        position:fixed; inset:0; z-index:99999999;
+        background:rgba(0,0,0,.85);
+        display:flex; align-items:center; justify-content:center;
+        padding:20px;
+    `;
+
+    overlay.innerHTML = `
+        <div style="
+            width:100%; max-width:420px; padding:25px;
+            background:#0d1e35; border:1px solid #3185ff;
+            border-radius:16px; color:white;
+        ">
+            <h3 style="margin-bottom:15px;color:white;">
+                Confirm Withdrawal Payment
+            </h3>
+
+            <label style="display:block;margin-bottom:8px;">
+                Payment Transaction / Reference ID
+            </label>
+
+            <input id="withdrawPaymentReference"
+                type="text"
+                placeholder="Enter transaction ID"
+                style="
+                    width:100%;padding:13px;margin-bottom:18px;
+                    background:#091a2e;color:white;
+                    border:1px solid #3185ff;border-radius:8px;
+                ">
+
+            <p style="margin-bottom:18px;color:#a8b8cc;">
+                Have you actually transferred the money?
+            </p>
+
+            <div style="display:flex;gap:10px;">
+                <button id="cancelWithdrawalPayment"
+                    style="flex:1;padding:12px;background:#34445a;
+                    color:white;border:0;border-radius:8px;">
+                    Cancel
+                </button>
+
+                <button id="confirmWithdrawalPayment"
+                    style="flex:1;padding:12px;background:#16a36a;
+                    color:white;border:0;border-radius:8px;">
+                    Confirm Paid
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const transactionId = await new Promise(resolve => {
+        const input = overlay.querySelector("#withdrawPaymentReference");
+
+        overlay.querySelector("#cancelWithdrawalPayment")
+            .onclick = () => {
+                overlay.remove();
+                resolve(null);
+            };
+
+        overlay.querySelector("#confirmWithdrawalPayment")
+            .onclick = () => {
+                const value = input.value.trim();
+
+                if (!value) {
+                    notify("Transaction ID is required.");
+                    input.focus();
+                    return;
+                }
+
+                overlay.remove();
+                resolve(value);
+            };
+
+        input.focus();
+    });
+
+    if (!transactionId) return;
 
     try {
         const { data, error } = await db.rpc(
             "admin_mark_withdrawal_paid",
             {
                 p_request_id: requestId,
-                p_transaction_id: transactionId.trim()
+                p_transaction_id: transactionId
             }
         );
 
@@ -1500,7 +1736,6 @@ const transactionId = prompt(
 
     } catch (error) {
         console.error("Mark paid error:", error);
-
         notify("Payment update failed: " + error.message);
     }
 }
@@ -1749,35 +1984,62 @@ async function loadTransactions() {
 
         if (error) throw error;
 
+        container.innerHTML = `
+            <h3>Transaction History</h3>
+            <div class="history-list" id="transactionHistoryList"></div>
+        `;
+
+        const list = el("transactionHistoryList");
+
         if (!data || data.length === 0) {
-            container.textContent = "No transactions yet.";
+            list.innerHTML = `
+                <div class="history-empty">No transactions yet.</div>
+            `;
             return;
         }
 
-        container.innerHTML = data.map(item => `
-            <article class="card">
-               <p>Type: ${escapeHTML(
-    item.transaction_type === "package_purchase"
-        ? "Package Purchase"
-        : item.transaction_type === "task_reward"
-            ? "Task Reward"
-            : item.transaction_type
-)}</p>
-                <p>Amount: ${money(item.amount)}</p>
-                <p>Date: ${escapeHTML(
-                    item.created_at
-                        ? new Date(item.created_at).toLocaleString()
-                        : ""
-                )}</p>
-            </article>
-        `).join("");
+        list.innerHTML = data.map(item => {
+            const type =
+                item.transaction_type === "package_purchase"
+                    ? "Package Purchase"
+                    : item.transaction_type === "task_reward"
+                        ? "Task Reward"
+                        : item.transaction_type || "Transaction";
+
+            return `
+                <article class="history-record">
+                    <div class="history-record-top">
+                        <h3>${escapeHTML(type)}</h3>
+                        <span class="history-status status-approved">
+                            ${escapeHTML(type)}
+                        </span>
+                    </div>
+
+                    <div class="history-record-details">
+                        <p>
+                            <span>Amount</span>
+                            <strong>${money(item.amount)}</strong>
+                        </p>
+
+                        <p>
+                            <span>Date</span>
+                            <strong>${escapeHTML(
+                                item.created_at
+                                    ? new Date(item.created_at).toLocaleString()
+                                    : "N/A"
+                            )}</strong>
+                        </p>
+                    </div>
+                </article>
+            `;
+        }).join("");
 
     } catch (error) {
         console.error("Transaction error:", error);
-
         container.textContent = "Could not load transactions.";
     }
 }
+
 
 async function loadPackageHistory() {
     if (!db || !currentUser) return;
@@ -1804,42 +2066,79 @@ async function loadPackageHistory() {
         if (error) throw error;
 
         if (!data || data.length === 0) {
-            container.textContent = "No package history yet.";
+            container.innerHTML = `
+                <h3>Package History</h3>
+                <div class="history-empty">No package history yet.</div>
+            `;
             return;
         }
 
-        container.innerHTML = data.map(item => `
-            <article class="card">
-                <h3>${escapeHTML(packageNames[item.package_id] || "Package")}</h3>
-                <p>Price: ${money(item.package_price)}</p>
-                <p>Daily Reward: ${money(item.daily_reward)}</p>
-                <p>Duration: ${escapeHTML(item.duration_days)} Days</p>
-                <p>Status: ${escapeHTML(
-    item.status.toUpperCase()
-)}</p>
-                <p>Request Date: ${escapeHTML(
-                    item.created_at
-                        ? new Date(item.created_at).toLocaleString()
-                        : "N/A"
-                )}</p>
-                <p>Activation Date: ${escapeHTML(
-                    item.activated_at
-                        ? new Date(item.activated_at).toLocaleDateString()
-                        : "Not activated"
-                )}</p>
-                <p>Expiry Date: ${escapeHTML(
-                    item.expires_at
-                        ? new Date(item.expires_at).toLocaleDateString()
-                        : "N/A"
-                )}</p>
-            </article>
-        `).join("");
+        container.innerHTML = `
+            <h3>Package History</h3>
+            <div class="history-list">
+                ${data.map(item => {
+                    const status = String(item.status || "pending")
+                        .toLowerCase()
+                        .replace(/[^a-z0-9_-]/g, "");
+
+                    return `
+                        <article class="history-record">
+                            <div class="history-record-top">
+                                <h3>${escapeHTML(packageNames[item.package_id] || "Package")}</h3>
+                                <span class="history-status status-${status}">
+                                    ${escapeHTML(String(item.status || "Pending").toUpperCase())}
+                                </span>
+                            </div>
+
+                            <div class="history-record-details">
+                                <p>
+                                    <span>Package Price</span>
+                                    <strong>${money(item.package_price)}</strong>
+                                </p>
+
+                                <p>
+                                    <span>Daily Reward</span>
+                                    <strong>${money(item.daily_reward)}</strong>
+                                </p>
+
+                                <p>
+                                    <span>Duration</span>
+                                    <strong>${escapeHTML(item.duration_days)} Days</strong>
+                                </p>
+
+                                <p>
+                                    <span>Request Date</span>
+                                    <strong>${escapeHTML(item.created_at
+                                        ? new Date(item.created_at).toLocaleString()
+                                        : "N/A")}</strong>
+                                </p>
+
+                                <p>
+                                    <span>Activation Date</span>
+                                    <strong>${escapeHTML(item.activated_at
+                                        ? new Date(item.activated_at).toLocaleDateString()
+                                        : "Not activated")}</strong>
+                                </p>
+
+                                <p>
+                                    <span>Expiry Date</span>
+                                    <strong>${escapeHTML(item.expires_at
+                                        ? new Date(item.expires_at).toLocaleDateString()
+                                        : "N/A")}</strong>
+                                </p>
+                            </div>
+                        </article>
+                    `;
+                }).join("")}
+            </div>
+        `;
 
     } catch (error) {
         console.error("Package history error:", error);
         container.textContent = "Could not load package history.";
     }
 }
+
 
 async function loadCurrentActivePackage() {
     if (!db || !currentUser) return;
@@ -2002,12 +2301,16 @@ function setActiveMenu(section) {
         activeLink.classList.add("active");
     }
 }
-
 async function navigateMenu(section) {
-    setActiveMenu(section);
     closeMainMenu();
+    setActiveMenu(section);
 
     if (section === "dashboard") {
+        if (!currentUser) {
+            showLogin();
+            return;
+        }
+
         await openDashboard();
         return;
     }
@@ -2015,10 +2318,6 @@ async function navigateMenu(section) {
     if (!currentUser) {
         showLogin();
         return;
-    }
-
-    if (document.getElementById("dashboard")?.classList.contains("hidden")) {
-        await openDashboard();
     }
 
     const targets = {
@@ -2031,19 +2330,24 @@ async function navigateMenu(section) {
 
     const targetId = targets[section];
 
+    if (!targetId) return;
+
+    if (document.getElementById("dashboard")?.classList.contains("hidden")) {
+        await openDashboard();
+    }
+
     setTimeout(() => {
         const target = document.getElementById(targetId);
 
-        if (!target) {
-            console.error("Menu target missing:", targetId);
-            return;
+        if (target) {
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        } else {
+            console.error("Section not found:", targetId);
         }
-
-        target.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-    }, 500);
+    }, 700);
 }
 
 
@@ -2295,3 +2599,67 @@ window.toggleNotifications = function () {
 
     dropdown.hidden = !dropdown.hidden;
 };
+// ========================================
+// EARNHUB AUTHENTICATION FIX
+// ========================================
+
+window.showLogin = function () {
+    authMode = "login";
+
+    const modal = document.getElementById("authModal");
+    const name = document.getElementById("authName");
+    const title = document.getElementById("modalTitle");
+    const submit = document.getElementById("authSubmit");
+    const message = document.getElementById("authMessage");
+    const switchElement = document.getElementById("authSwitch");
+
+    if (!modal) {
+        console.error("Login modal not found!");
+        return;
+    }
+
+    modal.classList.remove("hidden");
+
+    if (title) title.textContent = "Welcome Back";
+    if (submit) submit.textContent = "Login";
+    if (message) message.textContent = "";
+
+    if (name) {
+        name.classList.add("hidden");
+        name.required = false;
+    }
+
+    if (switchElement) {
+        switchElement.innerHTML =
+            'New to EarnHub? <a href="#" onclick="showSignup(); return false;">Create Account</a>';
+    }
+};
+
+window.showSignup = function () {
+    authMode = "signup";
+
+    const modal = document.getElementById("authModal");
+    const name = document.getElementById("authName");
+
+    if (!modal) return;
+
+    modal.classList.remove("hidden");
+
+    if (name) {
+        name.classList.remove("hidden");
+        name.required = true;
+    }
+
+    document.getElementById("modalTitle").textContent = "Create Account";
+    document.getElementById("authSubmit").textContent = "Sign Up";
+    document.getElementById("authMessage").textContent = "";
+
+    document.getElementById("authSwitch").innerHTML =
+        'Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a>';
+};
+
+window.closeModal = closeModal;
+window.toggleMainMenu = toggleMainMenu;
+window.closeMainMenu = closeMainMenu;
+window.navigateMenu = navigateMenu;
+window.setActiveMenu = setActiveMenu;
