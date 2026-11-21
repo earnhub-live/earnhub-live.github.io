@@ -1088,7 +1088,7 @@
         <form id="authForm">
             <input type="hidden" id="referralCode" name="referralCode">
 
-            <div id="usernameGroup">
+            <div id="usernameGroup" class="hidden"></div>
                 <label for="authUsername">Username</label>
                 <input type="text" id="authUsername"
                     placeholder="Choose a username"
@@ -1097,7 +1097,7 @@
                     autocomplete="username">
             </div>
 
-            <div id="nameGroup">
+            <div id="nameGroup" class="hidden"></div>
                 <label for="authName">Full Name</label>
                 <input type="text" id="authName"
                     placeholder="Enter your full name"
@@ -1115,7 +1115,7 @@
                 minlength="6" autocomplete="new-password"
                 required>
 
-            <div id="confirmPasswordGroup">
+            <div id="confirmPasswordGroup" class="hidden"></div>
                 <label for="authConfirmPassword">Confirm Password</label>
                 <input type="password" id="authConfirmPassword"
                     placeholder="Confirm your password"
