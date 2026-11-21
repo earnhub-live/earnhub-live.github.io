@@ -4137,3 +4137,23 @@ main *,
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     }
 }
+#authModal .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 22px;
+}
+
+#authModal #authForm {
+    gap: 8px;
+}
+
+#authModal #authForm input {
+    margin-bottom: 8px;
+}
+
+#authModal #authSubmit {
+    margin-top: 12px;
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+}
