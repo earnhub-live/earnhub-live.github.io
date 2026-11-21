@@ -2670,3 +2670,15 @@ window.handleForgotPassword = async function () {
         message.textContent = "Password reset link sent! Check your email.";
     }
 };
+document.addEventListener("DOMContentLoaded", function () {
+    const forgotLink = document.querySelector(
+        "#forgotPasswordGroup a"
+    );
+
+    if (forgotLink) {
+        forgotLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            window.handleForgotPassword();
+        });
+    }
+});
