@@ -2727,6 +2727,78 @@ window.handleForgotPassword = function () {
 
 
 // STEP 2: SHOW CREATE NEW PASSWORD SCREEN
+window.handleForgotPassword = function () {
+    const authEmail = document.getElementById("authEmail")?.value.trim() || "";
+
+    document.getElementById("authModal")?.classList.add("hidden");
+
+    let modal = document.getElementById("recoveryEmailModal");
+
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "recoveryEmailModal";
+        modal.className = "modal";
+
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Reset Password</h2>
+                <p>Enter your registered email address.</p>
+
+                <form id="recoveryEmailForm">
+                    <label for="recoveryEmail">Recovery Email</label>
+                    <input type="email" id="recoveryEmail"
+                        placeholder="Enter your email" required>
+
+                    <button type="submit" class="btn-primary full-width">
+                        Reset Password
+                    </button>
+                </form>
+
+                <p id="recoveryEmailMessage" class="auth-message"></p>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        document.getElementById("recoveryEmailForm")
+            .addEventListener("submit", async function (event) {
+                event.preventDefault();
+
+                const email = document.getElementById("recoveryEmail").value.trim();
+                const message = document.getElementById("recoveryEmailMessage");
+                const button = this.querySelector("button");
+
+                if (!db) {
+                    message.textContent = "Supabase connection missing.";
+                    return;
+                }
+
+                button.disabled = true;
+                message.textContent = "Sending reset link...";
+
+                try {
+                    const { error } = await db.auth.resetPasswordForEmail(email, {
+                        redirectTo: window.location.origin + window.location.pathname
+                    });
+
+                    if (error) throw error;
+
+                    message.textContent = "Reset link sent! Check your email.";
+
+                } catch (error) {
+                    message.textContent = error.message;
+                } finally {
+                    button.disabled = false;
+                }
+            });
+    }
+
+    document.getElementById("recoveryEmail").value = authEmail;
+    modal.classList.remove("hidden");
+    modal.style.display = "flex";
+};
+
+
 window.showPasswordRecoveryForm = function () {
     document.getElementById("authModal")?.classList.add("hidden");
     document.getElementById("recoveryEmailModal")?.classList.add("hidden");
@@ -2740,24 +2812,18 @@ window.showPasswordRecoveryForm = function () {
 
         modal.innerHTML = `
             <div class="modal-content">
-                <div class="modal-logo">Earn<span>Hub</span></div>
                 <h2>Create New Password</h2>
-                <p class="muted">Enter and confirm your new password.</p>
 
                 <form id="newPasswordForm">
-                    <label for="newPassword">New Password</label>
+                    <label>New Password</label>
                     <input type="password" id="newPassword"
-                        placeholder="Enter new password"
-                        minlength="6" autocomplete="new-password" required>
+                        minlength="6" required>
 
-                    <label for="confirmNewPassword">Confirm Password</label>
+                    <label>Confirm Password</label>
                     <input type="password" id="confirmNewPassword"
-                        placeholder="Confirm new password"
-                        minlength="6" autocomplete="new-password" required>
+                        minlength="6" required>
 
-                    <button type="submit"
-                        id="updatePasswordButton"
-                        class="btn-primary full-width">
+                    <button type="submit" class="btn-primary full-width">
                         Update Password
                     </button>
                 </form>
@@ -2775,7 +2841,7 @@ window.showPasswordRecoveryForm = function () {
                 const password = document.getElementById("newPassword").value;
                 const confirm = document.getElementById("confirmNewPassword").value;
                 const message = document.getElementById("newPasswordMessage");
-                const button = document.getElementById("updatePasswordButton");
+                const button = this.querySelector("button");
 
                 if (password.length < 6) {
                     message.textContent = "Password must be at least 6 characters.";
@@ -2797,16 +2863,12 @@ window.showPasswordRecoveryForm = function () {
 
                     if (error) throw error;
 
-                    message.textContent =
-                        "Password updated successfully! Please login.";
+                    message.textContent = "Password updated successfully!";
 
                     await db.auth.signOut();
 
                     modal.classList.add("hidden");
-
-                    setTimeout(() => {
-                        window.showLogin();
-                    }, 500);
+                    window.showLogin();
 
                 } catch (error) {
                     message.textContent = error.message;
