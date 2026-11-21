@@ -4157,3 +4157,32 @@ main *,
     bottom: 0;
     z-index: 5;
 }
+/* FIX: COMPLETE SIGNUP FORM SCROLL */
+
+#authModal {
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+    padding: 20px 12px !important;
+}
+
+#authModal .modal-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    flex-shrink: 0 !important;
+    margin: 0 auto 20px auto !important;
+}
+
+#authModal #authForm {
+    overflow: visible !important;
+}
+
+#authModal #authSubmit {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 15px 0 20px !important;
+}
