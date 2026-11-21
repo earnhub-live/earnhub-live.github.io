@@ -80,15 +80,21 @@ function showLogin() {
     setText("authSubmit", "Login");
     setText("authMessage", "");
 
-    // Hide signup-only fields
-    el("usernameGroup")?.classList.add("hidden");
-    el("nameGroup")?.classList.add("hidden");
-    el("confirmPasswordGroup")?.classList.add("hidden");
+    // Force hide signup fields
+    ["usernameGroup", "nameGroup", "confirmPasswordGroup"].forEach(id => {
+        const field = el(id);
+        if (field) {
+            field.style.setProperty("display", "none", "important");
+        }
+    });
 
     // Show forgot password
-    el("forgotPasswordGroup")?.classList.remove("hidden");
+    const forgot = el("forgotPasswordGroup");
+    if (forgot) {
+        forgot.style.setProperty("display", "block", "important");
+    }
 
-    // Login fields
+    // Login validation
     el("authEmail").required = true;
     el("authPassword").required = true;
     el("authPassword").autocomplete = "current-password";
@@ -106,6 +112,7 @@ function showLogin() {
         'New to EarnHub? <a href="#" onclick="showSignup(); return false;">Create Account</a>';
 }
 
+
 // =================================================
 // 3. AUTHENTICATION
 // =================================================
@@ -116,6 +123,13 @@ function showLogin() {
 
 function showLogin() {
     authMode = "login";
+    ["usernameGroup", "nameGroup", "confirmPasswordGroup"].forEach(id => {
+    const field = el(id);
+    if (field) field.style.removeProperty("display");
+});
+
+const forgot = el("forgotPasswordGroup");
+if (forgot) forgot.style.setProperty("display", "none", "important");
 
     el("authModal")?.classList.remove("hidden");
 
