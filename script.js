@@ -2722,7 +2722,7 @@ window.handleForgotPassword = function () {
     }
 
     modal.classList.remove("hidden");
-    modal.style.display = "flex";
+   
 };
 
 
@@ -2795,7 +2795,7 @@ window.handleForgotPassword = function () {
 
     document.getElementById("recoveryEmail").value = authEmail;
     modal.classList.remove("hidden");
-    modal.style.display = "flex";
+    
 };
 
 
@@ -2879,5 +2879,5 @@ window.showPasswordRecoveryForm = function () {
     }
 
     modal.classList.remove("hidden");
-    modal.style.display = "flex";
+   
 };
