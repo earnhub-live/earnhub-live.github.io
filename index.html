@@ -1087,46 +1087,53 @@
         <form id="authForm">
             <input type="hidden" id="referralCode" name="referralCode">
 
-            <div id="usernameGroup" class="hidden">
+            <!-- USERNAME -->
+            <div id="usernameGroup">
                 <label for="authUsername">Username</label>
                 <input type="text" id="authUsername"
-                    placeholder="Choose a username"
+                    placeholder="Enter username"
                     minlength="3" maxlength="20"
                     pattern="[A-Za-z0-9_]{3,20}"
                     autocomplete="username">
             </div>
 
-            <div id="nameGroup" class="hidden">
+            <!-- FULL NAME -->
+            <div id="nameGroup">
                 <label for="authName">Full Name</label>
                 <input type="text" id="authName"
-                    placeholder="Enter your full name"
+                    placeholder="Enter full name"
                     autocomplete="name">
             </div>
 
-            <label for="authEmail">Email Address</label>
+            <!-- EMAIL -->
+            <label for="authEmail">Email</label>
             <input type="email" id="authEmail"
-                placeholder="Enter your email"
+                placeholder="Enter email"
                 autocomplete="email" required>
 
+            <!-- PASSWORD -->
             <label for="authPassword">Password</label>
             <input type="password" id="authPassword"
-                placeholder="Enter your password"
+                placeholder="Enter password"
                 minlength="6" autocomplete="new-password"
                 required>
 
-            <div id="confirmPasswordGroup" class="hidden">
+            <!-- CONFIRM PASSWORD -->
+            <div id="confirmPasswordGroup">
                 <label for="authConfirmPassword">Confirm Password</label>
                 <input type="password" id="authConfirmPassword"
-                    placeholder="Confirm your password"
+                    placeholder="Enter confirm password"
                     minlength="6" autocomplete="new-password">
             </div>
 
+            <!-- FORGOT PASSWORD -->
             <div id="forgotPasswordGroup" class="hidden">
                 <a href="#" onclick="handleForgotPassword(); return false;">
                     Forgot Password?
                 </a>
             </div>
 
+            <!-- SUBMIT BUTTON -->
             <button type="submit" id="authSubmit"
                 class="btn-primary full-width">
                 Sign Up
@@ -1142,6 +1149,7 @@
 
     </div>
 </div>
+
 
 <!-- FOOTER -->
 <footer class="site-footer">
