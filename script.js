@@ -2646,3 +2646,27 @@ window.toggleNotifications = function () {
 window.closeModal = function () {
     document.getElementById("authModal")?.classList.add("hidden");
 };
+window.handleForgotPassword = async function () {
+    const email = document.getElementById("authEmail")?.value.trim();
+    const message = document.getElementById("authMessage");
+
+    if (!email) {
+        if (message) message.textContent = "Please enter your email first.";
+        return;
+    }
+
+    if (message) message.textContent = "Sending reset link...";
+
+    const { error } = await db.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin
+    });
+
+    if (error) {
+        if (message) message.textContent = error.message;
+        return;
+    }
+
+    if (message) {
+        message.textContent = "Password reset link sent! Check your email.";
+    }
+};
