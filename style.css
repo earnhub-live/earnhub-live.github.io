@@ -1215,78 +1215,37 @@ tr:hover td {
 /* =========================
    19. AUTH MODAL
 ========================= */
-
 .modal {
     position: fixed;
     inset: 0;
     z-index: 5000;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 20px;
     background: rgba(0, 0, 0, 0.78);
     overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-content {
     position: relative;
     width: 100%;
     max-width: 450px;
-    max-height: calc(100vh - 40px);
-    overflow-y: auto;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    flex-shrink: 0;
+    margin: 0 auto 20px;
     padding: 35px;
     background: #0d1e35;
     border: 1px solid var(--border);
     border-radius: 20px;
     box-shadow: var(--shadow-strong);
+    box-sizing: border-box;
 }
-
-.modal-close {
-    position: absolute;
-    top: 15px;
-    right: 17px;
-    width: 35px;
-    height: 35px;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    background: var(--surface-2);
-    color: white;
-    font-size: 22px;
-}
-
-.modal-logo {
-    margin-bottom: 20px;
-    color: white;
-    font-size: 25px;
-    font-weight: 850;
-}
-
-.modal-content > h2 {
-    margin-bottom: 9px;
-}
-
-.modal-content > p {
-    margin-bottom: 20px;
-    font-size: 13px;
-}
-
-.auth-message {
-    margin-top: 13px;
-    font-size: 13px;
-}
-
-.auth-switch {
-    margin-top: 20px;
-    color: var(--text-muted);
-    font-size: 13px;
-    text-align: center;
-}
-
-.auth-switch a {
-    color: var(--green-light);
-    font-weight: 750;
-}
-
 /* =========================
    20. FOOTER
 ========================= */
@@ -4156,33 +4115,4 @@ main *,
     position: sticky;
     bottom: 0;
     z-index: 5;
-}
-/* FIX: COMPLETE SIGNUP FORM SCROLL */
-
-#authModal {
-    align-items: flex-start !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    box-sizing: border-box;
-    padding: 20px 12px !important;
-}
-
-#authModal .modal-content {
-    height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-    flex-shrink: 0 !important;
-    margin: 0 auto 20px auto !important;
-}
-
-#authModal #authForm {
-    overflow: visible !important;
-}
-
-#authModal #authSubmit {
-    position: static !important;
-    display: block !important;
-    width: 100% !important;
-    margin: 15px 0 20px !important;
 }
