@@ -71,7 +71,6 @@ function showSignup() {
             'Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a>';
     }
 }
-
 function showLogin() {
     authMode = "login";
 
@@ -81,25 +80,31 @@ function showLogin() {
     setText("authSubmit", "Login");
     setText("authMessage", "");
 
-    const name = el("authName");
+    // Hide signup-only fields
+    el("usernameGroup")?.classList.add("hidden");
+    el("nameGroup")?.classList.add("hidden");
+    el("confirmPasswordGroup")?.classList.add("hidden");
 
-    if (name) {
-        name.classList.add("hidden");
-        name.required = false;
-    }
+    // Show forgot password
+    el("forgotPasswordGroup")?.classList.remove("hidden");
 
-    const switchElement = el("authSwitch");
+    // Login fields
+    el("authEmail").required = true;
+    el("authPassword").required = true;
+    el("authPassword").autocomplete = "current-password";
 
-    if (switchElement) {
-        switchElement.innerHTML =
-            'New to EarnHub? <a href="#" onclick="showSignup(); return false;">Create Account</a>';
-    }
+    el("authUsername").required = false;
+    el("authName").required = false;
+    el("authConfirmPassword").required = false;
+
+    el("authUsername").value = "";
+    el("authName").value = "";
+    el("authConfirmPassword").value = "";
+    el("authPassword").value = "";
+
+    el("authSwitch").innerHTML =
+        'New to EarnHub? <a href="#" onclick="showSignup(); return false;">Create Account</a>';
 }
-
-function closeModal() {
-    el("authModal")?.classList.add("hidden");
-}
-
 
 // =================================================
 // 3. AUTHENTICATION
