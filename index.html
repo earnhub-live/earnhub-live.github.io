@@ -1072,18 +1072,10 @@
 
 <!-- LOGIN / SIGNUP MODAL -->
 <div id="authModal" class="modal hidden">
-
     <div class="modal-content">
 
-        <button
-            type="button"
-            class="modal-close"
-            onclick="closeModal()"
-            aria-label="Close">
-
-            ×
-
-        </button>
+        <button type="button" class="modal-close"
+            onclick="closeModal()" aria-label="Close">×</button>
 
         <div class="modal-logo">
             Earn<span>Hub</span>
@@ -1091,66 +1083,65 @@
 
         <h2 id="modalTitle">Create Account</h2>
 
-        <p class="muted">
-            Join EarnHub and start your journey.
-        </p>
+        <p class="muted">Join EarnHub and start your journey.</p>
 
         <form id="authForm">
             <input type="hidden" id="referralCode" name="referralCode">
 
-            <label for="authName">Full Name</label>
+            <div id="usernameGroup">
+                <label for="authUsername">Username</label>
+                <input type="text" id="authUsername"
+                    placeholder="Choose a username"
+                    minlength="3" maxlength="20"
+                    pattern="[A-Za-z0-9_]{3,20}"
+                    autocomplete="username">
+            </div>
 
-            <input
-                type="text"
-                id="authName"
-                placeholder="Enter your full name"
-                required
-            >
+            <div id="nameGroup">
+                <label for="authName">Full Name</label>
+                <input type="text" id="authName"
+                    placeholder="Enter your full name"
+                    autocomplete="name">
+            </div>
 
             <label for="authEmail">Email Address</label>
-
-            <input
-                type="email"
-                id="authEmail"
+            <input type="email" id="authEmail"
                 placeholder="Enter your email"
-                required
-            >
+                autocomplete="email" required>
 
             <label for="authPassword">Password</label>
-
-            <input
-                type="password"
-                id="authPassword"
+            <input type="password" id="authPassword"
                 placeholder="Enter your password"
-                minlength="6"
-                required
-            >
+                minlength="6" autocomplete="new-password"
+                required>
 
-            <button
-                type="submit"
-                id="authSubmit"
+            <div id="confirmPasswordGroup">
+                <label for="authConfirmPassword">Confirm Password</label>
+                <input type="password" id="authConfirmPassword"
+                    placeholder="Confirm your password"
+                    minlength="6" autocomplete="new-password">
+            </div>
+
+            <div id="forgotPasswordGroup" class="hidden">
+                <a href="#" onclick="handleForgotPassword(); return false;">
+                    Forgot Password?
+                </a>
+            </div>
+
+            <button type="submit" id="authSubmit"
                 class="btn-primary full-width">
-
                 Sign Up
-
             </button>
-
         </form>
 
         <p id="authMessage" class="auth-message"></p>
 
         <div id="authSwitch" class="auth-switch">
-
             Already have an account?
-
-            <a href="#" onclick="showLogin(); return false;">
-                Login
-            </a>
-
+            <a href="#" onclick="showLogin(); return false;">Login</a>
         </div>
 
     </div>
-
 </div>
 
 <!-- FOOTER -->
