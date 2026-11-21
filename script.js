@@ -107,10 +107,6 @@ function showLogin() {
     el("authSwitch").innerHTML =
         'New to EarnHub? <a href="#" onclick="showSignup(); return false;">Create Account</a>';
 }
-function closeModal() {
-    el("authModal")?.classList.add("hidden");
-}
-
 
 // =================================================
 // 3. AUTHENTICATION
