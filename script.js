@@ -47,7 +47,6 @@ function notify(message) {
 // =================================================
 // 2. MODALS
 // =================================================
-
 function showSignup() {
     authMode = "signup";
 
@@ -57,19 +56,26 @@ function showSignup() {
     setText("authSubmit", "Sign Up");
     setText("authMessage", "");
 
-    const name = el("authName");
+    ["usernameGroup", "nameGroup", "confirmPasswordGroup"].forEach(id => {
+        const field = el(id);
+        if (field) {
+            field.classList.remove("hidden");
+            field.style.display = "";
+        }
+    });
 
-    if (name) {
-        name.classList.remove("hidden");
-        name.required = true;
-    }
+    el("forgotPasswordGroup")?.classList.add("hidden");
 
-    const switchElement = el("authSwitch");
+    el("authUsername").required = true;
+    el("authName").required = true;
+    el("authEmail").required = true;
+    el("authPassword").required = true;
+    el("authConfirmPassword").required = true;
 
-    if (switchElement) {
-        switchElement.innerHTML =
-            'Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a>';
-    }
+    el("authPassword").autocomplete = "new-password";
+
+    el("authSwitch").innerHTML =
+        'Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a>';
 }
 function showLogin() {
     authMode = "login";
@@ -80,21 +86,16 @@ function showLogin() {
     setText("authSubmit", "Login");
     setText("authMessage", "");
 
-    // Force hide signup fields
     ["usernameGroup", "nameGroup", "confirmPasswordGroup"].forEach(id => {
         const field = el(id);
         if (field) {
-            field.style.setProperty("display", "none", "important");
+            field.classList.add("hidden");
+            field.style.display = "none";
         }
     });
 
-    // Show forgot password
-    const forgot = el("forgotPasswordGroup");
-    if (forgot) {
-        forgot.style.setProperty("display", "block", "important");
-    }
+    el("forgotPasswordGroup")?.classList.remove("hidden");
 
-    // Login validation
     el("authEmail").required = true;
     el("authPassword").required = true;
     el("authPassword").autocomplete = "current-password";
@@ -103,234 +104,17 @@ function showLogin() {
     el("authName").required = false;
     el("authConfirmPassword").required = false;
 
-    el("authUsername").value = "";
-    el("authName").value = "";
-    el("authConfirmPassword").value = "";
-    el("authPassword").value = "";
-
     el("authSwitch").innerHTML =
         'New to EarnHub? <a href="#" onclick="showSignup(); return false;">Create Account</a>';
+}
+function closeModal() {
+    el("authModal")?.classList.add("hidden");
 }
 
 
 // =================================================
 // 3. AUTHENTICATION
 // =================================================
-
-/* =========================
-   LOGIN MODE
-========================= */
-
-function showLogin() {
-    authMode = "login";
-    ["usernameGroup", "nameGroup", "confirmPasswordGroup"].forEach(id => {
-    const field = el(id);
-    if (field) field.style.removeProperty("display");
-});
-
-const forgot = el("forgotPasswordGroup");
-if (forgot) forgot.style.setProperty("display", "none", "important");
-
-    el("authModal")?.classList.remove("hidden");
-
-    setText("modalTitle", "Welcome Back");
-    setText("authSubmit", "Login");
-    setText("authMessage", "");
-
-    el("usernameGroup")?.classList.add("hidden");
-    el("nameGroup")?.classList.add("hidden");
-    el("confirmPasswordGroup")?.classList.add("hidden");
-    el("forgotPasswordGroup")?.classList.remove("hidden");
-
-    el("authUsername").required = false;
-    el("authName").required = false;
-    el("authConfirmPassword").required = false;
-    el("authPassword").required = true;
-
-    el("authSwitch").innerHTML =
-        'New to EarnHub? <a href="#" onclick="showSignup(); return false;">Create Account</a>';
-
-    el("authSwitch")?.classList.remove("hidden");
-}
-
-function showSignup() {
-    authMode = "signup";
-
-    el("authModal")?.classList.remove("hidden");
-
-    setText("modalTitle", "Create Account");
-    setText("authSubmit", "Sign Up");
-    setText("authMessage", "");
-
-    el("usernameGroup")?.classList.remove("hidden");
-    el("nameGroup")?.classList.remove("hidden");
-    el("confirmPasswordGroup")?.classList.remove("hidden");
-    el("forgotPasswordGroup")?.classList.add("hidden");
-
-    el("authUsername").required = true;
-    el("authName").required = true;
-    el("authConfirmPassword").required = true;
-    el("authPassword").required = true;
-
-    el("authSwitch").innerHTML =
-        'Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a>';
-
-    el("authSwitch")?.classList.remove("hidden");
-}
-
-/* =========================
-   PASSWORD RECOVERY FORM
-========================= */
-
-function showPasswordRecoveryForm() {
-    authMode = "recovery";
-
-    el("authModal")?.classList.remove("hidden");
-
-    setText("modalTitle", "Set New Password");
-    setText("authSubmit", "Update Password");
-    setText("authMessage", "");
-
-    el("usernameGroup")?.classList.add("hidden");
-    el("nameGroup")?.classList.add("hidden");
-    el("confirmPasswordGroup")?.classList.remove("hidden");
-    el("forgotPasswordGroup")?.classList.add("hidden");
-
-    el("authUsername").required = false;
-    el("authName").required = false;
-    el("authPassword").required = true;
-    el("authConfirmPassword").required = true;
-
-    el("authSwitch")?.classList.add("hidden");
-
-    el("authPassword").value = "";
-    el("authConfirmPassword").value = "";
-}
-
-
-/* =========================
-   FORGOT PASSWORD
-========================= */
-
-async function handleForgotPassword() {
-    if (!db) {
-        notify("Supabase is not connected.");
-        return;
-    }
-
-    const email = el("authEmail")?.value.trim() || "";
-    const message = el("authMessage");
-
-    if (!email) {
-        if (message) {
-            message.textContent = "Please enter your registered email first.";
-        }
-
-        el("authEmail")?.focus();
-        return;
-    }
-
-    if (message) message.textContent = "Sending reset email...";
-
-    try {
-        const { error } = await db.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + window.location.pathname
-        });
-
-        if (error) throw error;
-
-        if (message) {
-            message.textContent =
-                "If an account exists for this email, a password reset link has been sent. Please check your inbox.";
-        }
-
-    } catch (error) {
-        console.error("Password reset error:", error);
-
-        if (message) {
-            message.textContent = error.message;
-        }
-    }
-}
-
-/* =========================
-   PASSWORD RECOVERY MODE
-========================= */
-
-function showPasswordRecoveryForm() {
-    authMode = "recovery";
-
-    el("authModal")?.classList.remove("hidden");
-
-    setText("modalTitle", "Set New Password");
-    setText("authSubmit", "Update Password");
-    setText("authMessage", "");
-
-    el("usernameGroup")?.classList.add("hidden");
-    el("nameGroup")?.classList.add("hidden");
-    el("confirmPasswordGroup")?.classList.remove("hidden");
-    el("forgotPasswordGroup")?.classList.add("hidden");
-
-    el("authUsername").required = false;
-    el("authName").required = false;
-    el("authPassword").required = true;
-    el("authConfirmPassword").required = true;
-
-    el("authSwitch")?.classList.add("hidden");
-
-    el("authPassword").value = "";
-    el("authConfirmPassword").value = "";
-}
-
-
-/* =========================
-   FORGOT PASSWORD
-========================= */
-
-async function handleForgotPassword() {
-    if (!db) {
-        notify("Supabase is not connected.");
-        return;
-    }
-
-    const email = el("authEmail")?.value.trim() || "";
-    const message = el("authMessage");
-
-    if (!email) {
-        if (message) {
-            message.textContent = "Please enter your registered email first.";
-        }
-        el("authEmail")?.focus();
-        return;
-    }
-
-    if (message) message.textContent = "Sending reset email...";
-
-    try {
-        const { error } = await db.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + window.location.pathname
-        });
-
-        if (error) throw error;
-
-        if (message) {
-            message.textContent =
-                "If an account exists for this email, a password reset link has been sent. Please check your inbox.";
-        }
-
-    } catch (error) {
-        console.error("Password reset error:", error);
-
-        if (message) {
-            message.textContent = error.message;
-        }
-    }
-}
-
-
-/* =========================
-   AUTH SUBMIT
-========================= */
 
 async function handleAuthSubmit(event) {
     event.preventDefault();
@@ -340,67 +124,43 @@ async function handleAuthSubmit(event) {
         return;
     }
 
-    const name = el("authName")?.value.trim() || "";
     const username = el("authUsername")?.value.trim() || "";
+    const name = el("authName")?.value.trim() || "";
     const email = el("authEmail")?.value.trim() || "";
     const password = el("authPassword")?.value || "";
-    const confirmPassword =
-        el("authConfirmPassword")?.value || "";
+    const confirmPassword = el("authConfirmPassword")?.value || "";
 
     const message = el("authMessage");
     const button = el("authSubmit");
 
-    if (!email || !password) {
-        if (message) message.textContent = "Enter email and password.";
+    if (!email) {
+        if (message) message.textContent = "Enter your email.";
+        return;
+    }
+
+    if (!password) {
+        if (message) message.textContent = "Enter your password.";
         return;
     }
 
     if (authMode === "signup") {
-
-        if (!username || !name) {
-            if (message) {
-                message.textContent = "Enter username and full name.";
-            }
-            return;
-        }
-
         if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) {
-            if (message) {
-                message.textContent =
-                    "Username must be 3-20 characters using letters, numbers or underscore.";
-            }
+            if (message) message.textContent = "Username must be 3-20 letters, numbers or underscores.";
+            return;
+        }
+
+        if (!name) {
+            if (message) message.textContent = "Enter your full name.";
             return;
         }
 
         if (password.length < 6) {
-            if (message) {
-                message.textContent =
-                    "Password must contain at least 6 characters.";
-            }
+            if (message) message.textContent = "Password must be at least 6 characters.";
             return;
         }
 
         if (password !== confirmPassword) {
-            if (message) {
-                message.textContent = "Passwords do not match.";
-            }
-            return;
-        }
-    }
-
-    if (authMode === "recovery") {
-        if (password.length < 6) {
-            if (message) {
-                message.textContent =
-                    "Password must contain at least 6 characters.";
-            }
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            if (message) {
-                message.textContent = "Passwords do not match.";
-            }
+            if (message) message.textContent = "Passwords do not match.";
             return;
         }
     }
@@ -409,21 +169,15 @@ async function handleAuthSubmit(event) {
     if (message) message.textContent = "Please wait...";
 
     try {
-
-        /* SIGNUP */
-
         if (authMode === "signup") {
-
             const { data, error } = await db.auth.signUp({
                 email,
                 password,
-
                 options: {
                     data: {
-                        username: username,
+                        username,
                         full_name: name,
-                        referral_code:
-                            el("referralCode")?.value.trim() || null
+                        referral_code: el("referralCode")?.value.trim() || null
                     }
                 }
             });
@@ -434,59 +188,30 @@ async function handleAuthSubmit(event) {
                 closeModal();
                 notify("Account created successfully!");
                 await loadDashboard(data.user);
-
             } else {
                 if (message) {
                     message.textContent =
-                        "Verification email sent! Please check your inbox and verify your email before logging in.";
+                        "Verification email sent! Please verify your email before logging in.";
                 }
             }
 
-        }
-
-        /* LOGIN */
-
-        else if (authMode === "login") {
-
-            const { data, error } =
-                await db.auth.signInWithPassword({
-                    email,
-                    password
-                });
+        } else if (authMode === "login") {
+            const { data, error } = await db.auth.signInWithPassword({
+                email,
+                password
+            });
 
             if (error) throw error;
 
             if (!data.user.email_confirmed_at) {
                 if (message) {
-                    message.textContent =
-                        "Please verify your email before logging in.";
+                    message.textContent = "Please verify your email before logging in.";
                 }
                 return;
             }
 
             closeModal();
             await loadDashboard(data.user);
-
-        }
-
-        /* UPDATE PASSWORD */
-
-        else if (authMode === "recovery") {
-
-            const { error } = await db.auth.updateUser({
-                password: password
-            });
-
-            if (error) throw error;
-
-            await db.auth.signOut();
-
-            showLogin();
-
-            if (message) {
-                message.textContent =
-                    "Password updated successfully. Please login with your new password.";
-            }
         }
 
     } catch (error) {
@@ -494,12 +219,11 @@ async function handleAuthSubmit(event) {
 
         if (message) {
             if (
-                error.message?.toLowerCase().includes("username") ||
                 error.message?.toLowerCase().includes("duplicate key") ||
-                error.message?.toLowerCase().includes("unique constraint")
+                error.message?.toLowerCase().includes("unique constraint") ||
+                error.message?.toLowerCase().includes("username")
             ) {
-                message.textContent =
-                    "This username is already taken. Please choose another.";
+                message.textContent = "Username already taken. Choose another.";
             } else {
                 message.textContent = error.message;
             }
@@ -510,34 +234,6 @@ async function handleAuthSubmit(event) {
     }
 }
 
-
-/* =========================
-   AUTH LISTENER
-========================= */
-
-function setupAuthListener() {
-    if (!db) return;
-
-    db.auth.onAuthStateChange((event, session) => {
-
-        if (event === "PASSWORD_RECOVERY") {
-            showPasswordRecoveryForm();
-        }
-
-        if (event === "SIGNED_OUT") {
-            currentUser = null;
-            isAdmin = false;
-
-            updateAuthButtons(null);
-
-            el("dashboard")?.classList.add("hidden");
-            el("adminPanel")?.classList.add("hidden");
-
-            showHome();
-        }
-
-    });
-}
 
 // =================================================
 // 4. NAVIGATION
@@ -2559,11 +2255,15 @@ async function logout() {
 // =================================================
 // 26. AUTH STATE LISTENER
 // =================================================
-
 function setupAuthListener() {
     if (!db) return;
 
     db.auth.onAuthStateChange((event, session) => {
+
+        if (event === "PASSWORD_RECOVERY") {
+            showPasswordRecoveryForm();
+        }
+
         if (event === "SIGNED_OUT") {
             currentUser = null;
             isAdmin = false;
@@ -2577,7 +2277,6 @@ function setupAuthListener() {
         }
     });
 }
-
 
 // =================================================
 // 27. INITIALIZE WEBSITE
