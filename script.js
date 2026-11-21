@@ -2643,3 +2643,6 @@ window.toggleNotifications = function () {
 
     dropdown.hidden = !dropdown.hidden;
 };
+window.closeModal = function () {
+    document.getElementById("authModal")?.classList.add("hidden");
+};
