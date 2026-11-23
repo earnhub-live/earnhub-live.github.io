@@ -1,0 +1,41 @@
+/* EarnHub cinematic 3D layer — visual-only, does not affect page controls */
+#eh3d-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none !important;
+    opacity: .76;
+    contain: strict;
+}
+
+#eh3d-background canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none !important;
+}
+
+/* Keep all existing EarnHub content and interactions above the visual layer. */
+body > header,
+body > main,
+body > aside,
+body > footer,
+body > #menuOverlay,
+body > .eh-help-widget,
+body > .modal,
+body > [role="dialog"] {
+    position: relative;
+    z-index: 1;
+}
+
+/* Existing page sections retain their own backgrounds, cards and spacing. */
+@media (max-width: 700px) {
+    #eh3d-background { opacity: .52; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #eh3d-background { opacity: .28; }
+}
